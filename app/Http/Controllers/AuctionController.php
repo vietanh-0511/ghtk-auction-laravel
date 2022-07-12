@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auction;
+use App\Supports\Responder;
 use Illuminate\Http\Request;
 
 class AuctionController extends Controller
@@ -13,7 +15,8 @@ class AuctionController extends Controller
      */
     public function index()
     {
-        //
+        $auctions = Auction::all();
+        return Responder::success($auctions, 'get auctions success');
     }
 
     /**
@@ -34,7 +37,8 @@ class AuctionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $auction = Auction::create($request->all());
+        return Responder::success($data = $auction, 'store success');
     }
 
     /**
@@ -45,7 +49,8 @@ class AuctionController extends Controller
      */
     public function show($id)
     {
-        //
+        $auctions = Auction::findOrFail($id);
+        return Responder::success($auctions, 'get auctions success');
     }
 
     /**
@@ -68,7 +73,8 @@ class AuctionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $auctionUpdated = Auction::where('id', $id)->update($request->all());
+        return Responder::success($auctionUpdated, 'update success');
     }
 
     /**
@@ -79,6 +85,6 @@ class AuctionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Auction::where('id', $id)->delete();
     }
 }
