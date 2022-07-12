@@ -2,6 +2,10 @@
 
 ## Cài đặt
 
+Laravel 8, PHP 7.4
+
+Database: ghtk_auction
+
 chỉnh file .env 
 
 Install npm
