@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ApiUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 // user CRUD
 Route::controller(UserController::class)->group(function () {
@@ -37,3 +38,8 @@ Route::controller(AuctionController::class)->group(function () {
     Route::put('/auction/{id}', [AuctionController::class, 'update']);
     Route::delete('/auction/{id}', [AuctionController::class, 'destroy']);
 });
+
+Route::post('/register', [ApiUserController::class, 'register']);
+Route::post('/login', [ApiUserController::class, 'login']);
+Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
+Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');

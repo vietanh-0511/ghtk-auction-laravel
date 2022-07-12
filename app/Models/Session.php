@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Session extends Model
@@ -19,13 +21,19 @@ class Session extends Model
         'auction_id'
     ];
 
-    public function auction()
+    public function auction(): BelongsTo
     {
         return $this->belongsTo(Auction::class);
     }
 
-    public function product()
+    public function product(): belongsTo
     {
         return $this->belongsTo(Product::class);
     }
+    
+    public function bids(): HasMany
+    {
+        return $this->hasMany(Bid::class);
+    }
+
 }
