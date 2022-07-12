@@ -38,7 +38,7 @@ class AuctionController extends Controller
     public function store(Request $request)
     {
         $auction = Auction::create($request->all());
-        return Responder::success($data = $auction, 'store success');
+        return Responder::success($auction, 'store success');
     }
 
     /**

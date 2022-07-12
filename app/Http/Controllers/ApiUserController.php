@@ -60,6 +60,7 @@ class ApiUserController extends Controller
      */
     public function show(Request $request)
     {
+        // dd($request->user('api')->id);
         return response()->json([
             "message" => "success",
             "data" => $request->user('api'),

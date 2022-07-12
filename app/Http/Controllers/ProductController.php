@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Supports\Responder;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -13,7 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+        return Responder::success($products, 'get products success');
     }
 
     /**
@@ -34,7 +37,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $product = Product::create($request->all());
+        return Responder::success($product, 'store success');
     }
 
     /**
@@ -45,7 +49,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        return Product::findOrFail($id);
     }
 
     /**
@@ -68,7 +72,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $productUpdated = Product::where('id', $id)->update($request->all());
+        return Responder::success($productUpdated, 'update success');
     }
 
     /**
@@ -79,6 +84,6 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::where('id', $id)->delete();
     }
 }
