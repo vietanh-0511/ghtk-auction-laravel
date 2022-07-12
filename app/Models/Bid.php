@@ -9,4 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Bid extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'price',
+        'session_id',
+        'user_id'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
