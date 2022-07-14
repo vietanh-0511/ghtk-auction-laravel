@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAutionRequest;
 use App\Models\Auction;
 use App\Supports\Responder;
 use Illuminate\Http\Request;
@@ -35,8 +36,9 @@ class AuctionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreAutionRequest $request)
     {
+        $request->validated();
         $auction = Auction::create($request->all());
         return Responder::success($auction, 'store success');
     }
@@ -48,7 +50,7 @@ class AuctionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    {   
         $auctions = Auction::findOrFail($id);
         return Responder::success($auctions, 'get auctions success');
     }
@@ -71,8 +73,9 @@ class AuctionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreAutionRequest $request, $id)
     {
+        $request->validated();
         $auctionUpdated = Auction::where('id', $id)->update($request->all());
         return Responder::success($auctionUpdated, 'update success');
     }
@@ -86,5 +89,11 @@ class AuctionController extends Controller
     public function destroy($id)
     {
         Auction::where('id', $id)->delete();
+    }
+
+    public function auctionListView() // = index
+    {
+        $auctions = Auction::paginate(10);
+        return view('user.auction', ['auctions' => $auctions]);
     }
 }

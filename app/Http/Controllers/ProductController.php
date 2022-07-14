@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
+use App\Services\Product\ImageFileHandle;
 use App\Supports\Responder;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+
+    private $imageFileHandle;
+
+    public function __construct(ImageFileHandle $imageFileHandle)
+    {
+        $this->imageFileHandle = $imageFileHandle;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,9 +44,13 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->all());
+        $userId = $request->user('api')->id;
+        $this->imageFileHandle->handle($request);
+        $product = $request->all();
+        $product['user_id'] = $userId;
+        $product = Product::create($product);
         return Responder::success($product, 'store success');
     }
 

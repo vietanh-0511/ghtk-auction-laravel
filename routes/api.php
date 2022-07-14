@@ -4,7 +4,9 @@ use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiUserController;
+use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,8 +24,9 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-// user CRUD
+//User 
 Route::controller(UserController::class)->group(function () {
+    Route::post('/login', 'login');
     Route::get('/user', 'index');
     Route::get('/user/{id}', 'show');
     Route::post('/user', 'store');
@@ -31,25 +34,42 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('/user/{id}', 'destroy');
 });
 
-//auction CRUD routes
+//Auction  
 Route::controller(AuctionController::class)->group(function () {
-    Route::get('/auction', [AuctionController::class, 'index']);
-    Route::get('/auction/{id}', [AuctionController::class, 'show']);
-    Route::post('/auction', [AuctionController::class, 'store']);
-    Route::put('/auction/{id}', [AuctionController::class, 'update']);
-    Route::delete('/auction/{id}', [AuctionController::class, 'destroy']);
+    Route::get('/auction', 'index');
+    Route::get('/auction/{id}', 'show');
+    Route::post('/auction', 'store');
+    Route::put('/auction/{id}', 'update');
+    Route::delete('/auction/{id}', 'destroy');
 });
 
-//auction CRUD routes
+//Product  
 Route::controller(ProductController::class)->group(function () {
-    Route::get('/product', [ProductController::class, 'index']);
-    Route::get('/product/{id}', [ProductController::class, 'show']);
-    Route::post('/product', [ProductController::class, 'store']);
-    Route::put('/product/{id}', [ProductController::class, 'update']);
-    Route::delete('/product/{id}', [ProductController::class, 'destroy']);
+    Route::get('/product', 'index');
+    Route::get('/product/{id}', 'show');
+    Route::post('/product', 'store');
+    Route::put('/product/{id}', 'update');
+    Route::delete('/product/{id}', 'destroy');
 });
 
-Route::post('/register', [ApiUserController::class, 'register']);
-Route::post('/login', [ApiUserController::class, 'login']);
-Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
-Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
+//Session
+Route::controller(SessionController::class)->group(function () {
+    Route::get('/session', 'index');
+    Route::get('/session/{id}', 'show');
+    Route::post('/session', 'store');
+    Route::put('/session/{id}', 'update');
+    Route::delete('/session/{id}', 'destroy');
+});
+
+//Bid
+Route::controller(BidController::class)->group(function () {
+    Route::get('/bid', 'index');
+    Route::get('/bid/{id}', 'show');
+    Route::post('/bid', 'store');
+    Route::put('/bid/{id}', 'update');
+    Route::delete('/bid/{id}', 'destroy');
+});
+
+// Route::post('/register', [ApiUserController::class, 'register']);
+// Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
+// Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');

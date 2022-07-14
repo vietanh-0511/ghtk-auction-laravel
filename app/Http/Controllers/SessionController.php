@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Session;
+use App\Supports\Responder;
 use Illuminate\Http\Request;
 
 class SessionController extends Controller
@@ -13,7 +15,8 @@ class SessionController extends Controller
      */
     public function index()
     {
-        //
+        $sessions = Session::all();
+        return Responder::success($sessions, 'get sessions success');
     }
 
     /**
@@ -34,7 +37,8 @@ class SessionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $session = Session::create($request->all());
+        return Responder::success($session, 'store success');
     }
 
     /**
@@ -45,7 +49,7 @@ class SessionController extends Controller
      */
     public function show($id)
     {
-        //
+        return Session::findOrFail($id);
     }
 
     /**
@@ -68,7 +72,8 @@ class SessionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $sessionUpdated = Session::where('id', $id)->update($request->all());
+        return Responder::success($sessionUpdated, 'update success');
     }
 
     /**
@@ -79,6 +84,6 @@ class SessionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Session::where('id', $id)->delete();
     }
 }
