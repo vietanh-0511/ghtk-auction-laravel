@@ -1,6 +1,6 @@
 # GHTK Auction
 
-## Realtime updata bid
+## Realtime update bids
 
 Đăng ký tài khoản và tạo kênh với Pusher
 
