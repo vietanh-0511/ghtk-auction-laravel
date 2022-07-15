@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Session extends Model
@@ -14,24 +12,25 @@ class Session extends Model
 
     protected $fillable = [
         'start_price',
-        'step_price',
+        'price_step',
         'highest_bid',
         'winner_id',
         'product_id',
-        'auction_id'
+        'auction_id',
+        'additional_data'
     ];
 
-    public function auction(): BelongsTo
+    public function auction()
     {
         return $this->belongsTo(Auction::class);
     }
 
-    public function product(): belongsTo
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }
-    
-    public function bids(): HasMany
+
+    public function bids()
     {
         return $this->hasMany(Bid::class);
     }

@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductImage extends Model
+class Asset extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'product_id',
-        'url'
+        'file_name',
+        'mime_type',
+        'assetable',
+        'assetable_type'
     ];
 
     public function product()
