@@ -16,10 +16,10 @@ class CreateAuctionsTable extends Migration
     {
         Schema::create('auctions', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
+            $table->string('title', 255);
             $table->unsignedTinyInteger('status')->default(AuctionStatusEnum::Preview);
             $table->datetime('start_time');
-            $table->datetime('end_time'); 
+            $table->datetime('end_time');
             $table->timestamps();
             $table->softDeletes();
         });
