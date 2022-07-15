@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\bidUpdate;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BidController extends Controller
@@ -34,7 +36,7 @@ class BidController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -80,5 +82,16 @@ class BidController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function updateBidMessage()
+    {
+        $price = request()->price;
+        $name = request()->name;
+        $auction = request()->auction;
+        $session = request()->session;
+        $time = Carbon::now('Asia/Ho_Chi_Minh');
+        event(new bidUpdate($price, $name, $auction, $session, $time));
+        return redirect('/bid');
     }
 }

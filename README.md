@@ -1,24 +1,22 @@
 # GHTK Auction
 
-## Cài đặt
+## Realtime updata bid
 
-Laravel 8, PHP 7.4
+Đăng ký tài khoản và tạo kênh với Pusher
 
-Database: ghtk_auction
-
-chỉnh file .env 
-
-Install npm
+Cài đặt pusher laravel
 ```bash
-npm install
+composer require pusher/pusher-php-server
 ```
-
-Install composer
+Cài đặt 2 thư viện javascript Laravel Echo và Pusher
 ```bash
-composer install
- ```
- 
- Tạo key mới
- ```bash
- php artisan key:generate
+npm install --save laravel-echo pusher-js
 ```
+Cấu hình .env
+
+Sửa file config app.php, broadcasting.php và bootstrap.js
+
+
+
+
+

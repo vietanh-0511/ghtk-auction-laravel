@@ -1,6 +1,9 @@
 <?php
 
+use App\Events\bidUpdate;
+use App\Http\Controllers\BidController;
 use Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +19,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/noti', function () {
+    return view('test-notifications');
+});
+Route::get('/bid', function () {
+    return view('test-bid');
+});
+Route::post('/bid', [BidController::class, 'updateBidMessage']);
