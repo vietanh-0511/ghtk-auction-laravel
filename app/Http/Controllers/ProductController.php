@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProductStatusEnum;
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
-use App\Services\Product\ImageFileHandle;
+use App\Models\Session;
+use App\Services\Product\CreateProductAction;
 use App\Supports\Responder;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
 
-    private $imageFileHandle;
+    private $createProductAction;
 
-    public function __construct(ImageFileHandle $imageFileHandle)
+    public function __construct(CreateProductAction $createProductAction)
     {
-        $this->imageFileHandle = $imageFileHandle;
+        $this->createProductAction = $createProductAction;
     }
     /**
      * Display a listing of the resource.
@@ -46,11 +48,8 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $userId = $request->user('api')->id;
-        $this->imageFileHandle->handle($request);
-        $product = $request->all();
-        $product['user_id'] = $userId;
-        $product = Product::create($product);
+        $request->validated();
+        $product = $this->createProductAction->handle($request);
         return Responder::success($product, 'store success');
     }
 
@@ -98,5 +97,25 @@ class ProductController extends Controller
     public function destroy($id)
     {
         Product::where('id', $id)->delete();
+    }
+
+    public function auctionProducts($id)
+    {
+        $auctionProducts = Session::join('products', 'sessions.product_id', '=', 'products.id')
+        ->join('auctions', 'sessions.auction_id', '=', 'auctions.id')
+        ->where([
+            ['sessions.auction_id', '=', $id],
+            // ['products.status', '=', ProductStatusEnum::Accepted]
+        ])
+            ->get();
+
+        // $auctionProducts = Session::with('auction', 'product')
+        // ->where([
+        //     ['auctions.id', '=', $id],
+        //     ['products.status', '=', ProductStatusEnum::Accepted]
+        // ])
+        // ->get();
+
+        return Responder::success($auctionProducts, 'get auction products success');
     }
 }
