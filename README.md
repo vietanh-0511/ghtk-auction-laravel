@@ -14,7 +14,6 @@ npm install --save laravel-echo pusher-js
 ```
 Cấu hình .env
 
-Sửa file config app.php, broadcasting.php và bootstrap.js
 
 
 
