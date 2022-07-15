@@ -19,7 +19,11 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::post('/register', [ApiUserController::class, 'register']);
-Route::post('/login', [ApiUserController::class, 'login']);
-Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
-Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
+Route::controller(ApiUserController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::get('/user', 'show')->middleware('auth:api');
+//Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
+    Route::post('/logout', 'logout')->middleware('auth:api');
+    Route::put('/user/change-password', 'changePassword')->middleware('auth:api');
+});

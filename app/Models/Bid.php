@@ -11,6 +11,17 @@ class Bid extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'price',
+        'session_id',
+        'user_id',
+    ];
+
+    protected $hidden = [
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
