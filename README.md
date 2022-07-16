@@ -1,7 +1,7 @@
 # GHTK Auction
 
 ## Requirements
-- PHP `^7.4 | ^8.0`
+- PHP `^7.3 | ^8.0`
 - Laravel `8.0`
 - [Laravel Passport](https://laravel.com/docs/8.x/passport) `10.4`.
 - [Laravel Permission](https://spatie.be/docs/laravel-permission/v5/installation-laravel) `5.5`.
@@ -10,19 +10,27 @@
 
 ## Cài đặt
 
-chỉnh file .env 
+### File `.env` 
+
+DB_DATABASE=`<your_database>` (ex: `ghtk_auction`)
+
+DB_USERNAME=`<your_username>`
+
+DB_PASSWORD=`<your_password>`
+
+Generate App Key
+
+`php artisan key:generate`
 
 Install npm
-```bash
-npm install
-```
 
-Install composer
-```bash
-composer install
- ```
+`npm install`
+
+Install Composer
+
+`composer install`
  
- Tạo key mới
- ```bash
- php artisan key:generate
-```
+Migrate Database with fresh and Seeder
+
+`php artisan migrate:fresh --seed`
+
