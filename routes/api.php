@@ -67,3 +67,6 @@ Route::group(
     }
 );
 
+Route::post('/register', [ApiUserController::class, 'register']);
+// Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
+// Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');

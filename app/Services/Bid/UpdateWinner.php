@@ -10,7 +10,7 @@ class UpdateWinner
     {
         // dd($bid['user_id'], $bid['price']);
         $sessionId = $bid['session_id'];
-        $highestBid = $bid['price'];
+        $highestBid = $bid['amount'];
         $winnerId = $bid['user_id'];
         Session::where('id', $sessionId)->update([
             'highest_bid' => $highestBid,
