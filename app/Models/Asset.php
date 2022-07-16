@@ -6,20 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Auction extends Model
+class Asset extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'title',
-        'status',
-        'start_time',
-        'end_time'
+        'file_name',
+        'mime_type',
+        'assetable',
+        'assetable_type'
     ];
 
-    public function sessions()
+    public function product()
     {
-        return $this->hasMany(Session::class);
+        $this->belongsTo(Product::class);
     }
-
 }

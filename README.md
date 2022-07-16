@@ -2,11 +2,9 @@
 
 ## Cài đặt
 
-Laravel 8
+Laravel 8, PHP 7.4
 
-PHP 7.4
-
-database: ghtk_auction
+Database: ghtk_auction
 
 chỉnh file .env 
 

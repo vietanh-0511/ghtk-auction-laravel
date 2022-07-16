@@ -5,21 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ApiLoginRequest;
 use App\Http\Requests\ApiRegisterRequest;
 use App\Models\User;
-use App\Supports\Responder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class ApiUserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function register(ApiRegisterRequest $request)
     {
-        $users = User::all();
-        return Responder::success($users, 'get users success');
+        $user = User::create($request->all());
+        $user->assignRole('user');
+        return response()->json($user);
+    }
+
+    public function login(ApiLoginRequest $request)
+    {
+        if (Auth::guard('web')->attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+        ])) {
+            $user = User::where('email', $request->email)->first();
+            $user->token = $user->createToken('App')->accessToken;
+            return response()->json($user);
+        }
+        return response()->json(['message' => 'Wrong email or password!'], 401);
     }
 
     /**
@@ -38,47 +46,25 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ApiRegisterRequest $request)
+    public function store(Request $request)
     {
-        $user = User::create($request->all());
-        $user->assignRole('user');
-        return Responder::success($user, 'store success');
-    }
-
-    public function login(ApiLoginRequest $request)
-    {
-        if (Auth::guard('web')->attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ])) {
-            $user = User::where('email', $request->email)->first();
-            $user->token = $user->createToken('App')->accessToken;
-            return response()->json($user);
-        }
-        return response()->json(['message' => 'Wrong email or password!'], 401);
+        //
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $users = User::findOrFail($id);
-        return Responder::success($users, 'get users success');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function edit($id)
+    public function show(Request $request)
     {
-        //
+        // dd($request->user('api')->id);
+        return response()->json([
+            "message" => "success",
+            "data" => $request->user('api'),
+        ], 200);
     }
 
     /**
@@ -90,8 +76,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $userUpdated = User::where('id', $id)->update($request->all());
-        return Responder::success($userUpdated, 'update success');
+        //
     }
 
     /**
@@ -102,6 +87,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        User::where('id', $id)->delete();
+        //
     }
 }
