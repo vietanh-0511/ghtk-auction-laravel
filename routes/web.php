@@ -20,13 +20,3 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/request_auction', function () {
-    return view('user/request_auction');
-});
-
-Route::post('/request_auction', [ProductController::class, 'store']);
-
-//list autions
-Route::get('/auction', [AuctionController::class, 'auctionListView']);
-
-Route::get('/bid_view/{id}', [BidController::class, 'bidView']);

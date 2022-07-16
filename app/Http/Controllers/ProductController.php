@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ProductStatusEnum;
 use App\Exceptions\CreateProductException;
 use App\Exceptions\UpdateProductException;
 use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\Session;
 use App\Services\Product\CreateProductAction;
 use App\Services\Product\UpdateProductAction;
 use App\Supports\Responder;
 use Exception;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -101,7 +98,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request, $id)
+    public function update(StoreProductRequest $request, $id)
     {
         $request->validated();
         try {
@@ -123,23 +120,5 @@ class ProductController extends Controller
         Product::where('id', $id)->delete();
     }
 
-    public function auctionProducts($id)
-    {
-        $auctionProducts = Session::join('products', 'sessions.product_id', '=', 'products.id')
-            ->join('auctions', 'sessions.auction_id', '=', 'auctions.id')
-            ->where([
-                ['sessions.auction_id', '=', $id],
-                // ['products.status', '=', ProductStatusEnum::Accepted]
-            ])
-            ->get();
-
-        // $auctionProducts = Session::with('auction', 'product')
-        // ->where([
-        //     ['auctions.id', '=', $id],
-        //     ['products.status', '=', ProductStatusEnum::Accepted]
-        // ])
-        // ->get();
-
-        return Responder::success($auctionProducts, 'get auction products success');
-    }
+    
 }

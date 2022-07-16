@@ -24,16 +24,16 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'full_name' => 'string|max:255',
-            'email' => 'email|unique:App\Models\User',
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:App\Models\User',
             'password' => [
                 'string',
                 'min:8',
                 'confirmed',
                 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
             ],
-            'address' => 'string|max:500',
-            'phone' => 'min:10|max:16',
+            'address' => 'required|string|max:500',
+            'phone' => 'required|min:10|max:16',
         ];
     }
 }

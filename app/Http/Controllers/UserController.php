@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ApiLoginRequest;
-use App\Http\Requests\ApiRegisterRequest;
+use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Supports\Responder;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -39,7 +37,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ApiRegisterRequest $request)
+    public function store(StoreUserRequest $request)
     {
         try {
             $user = User::create($request->all());
@@ -109,16 +107,4 @@ class UserController extends Controller
         }
     }
 
-    public function login(ApiLoginRequest $request)
-    {
-        if (Auth::guard('web')->attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ])) {
-            $user = User::where('email', $request->email)->first();
-            $user->token = $user->createToken('App')->accessToken;
-            return response()->json($user);
-        }
-        return response()->json(['message' => 'Wrong email or password!'], 401);
-    }
 }

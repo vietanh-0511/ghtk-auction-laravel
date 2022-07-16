@@ -2,9 +2,6 @@
 
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
-use App\Http\Controllers\ApiUserController;
-use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
@@ -67,19 +64,6 @@ Route::group(
             Route::put('/session/{id}', 'update');
             Route::delete('/session/{id}', 'destroy');
         });
-
-        //Bid
-        Route::controller(BidController::class)->group(function () {
-            Route::get('/bid', 'index');
-            Route::get('/bid/{id}', 'show');
-            Route::post('/bid', 'store');
-            Route::put('/bid/{id}', 'update');
-            Route::delete('/bid/{id}', 'destroy');
-        });
     }
 );
 
-Route::post('/register', [ApiUserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
-Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
-Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
