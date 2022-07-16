@@ -24,7 +24,11 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-//User 
+// 'api/admin/'
+//
+// 'api/products'
+
+//User
 Route::controller(UserController::class)->group(function () {
     Route::post('/login', 'login');
     Route::get('/user', 'index');
@@ -41,6 +45,7 @@ Route::controller(AuctionController::class)->group(function () {
     Route::post('/auction', 'store');
     Route::put('/auction/{id}', 'update');
     Route::delete('/auction/{id}', 'destroy');
+    Route::get('/auction1', 'auctionListView');
 });
 
 //Product  
@@ -49,7 +54,8 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/product/{id}', 'show');
     Route::post('/product', 'store');
     Route::put('/product/{id}', 'update');
-    Route::delete('/product/{id}', 'destroy');
+    Route::delete('/product/{id}', 'destroy'); 
+    Route::get('/auction-products/{id}', 'auctionProducts');
 });
 
 //Session
@@ -70,6 +76,6 @@ Route::controller(BidController::class)->group(function () {
     Route::delete('/bid/{id}', 'destroy');
 });
 
-// Route::post('/register', [ApiUserController::class, 'register']);
+Route::post('/register', [ApiUserController::class, 'register']);
 // Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
 // Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
