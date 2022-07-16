@@ -42,4 +42,8 @@ class Product extends Model
         return $this->hasOne(Session::class);
     }
 
+    public function user()
+    {
+        $this->belongsTo(User::class);
+    }
 }

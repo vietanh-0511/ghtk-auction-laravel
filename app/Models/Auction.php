@@ -12,7 +12,7 @@ class Auction extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name',
+        'title',
         'status',
         'start_time',
         'end_time',

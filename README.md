@@ -1,7 +1,7 @@
 # GHTK Auction
 
 ## Requirements
-- PHP `^7.3 | ^8.0`
+- PHP `^7.4 | ^8.0`
 - Laravel `8.0`
 - [Laravel Passport](https://laravel.com/docs/8.x/passport) `10.4`.
 - [Laravel Permission](https://spatie.be/docs/laravel-permission/v5/installation-laravel) `5.5`.

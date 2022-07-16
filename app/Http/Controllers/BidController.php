@@ -2,10 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CreateBidException;
+use App\Http\Requests\StoreBidRequest;
+use App\Services\Bid\CreateBidAction;
+use App\Supports\Responder;
+use Exception;
 use Illuminate\Http\Request;
+use App\Models\Bid;
 
 class BidController extends Controller
 {
+    private $createBidAction;
+
+    public function __construct(CreateBidAction $createBidAction)
+    {
+        $this->createBidAction = $createBidAction;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +26,12 @@ class BidController extends Controller
      */
     public function index()
     {
-        //
+        $bid = Bid::all();
+        return response()->json([
+            'messages'=>'list bids',
+            'data'=>$bid,
+            'status'=>true
+        ]);
     }
 
     /**
@@ -32,9 +50,21 @@ class BidController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreBidRequest $request)
     {
-        //
+        $request->validated();
+
+        $userId = $request->user('api')->id;
+        try {
+            $bid = $this->createBidAction->handle($request->toArray(), $userId);
+        } catch (CreateBidException $e) {
+            return Responder::fail($bid, $e->getMessage());
+        }
+        // catch (Exception $e) {
+        //     return Responder::fail($bid, 'error');
+        // }
+
+        return Responder::success($bid, 'success bid');
     }
 
     /**
@@ -81,4 +111,12 @@ class BidController extends Controller
     {
         //
     }
+
+    // public function bidView($id)
+    // {
+    //     $bidProductInfo = Product::where('products.id', $id)
+    //         ->join('auctions', 'auctions.id', '=', 'products.auction_id')
+    //         ->first();
+    //     return view('user.bid', ['info' => $bidProductInfo]);
+    // }
 }
