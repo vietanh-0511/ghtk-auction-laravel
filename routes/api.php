@@ -70,6 +70,6 @@ Route::controller(BidController::class)->group(function () {
     Route::delete('/bid/{id}', 'destroy');
 });
 
-// Route::post('/register', [ApiUserController::class, 'register']);
+Route::post('/register', [ApiUserController::class, 'register']);
 // Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
 // Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');

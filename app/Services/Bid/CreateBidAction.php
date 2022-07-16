@@ -22,9 +22,9 @@ class CreateBidAction
 
     public function handle($request, $userId)
     {
-        if (!$this->bidPriceChecker->handle($request)) {
-            throw new BidPriceException('Price invalid');
-        }
+        // if (!$this->bidPriceChecker->handle($request)) {
+        //     throw new BidPriceException('Price invalid');
+        // }
 
         $request['user_id'] = $userId;
 

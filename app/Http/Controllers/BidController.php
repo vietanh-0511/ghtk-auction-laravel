@@ -8,6 +8,7 @@ use App\Services\Bid\CreateBidAction;
 use App\Supports\Responder;
 use Exception;
 use Illuminate\Http\Request;
+use App\Models\Bid;
 
 class BidController extends Controller
 {
@@ -25,7 +26,12 @@ class BidController extends Controller
      */
     public function index()
     {
-        //
+        $bid = Bid::all();
+        return response()->json([
+            'messages'=>'list bids',
+            'data'=>$bid,
+            'status'=>true
+        ]);
     }
 
     /**
@@ -49,7 +55,6 @@ class BidController extends Controller
         $request->validated();
 
         $userId = $request->user('api')->id;
-
         try {
             $bid = $this->createBidAction->handle($request->toArray(), $userId);
         } catch (CreateBidException $e) {

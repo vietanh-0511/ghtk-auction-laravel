@@ -24,7 +24,7 @@ class StoreBidRequest extends FormRequest
     public function rules()
     {
         return [
-            'price' => ['required', 'numeric', 'min:0']
+            'amount' => ['required', 'numeric', 'min:0']
         ];
     }
 }
