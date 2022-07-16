@@ -8,8 +8,6 @@
 - [Laravel Enum](https://github.com/BenSampo/laravel-enum) `4.2`.
 - ...
 
-## Cài đặt
-
 ### File `.env` 
 
 DB_DATABASE=`<your_database>` (ex: `ghtk_auction`)
@@ -21,6 +19,8 @@ DB_PASSWORD=`<your_password>`
 Generate App Key
 
 `php artisan key:generate`
+
+### Setting
 
 Install npm
 
@@ -34,3 +34,6 @@ Migrate Database with fresh and Seeder
 
 `php artisan migrate:fresh --seed`
 
+Create the encryption keys needed to generate secure access tokens - *Laravel Passport*.
+
+`php artisan passport:install`
