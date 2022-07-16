@@ -25,8 +25,6 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'desirable_price' => ['required', 'min:0'],
-            'title_image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'description' => ['required'],
         ];
     }

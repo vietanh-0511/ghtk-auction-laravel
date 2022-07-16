@@ -2,12 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CreateSessionException;
+use App\Exceptions\UpdateSessionException;
+use App\Http\Requests\StoreSessionRequest;
 use App\Models\Session;
+use App\Services\Session\CreateSessionAction;
+use App\Services\Session\UpdateSessionAction;
 use App\Supports\Responder;
+use Exception;
 use Illuminate\Http\Request;
 
 class SessionController extends Controller
 {
+
+    private $createSessionAction;
+    private $updateSessionAction;
+
+    public function __construct(
+        CreateSessionAction $createSessionAction,
+        UpdateSessionAction $updateSessionAction
+    ) {
+        $this->createSessionAction = $createSessionAction;
+        $this->updateSessionAction = $updateSessionAction;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,9 +52,14 @@ class SessionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSessionRequest $request)
     {
-        $session = Session::create($request->all());
+        $request->validated();
+        try {
+            $session = $this->createSessionAction->handle($request->toArray());
+        } catch (CreateSessionException $e) {
+            return Responder::fail($session, $e->getMessage());
+        }
         return Responder::success($session, 'store success');
     }
 
@@ -49,7 +71,12 @@ class SessionController extends Controller
      */
     public function show($id)
     {
-        return Session::findOrFail($id);
+        try {
+            $session = Session::findOrFail($id);
+        } catch (Exception $e) {
+            return Responder::fail($session, $e->getMessage());
+        }
+        return Responder::success($session, 'get session success');
     }
 
     /**
@@ -70,10 +97,15 @@ class SessionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreSessionRequest $request, $id)
     {
-        $sessionUpdated = Session::where('id', $id)->update($request->all());
-        return Responder::success($sessionUpdated, 'update success');
+        $request->validated();
+        try {
+            $session = $this->updateSessionAction->handle($request->toArray(), $id);
+        } catch (UpdateSessionException $e) {
+            return Responder::fail($session, $e->getMessage());
+        }
+        return Responder::success($session, 'update success');
     }
 
     /**
