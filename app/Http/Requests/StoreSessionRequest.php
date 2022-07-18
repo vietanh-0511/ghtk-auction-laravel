@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApiLoginRequest extends FormRequest
+class StoreSessionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,10 @@ class ApiLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
-            ],
+            "start_price" => ['required', 'numeric', 'min:0'],
+            "price_step" => ['required', 'numeric', 'min:0', 'max:100'],
+            "product_id" => ['required'],
+            "auction_id" => ['required']
         ];
     }
 }

@@ -17,8 +17,8 @@ class CreateSessionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('start_price');
             $table->unsignedBigInteger('price_step');
-            $table->unsignedBigInteger('highest_bid');
-            $table->unsignedBigInteger('winner_id');
+            $table->unsignedBigInteger('highest_bid')->nullable();
+            $table->unsignedBigInteger('winner_id')->nullable();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('auction_id');
             $table->json('additional_data')->nullable();
