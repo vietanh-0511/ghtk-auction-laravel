@@ -12,11 +12,7 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'desirable_price',
-        'title_image',
         'description',
-        'status',
-        'user_id'
     ];
 
     public function user()
@@ -31,6 +27,6 @@ class Product extends Model
 
     public function session()
     {
-        return $this->belongsTo(Session::class);
+        return $this->hasOne(Session::class);
     }
 }

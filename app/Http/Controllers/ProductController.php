@@ -2,10 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Exceptions\CreateProductException;
+use App\Exceptions\UpdateProductException;
+use App\Http\Requests\StoreProductRequest;
+use App\Models\Product;
+use App\Models\Session;
+use App\Services\Product\CreateProductAction;
+use App\Services\Product\UpdateProductAction;
+use App\Supports\Responder;
+use Exception;
 
 class ProductController extends Controller
 {
+
+    private $createProductAction;
+    private $updateProductAction;
+
+    public function __construct(
+        CreateProductAction $createProductAction,
+        UpdateProductAction $updateProductAction
+    )
+    {
+        $this->createProductAction = $createProductAction;
+        $this->updateProductAction = $updateProductAction;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +33,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+        return Responder::success($products, 'get products success');
     }
 
     /**
@@ -32,9 +53,15 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        //
+        $request->validated();
+        try {
+            $product = $this->createProductAction->handle($request);
+        } catch (CreateProductException $e) {
+            return Responder::fail($product, $e->getMessage());
+        }
+        return Responder::success($product, 'store success');
     }
 
     /**
@@ -45,7 +72,12 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $product = Product::findOrFail($id);
+        } catch (Exception $e) {
+            return Responder::fail($product, $e->getMessage());
+        }
+        return Responder::success($product, 'get product success');
     }
 
     /**
@@ -66,9 +98,15 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreProductRequest $request, $id)
     {
-        //
+        $request->validated();
+        try {
+            $product = $this->updateProductAction->handle($request->toArray(), $id);
+        } catch (UpdateProductException $e) {
+            return Responder::fail($product, $e->getMessage());
+        }
+        return Responder::success($product, 'update success');
     }
 
     /**
@@ -79,6 +117,8 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::where('id', $id)->delete();
     }
+
+    
 }

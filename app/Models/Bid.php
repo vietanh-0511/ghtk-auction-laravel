@@ -11,7 +11,7 @@ class Bid extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'price',
+        'amount',
         'session_id',
         'user_id'
     ];
@@ -19,5 +19,10 @@ class Bid extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(Session::class);
     }
 }

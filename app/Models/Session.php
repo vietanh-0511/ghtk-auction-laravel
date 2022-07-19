@@ -12,11 +12,12 @@ class Session extends Model
 
     protected $fillable = [
         'start_price',
-        'step_price',
+        'price_step',
         'highest_bid',
         'winner_id',
         'product_id',
-        'auction_id'
+        'auction_id',
+        'additional_data'
     ];
 
     public function auction()
@@ -26,6 +27,12 @@ class Session extends Model
 
     public function product()
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
     }
+
+    public function bids()
+    {
+        return $this->hasMany(Bid::class);
+    }
+
 }
