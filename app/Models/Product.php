@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -12,21 +15,35 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'desirable_price',
+        'title_image',
         'description',
+        'status',
+        'user_id',
     ];
 
-    public function user()
+    protected $hidden = [
+        'updated_at',
+        'deleted_at'
+    ];
+
+    public function product(): BelongsTo
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function productImages()
+    public function productImages(): HasMany
     {
         return $this->hasMany(ProductImage::class);
     }
 
-    public function session()
+    public function session(): HasOne
     {
         return $this->hasOne(Session::class);
+    }
+
+    public function user()
+    {
+        $this->belongsTo(User::class);
     }
 }
