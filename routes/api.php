@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
@@ -29,18 +30,9 @@ Route::group(
     ['prefix' => 'admin'],
     function () {
 
-        Route::controller(ApiUserController::class)->group(function () {
-            Route::post('/register', 'register');
-            Route::post('/login', 'login');
-            Route::get('/user', 'show')->middleware('auth:api');
-            //Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
-            Route::post('/logout', 'logout')->middleware('auth:api');
-            Route::put('/user/change-password', 'changePassword')->middleware('auth:api');
-        });
-
         //User 
         Route::controller(UserController::class)->group(function () {
-            Route::post('/login', 'login');
+            // Route::post('/login', 'login');
             Route::get('/user', 'index');
             Route::get('/user/{id}', 'show');
             Route::post('/user', 'store');
@@ -78,6 +70,12 @@ Route::group(
     }
 );
 
-//Route::post('/register', [ApiUserController::class, 'register']);
-// Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
-// Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
+
+Route::controller(ApiUserController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::get('/user', 'show')->middleware('auth:api');
+    //Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
+    Route::post('/logout', 'logout')->middleware('auth:api');
+    Route::put('/user/change-password', 'changePassword')->middleware('auth:api');
+});

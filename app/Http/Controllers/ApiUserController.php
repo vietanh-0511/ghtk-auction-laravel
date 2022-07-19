@@ -63,7 +63,6 @@ class ApiUserController extends Controller
         ], Response::HTTP_OK);
     }
 
-    // Đổi pass xong k login được luôn :>
     public function changePassword(ApiChangePasswordRequest $request)
     {
         $user = Auth::user();
