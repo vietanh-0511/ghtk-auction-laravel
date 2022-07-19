@@ -20,13 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
-// 'api/admin/'
-//
-// 'api/products'
 
 //User
 Route::controller(UserController::class)->group(function () {
@@ -45,7 +39,7 @@ Route::controller(AuctionController::class)->group(function () {
     Route::post('/auction', 'store');
     Route::put('/auction/{id}', 'update');
     Route::delete('/auction/{id}', 'destroy');
-    Route::get('/auction1', 'auctionListView');
+    Route::get('/getauction', 'auctionListView');
 });
 
 //Product  
