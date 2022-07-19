@@ -4,7 +4,6 @@ use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
-use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
