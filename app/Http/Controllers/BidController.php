@@ -122,7 +122,6 @@ class BidController extends Controller
         $session = request()->session;
         $time = Carbon::now('Asia/Ho_Chi_Minh');
         event(new bidUpdate($price, $name, $auction, $session, $time));
-        return redirect('/bid');
     }
 
     // public function bidView($id)
