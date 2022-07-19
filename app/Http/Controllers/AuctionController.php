@@ -95,9 +95,9 @@ class AuctionController extends Controller
     {
         $auctions = Auction::all();
         return response()->json([
-            'messages'=>'list bids',
-            'data'=>$auctions,
-            'status'=>true
+            'messages' => 'list bids',
+            'data' => $auctions,
+            'status' => true
         ]);
     }
 }
