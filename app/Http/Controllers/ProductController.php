@@ -15,10 +15,7 @@ class ProductController extends Controller
 
     private $createProductAction;
 
-    public function __construct()
-    {
-        // $this->createProductAction = $createProductAction;
-    }
+    
     /**
      * Display a listing of the resource.
      *
