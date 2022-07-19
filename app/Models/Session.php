@@ -26,17 +26,17 @@ class Session extends Model
         'deleted_at',
     ];
 
-    public function bids(): HasMany
+    public function bids()
     {
         return $this->hasMany(Bid::class);
     }
 
-    public function product(): BelongsTo
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function auction(): BelongsTo
+    public function auction()
     {
         return $this->belongsTo(Auction::class);
     }

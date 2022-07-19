@@ -73,7 +73,7 @@ Route::group(
 
 Route::controller(ApiUserController::class)->group(function () {
     Route::post('/register', 'register');
-    Route::post('/login', 'login');
+    Route::post('/login', 'login')->name('login');
     Route::get('/user', 'show')->middleware('auth:api');
     //Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
     Route::post('/logout', 'logout')->middleware('auth:api');

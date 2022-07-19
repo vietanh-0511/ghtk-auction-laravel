@@ -24,12 +24,12 @@ class Product extends Model
     ];
 
 
-    public function session(): HasOne
+    public function session()
     {
         return $this->hasOne(Session::class);
     }
 
-    public function assets(): HasMany
+    public function assets()
     {
         return $this->hasMany(Asset::class);
     }

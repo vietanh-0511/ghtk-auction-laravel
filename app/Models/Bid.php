@@ -22,12 +22,12 @@ class Bid extends Model
         'deleted_at',
     ];
 
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function session(): BelongsTo
+    public function session()
     {
         return $this->belongsTo(Session::class);
     }
