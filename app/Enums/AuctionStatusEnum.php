@@ -12,7 +12,7 @@ use Illuminate\Validation\Rules\Enum as RulesEnum;
  */
 final class AuctionStatusEnum extends RulesEnum
 {
-    const Pending =   0;
-    const Start =   1;
+    const Preview =   0;
+    const Publish =   1;
     const End = 2;
 }

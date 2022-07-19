@@ -17,7 +17,7 @@ class CreateAuctionsTable extends Migration
         Schema::create('auctions', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->unsignedTinyInteger('status')->default(AuctionStatusEnum::Pending);
+            $table->unsignedTinyInteger('status')->default(AuctionStatusEnum::Preview);
             $table->datetime('start_time');
             $table->datetime('end_time');
             $table->timestamps();

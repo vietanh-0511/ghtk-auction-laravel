@@ -20,9 +20,9 @@ class Product extends Model
         $this->belongsTo(User::class);
     }
 
-    public function productImages()
+    public function assets()
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(Asset::class);
     }
 
     public function session()
