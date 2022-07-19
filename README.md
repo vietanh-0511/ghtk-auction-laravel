@@ -1,5 +1,6 @@
 # GHTK Auction
 
+
 ## Requirements
 - PHP `^7.4 | ^8.0`
 - Laravel `8.0`
@@ -37,3 +38,21 @@ Migrate Database with fresh and Seeder
 Create the encryption keys needed to generate secure access tokens - *Laravel Passport*.
 
 `php artisan passport:install`
+
+
+## Realtime update bids
+
+Đăng ký tài khoản và tạo kênh với Pusher
+
+Cài đặt pusher laravel
+```bash
+composer require pusher/pusher-php-server
+```
+Cài đặt 2 thư viện javascript Laravel Echo và Pusher
+```bash
+npm install --save laravel-echo pusher-js
+```
+Cấu hình .env
+
+
+
