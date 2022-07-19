@@ -15,11 +15,7 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'desirable_price',
-        'title_image',
-        'description',
-        'status',
-        'user_id',
+        'description'
     ];
 
     protected $hidden = [
@@ -27,23 +23,15 @@ class Product extends Model
         'deleted_at'
     ];
 
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function productImages(): HasMany
-    {
-        return $this->hasMany(ProductImage::class);
-    }
 
     public function session(): HasOne
     {
         return $this->hasOne(Session::class);
     }
 
-    public function user()
+    public function assets(): HasMany
     {
-        $this->belongsTo(User::class);
+        return $this->hasMany(Asset::class);
     }
+
 }
