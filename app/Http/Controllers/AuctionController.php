@@ -2,13 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CreateAuctionException;
+use App\Exceptions\UpdateAuctionException;
 use App\Http\Requests\StoreAutionRequest;
 use App\Models\Auction;
+use App\Services\Auction\CreateAuctionAction;
+use App\Services\Auction\UpdateAuctionAction;
 use App\Supports\Responder;
+use Exception;
 use Illuminate\Http\Request;
 
 class AuctionController extends Controller
 {
+    private $createAuctionAction;
+    private $updateAuctionAction;
+
+    public function __construct(
+        CreateAuctionAction $createAuctionAction,
+        UpdateAuctionAction $updateAuctionAction
+    ) {
+        $this->createAuctionAction = $createAuctionAction;
+        $this->updateAuctionAction = $updateAuctionAction;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -39,7 +54,11 @@ class AuctionController extends Controller
     public function store(StoreAutionRequest $request)
     {
         $request->validated();
-        $auction = Auction::create($request->all());
+        try {
+            $auction = $this->createAuctionAction->handle($request->toArray());
+        } catch (CreateAuctionException $e) {
+            return Responder::fail($auction, $e->getMessage());
+        }
         return Responder::success($auction, 'store success');
     }
 
@@ -50,8 +69,12 @@ class AuctionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {   
-        $auctions = Auction::findOrFail($id);
+    {
+        try {
+            $auctions = Auction::findOrFail($id);
+        } catch (Exception $e) {
+            return Responder::fail($auctions, $e->getMessage());
+        }
         return Responder::success($auctions, 'get auctions success');
     }
 
@@ -76,7 +99,11 @@ class AuctionController extends Controller
     public function update(StoreAutionRequest $request, $id)
     {
         $request->validated();
-        $auctionUpdated = Auction::where('id', $id)->update($request->all());
+        try {
+            $auctionUpdated = $this->updateAuctionAction->handle($request->toArray(), $id);
+        } catch (UpdateAuctionException $e) {
+            return Responder::fail($auctionUpdated, $e->getMessage());
+        }
         return Responder::success($auctionUpdated, 'update success');
     }
 
@@ -100,4 +127,6 @@ class AuctionController extends Controller
             'status' => true
         ]);
     }
+
+    
 }

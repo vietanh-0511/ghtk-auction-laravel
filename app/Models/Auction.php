@@ -14,12 +14,16 @@ class Auction extends Model
         'title',
         'status',
         'start_time',
-        'end_time'
+        'end_time',
+    ];
+
+    protected $hidden = [
+        'updated_at',
+        'deleted_at',
     ];
 
     public function sessions()
     {
         return $this->hasMany(Session::class);
     }
-
 }

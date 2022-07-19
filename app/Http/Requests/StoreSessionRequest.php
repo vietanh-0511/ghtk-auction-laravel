@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class StoreAutionRequest extends FormRequest
+class StoreSessionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +24,10 @@ class StoreAutionRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required'],
-            'start_time' => ['required'],
-            'end_time' => ['required'],
+            "start_price" => ['required', 'numeric', 'min:0'],
+            "price_step" => ['required', 'numeric', 'min:0', 'max:100'],
+            "product_id" => ['required'],
+            "auction_id" => ['required']
         ];
     }
 }
