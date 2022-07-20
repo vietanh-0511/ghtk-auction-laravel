@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\bidUpdate;
+use Carbon\Carbon;
 use App\Exceptions\CreateBidException;
 use App\Http\Requests\StoreBidRequest;
 use App\Services\Bid\CreateBidAction;
@@ -110,6 +112,16 @@ class BidController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    public function updateBidMessage()
+    {
+        $price = request()->price;
+        $name = request()->name;
+        $auction = request()->auction;
+        $session = request()->session;
+        $time = Carbon::now('Asia/Ho_Chi_Minh');
+        event(new bidUpdate($price, $name, $auction, $session, $time));
     }
 
     // public function bidView($id)
