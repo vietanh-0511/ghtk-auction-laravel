@@ -33,7 +33,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::paginate(10);
         return Responder::success($products, 'get products success');
     }
 

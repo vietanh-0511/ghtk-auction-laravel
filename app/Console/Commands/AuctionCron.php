@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\AuctionStatusEnum;
 use Illuminate\Console\Command;
 use App\Models\Auction;
 use Carbon\Carbon;
@@ -41,8 +42,8 @@ class AuctionCron extends Command
     {
         $now = Carbon::now()->toDateTimeString();
 
-        Auction::where('start_time', $now)->update(['status'=>'1']);
+        Auction::where('start_time', $now)->update(['status' => AuctionStatusEnum::Publish]);
 
-        Auction::where('end_time', $now)->update(['status'=>'2']);
+        Auction::where('end_time', $now)->update(['status' => AuctionStatusEnum::End]);
     }
 }

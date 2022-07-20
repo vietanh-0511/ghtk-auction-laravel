@@ -25,7 +25,6 @@ class CreateSessionAction
         }
         $this->calculateStepPrice->handle($request);
         // dd($request['price_step']);
-
         Session::create($request);
     }
 }

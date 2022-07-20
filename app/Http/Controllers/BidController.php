@@ -8,7 +8,6 @@ use App\Exceptions\CreateBidException;
 use App\Http\Requests\StoreBidRequest;
 use App\Services\Bid\CreateBidAction;
 use App\Supports\Responder;
-use Exception;
 use Illuminate\Http\Request;
 use App\Models\Bid;
 
@@ -29,10 +28,9 @@ class BidController extends Controller
     public function index()
     {
         $bid = Bid::all();
-        return response()->json([
-            'messages'=>'list bids',
-            'data'=>$bid,
-            'status'=>true
+        return response()->json(['messages' => 'list bids',
+            'data' => $bid,
+            'status' => true
         ]);
     }
 
@@ -113,7 +111,7 @@ class BidController extends Controller
     {
         //
     }
-    
+
     public function updateBidMessage()
     {
         $price = request()->price;
