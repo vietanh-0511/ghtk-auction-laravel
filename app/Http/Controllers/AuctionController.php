@@ -118,11 +118,15 @@ class AuctionController extends Controller
         Auction::where('id', $id)->delete();
     }
 
-    // public function auctionListView() // = index
-    // {
-    //     $auctions = Auction::paginate(10);
-    //     return view('user.auction', ['auctions' => $auctions]);
-    // }
+    public function auctionListView() // = index
+    {
+        $auctions = Auction::all();
+        return response()->json([
+            'messages' => 'list bids',
+            'data' => $auctions,
+            'status' => true
+        ]);
+    }
 
     
 }

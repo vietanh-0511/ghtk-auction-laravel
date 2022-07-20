@@ -37,4 +37,11 @@ class StoreUserRequest extends FormRequest
             'phone' => 'required|min:10|max:16',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'required' => ':atribute is required',
+        ];
+    }
 }
