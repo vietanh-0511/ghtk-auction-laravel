@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
 //Auction  
 Route::controller(AuctionController::class)->group(function () {
     Route::get('/getauction', 'auctionListView');
@@ -78,6 +76,15 @@ Route::group(
             Route::put('/session/{id}', 'update');
             Route::delete('/session/{id}', 'destroy');
         });
+        
+        //Bid
+        Route::controller(BidController::class)->group(function () {
+            Route::get('/bid', 'index');
+            Route::get('/bid/{id}', 'show');
+            Route::post('/bid', 'store');
+            Route::put('/bid/{id}', 'update');
+            Route::delete('/bid/{id}', 'destroy');
+});
     }
 );
 
