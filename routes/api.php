@@ -18,6 +18,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+//Auction  
+Route::controller(AuctionController::class)->group(function () {
+    Route::get('/getauction', 'auctionListView');
+});
+
+//Product  
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/auction-products/{id}', 'auctionProducts');
+});
+
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
