@@ -10,7 +10,6 @@ use App\Services\Auction\CreateAuctionAction;
 use App\Services\Auction\UpdateAuctionAction;
 use App\Supports\Responder;
 use Exception;
-use Illuminate\Http\Request;
 
 class AuctionController extends Controller
 {

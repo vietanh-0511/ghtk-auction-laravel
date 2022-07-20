@@ -25,7 +25,7 @@ class PermissionTableSeeder extends Seeder
         Permission::create(['name' => 'Update Product Description When Preview']);
         Permission::create(['name' => 'Update Product Images When Preview']);
 
-        Permission::create(['name' => 'Admin Login']);
+        // Permission::create(['name' => 'Admin Login']);
         Permission::create(['name' => 'Update Product Status']);
         Permission::create(['name' => 'Add Product Start Price']);
         Permission::create(['name' => 'Add Product Min Step Price']);

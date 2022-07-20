@@ -6,7 +6,6 @@ use App\Exceptions\CreateProductException;
 use App\Exceptions\UpdateProductException;
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
-use App\Models\Session;
 use App\Services\Product\CreateProductAction;
 use App\Services\Product\UpdateProductAction;
 use App\Supports\Responder;

@@ -10,7 +10,6 @@ use App\Services\Session\CreateSessionAction;
 use App\Services\Session\UpdateSessionAction;
 use App\Supports\Responder;
 use Exception;
-use Illuminate\Http\Request;
 
 class SessionController extends Controller
 {
