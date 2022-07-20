@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUserRequest extends FormRequest
+class ApiLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -21,20 +21,16 @@ class StoreUserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:App\Models\User',
+            'email' => 'required|email',
             'password' => [
                 'required',
                 'string',
                 'min:8',
-                'confirmed',
                 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
             ],
-            'address' => 'required|string|max:120',
-            'phone' => 'required|min:10|max:16',
         ];
     }
 }

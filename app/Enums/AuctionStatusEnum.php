@@ -10,11 +10,9 @@ use Illuminate\Validation\Rules\Enum as RulesEnum;
  * @method static static OptionTwo()
  * @method static static OptionThree()
  */
-final class ProductStatusEnum extends RulesEnum
+final class AuctionStatusEnum extends RulesEnum
 {
-    const Pending =   0;
-    const NotAccepted =   1;
-    const Accepted = 2;
-    const Sold = 3;
-    const Expired = 4;
+    const Preview =   0;
+    const Publish =   1;
+    const End = 2;
 }

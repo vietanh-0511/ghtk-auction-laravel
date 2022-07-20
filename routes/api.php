@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
@@ -16,10 +17,19 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//Auction  
+Route::controller(AuctionController::class)->group(function () {
+    Route::get('/getauction', 'auctionListView');
+});
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+//Product  
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/auction-products/{id}', 'auctionProducts');
+});
+
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 // 'api/admin/'
 // 
@@ -28,8 +38,10 @@ use Illuminate\Support\Facades\Route;
 Route::group(
     ['prefix' => 'admin'],
     function () {
+
         //User 
         Route::controller(UserController::class)->group(function () {
+            // Route::post('/login', 'login');
             Route::get('/user', 'index');
             Route::get('/user/{id}', 'show');
             Route::post('/user', 'store');
@@ -64,9 +76,24 @@ Route::group(
             Route::put('/session/{id}', 'update');
             Route::delete('/session/{id}', 'destroy');
         });
+        
+        //Bid
+        Route::controller(BidController::class)->group(function () {
+            Route::get('/bid', 'index');
+            Route::get('/bid/{id}', 'show');
+            Route::post('/bid', 'store');
+            Route::put('/bid/{id}', 'update');
+            Route::delete('/bid/{id}', 'destroy');
+});
     }
 );
 
-Route::post('/register', [ApiUserController::class, 'register']);
-// Route::get('/user', [ApiUserController::class, 'show'])->middleware('auth:api');
-// Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
+
+Route::controller(ApiUserController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login')->name('login');
+    Route::get('/user', 'show')->middleware('auth:api');
+    //Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
+    Route::post('/logout', 'logout')->middleware('auth:api');
+    Route::put('/user/change-password', 'changePassword')->middleware('auth:api');
+});
