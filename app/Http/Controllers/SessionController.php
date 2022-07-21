@@ -32,7 +32,7 @@ class SessionController extends Controller
      */
     public function index()
     {
-        $sessions = Session::all();
+        $sessions = Session::paginate(10);
         return Responder::success($sessions, 'get sessions success');
     }
 

@@ -31,7 +31,7 @@ class AuctionController extends Controller
      */
     public function index()
     {
-        $auctions = Auction::all();
+        $auctions = Auction::paginate(10);
         return Responder::success($auctions, 'get auctions success');
     }
 
@@ -120,7 +120,7 @@ class AuctionController extends Controller
 
     public function auctionListView() // = index
     {
-        $auctions = Auction::all();
+        $auctions = Auction::paginate(10);
         return response()->json([
             'messages' => 'list bids',
             'data' => $auctions,

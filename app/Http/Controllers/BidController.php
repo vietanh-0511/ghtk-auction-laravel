@@ -28,7 +28,7 @@ class BidController extends Controller
      */
     public function index()
     {
-        $bid = Bid::all();
+        $bid = Bid::paginate(10);
         return response()->json([
             'messages'=>'list bids',
             'data'=>$bid,
