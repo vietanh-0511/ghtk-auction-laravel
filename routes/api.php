@@ -76,18 +76,18 @@ Route::group(
             Route::put('/session/{id}', 'update');
             Route::delete('/session/{id}', 'destroy');
         });
-        
-        //Bid
-        Route::controller(BidController::class)->group(function () {
-            Route::get('/bid', 'index');
-            Route::get('/bid/{id}', 'show');
-            Route::post('/bid', 'store');
-            Route::put('/bid/{id}', 'update');
-            Route::delete('/bid/{id}', 'destroy');
-});
     }
 );
 
+
+    //Bid
+    Route::controller(BidController::class)->group(function () {
+        Route::get('/bid', 'index');
+        Route::get('/bid/{id}', 'show');
+        Route::post('/bid', 'store');
+        Route::put('/bid/{id}', 'update');
+        Route::delete('/bid/{id}', 'destroy');
+    });
 
 Route::controller(ApiUserController::class)->group(function () {
     Route::post('/register', 'register');
