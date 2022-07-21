@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
-use App\Http\Controllers\UserController;
+  use App\Http\Controllers\AuthController;
+  use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
@@ -88,15 +89,14 @@ Route::group(
     }
 );
 
-
-Route::controller(ApiUserController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login')->name('login');
-
-    Route::group(['middleware' => 'auth:api'], function () {
-        Route::get('/user', 'show');
-        //Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
-        Route::post('/logout', 'logout');
-        Route::put('/user/change-password', 'changePassword');
-    });
+Route::group([
+  'middleware' => 'api',
+  'prefix' => 'auth'
+], function () {
+  Route::post('/login', [AuthController::class, 'login']);
+  Route::post('/register', [AuthController::class, 'register']);
+  Route::post('/logout', [AuthController::class, 'logout']);
+  Route::post('/refresh', [AuthController::class, 'refresh']);
+  Route::get('/user-profile', [AuthController::class, 'userProfile']);
+  Route::post('/change-pass', [AuthController::class, 'changePassword']);
 });
