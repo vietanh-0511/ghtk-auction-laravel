@@ -29,9 +29,10 @@ class AuctionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $auctions = Auction::paginate(10);
+        $limit  = $request->limit;
+        $auctions = Auction::paginate($limit);
         return Responder::success($auctions, 'get auctions success');
     }
 
@@ -118,9 +119,10 @@ class AuctionController extends Controller
         Auction::where('id', $id)->delete();
     }
 
-    public function auctionListView() // = index
+    public function auctionListView(Request $request) // = index
     {
-        $auctions = Auction::paginate(10);
+        $limit = $request->limit;
+        $auctions = Auction::paginate($limit);
         return response()->json([
             'messages' => 'list bids',
             'data' => $auctions,
