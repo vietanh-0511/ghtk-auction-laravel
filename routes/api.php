@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
-use App\Http\Controllers\UserController;
+  use App\Http\Controllers\AuthController;
+  use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
@@ -19,12 +20,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-
 Route::group(
     ['prefix' => 'admin'],
     function () {
 
-        //User 
+        //User
         Route::controller(UserController::class)->group(function () {
             // Route::post('/login', 'login');
             Route::get('/user', 'index');
@@ -34,7 +34,7 @@ Route::group(
             Route::delete('/user/{id}', 'destroy');
         });
 
-        //Auction  
+        //Auction
         Route::controller(AuctionController::class)->group(function () {
             Route::get('/auction', 'index');
             Route::get('/auction/{id}', 'show');
@@ -43,7 +43,7 @@ Route::group(
             Route::delete('/auction/{id}', 'destroy');
         });
 
-        //Product  
+        //Product
         Route::controller(ProductController::class)->group(function () {
             Route::get('/product', 'index');
             Route::get('/product/{id}', 'show');
@@ -73,14 +73,7 @@ Route::group(
 );
 
 
-Route::controller(ApiUserController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login')->name('login');
-    Route::get('/user', 'show')->middleware('auth:api');
-    //Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
-    Route::post('/logout', 'logout')->middleware('auth:api');
-    Route::put('/user/change-password', 'changePassword')->middleware('auth:api');
-});
+
 //Auction  
 Route::controller(AuctionController::class)->group(function () {
     Route::get('/getauction', 'auctionListView');
@@ -89,4 +82,15 @@ Route::controller(AuctionController::class)->group(function () {
 //Product  
 Route::controller(ProductController::class)->group(function () {
     Route::get('/auction-products/{id}', 'auctionProducts');
+
+Route::group([
+  'middleware' => 'api',
+  'prefix' => 'auth'
+], function () {
+  Route::post('/login', [AuthController::class, 'login']);
+  Route::post('/register', [AuthController::class, 'register']);
+  Route::post('/logout', [AuthController::class, 'logout']);
+  Route::post('/refresh', [AuthController::class, 'refresh']);
+  Route::get('/user-profile', [AuthController::class, 'userProfile']);
+  Route::post('/change-pass', [AuthController::class, 'changePassword']);
 });
