@@ -2,17 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\MatchOldPassword;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApiChangePasswordRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -22,19 +21,12 @@ class ApiChangePasswordRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
+            'email' => 'required|email',
             'password' => [
                 'required',
-                'string',
-                'min:8',
-                'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
-                new MatchOldPassword,
-            ],
-            'new_password' => [
-                'required',
-                'confirmed',
                 'string',
                 'min:8',
                 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
