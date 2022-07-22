@@ -26,9 +26,10 @@ class BidController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bid = Bid::all();
+        $limit = $request->limit;
+        $bid = Bid::paginate($limit);
         return response()->json([
             'messages'=>'list bids',
             'data'=>$bid,
@@ -66,6 +67,11 @@ class BidController extends Controller
         //     return Responder::fail($bid, 'error');
         // }
 
+//         Cache::set('last-bid', $bid);
+// 
+//         $lastBid = Cache::rememberForever('cnt-bid',  function() {
+//             return Bid::count();
+//         });
         return Responder::success($bid, 'success bid');
     }
 

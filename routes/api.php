@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SessionController;
@@ -17,29 +18,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//Auction  
-Route::controller(AuctionController::class)->group(function () {
-    Route::get('/getauction', 'auctionListView');
-});
 
-//Product  
-Route::controller(ProductController::class)->group(function () {
-    Route::get('/auction-products/{id}', 'auctionProducts');
-});
-
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-// 'api/admin/'
-// 
-// 'api/products'
 
 Route::group(
     ['prefix' => 'admin'],
     function () {
 
-        //User 
+        //User
         Route::controller(UserController::class)->group(function () {
             // Route::post('/login', 'login');
             Route::get('/user', 'index');
@@ -49,7 +34,7 @@ Route::group(
             Route::delete('/user/{id}', 'destroy');
         });
 
-        //Auction  
+        //Auction
         Route::controller(AuctionController::class)->group(function () {
             Route::get('/auction', 'index');
             Route::get('/auction/{id}', 'show');
@@ -58,14 +43,13 @@ Route::group(
             Route::delete('/auction/{id}', 'destroy');
         });
 
-        //Product  
+        //Product
         Route::controller(ProductController::class)->group(function () {
             Route::get('/product', 'index');
             Route::get('/product/{id}', 'show');
             Route::post('/product', 'store');
             Route::put('/product/{id}', 'update');
             Route::delete('/product/{id}', 'destroy');
-            Route::get('/auction-products/{id}', 'auctionProducts');
         });
 
         //Session
@@ -76,7 +60,7 @@ Route::group(
             Route::put('/session/{id}', 'update');
             Route::delete('/session/{id}', 'destroy');
         });
-        
+
         //Bid
         Route::controller(BidController::class)->group(function () {
             Route::get('/bid', 'index');
@@ -84,16 +68,27 @@ Route::group(
             Route::post('/bid', 'store');
             Route::put('/bid/{id}', 'update');
             Route::delete('/bid/{id}', 'destroy');
-});
+        });
     }
 );
 
+//Auction  
+Route::controller(AuctionController::class)->group(function () {
+    Route::get('/getauction', 'auctionListView');
+});
 
-Route::controller(ApiUserController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login')->name('login');
-    Route::get('/user', 'show')->middleware('auth:api');
-    //Route::put('/user', [ApiUserController::class, 'update'])->middleware('auth:api');
-    Route::post('/logout', 'logout')->middleware('auth:api');
-    Route::put('/user/change-password', 'changePassword')->middleware('auth:api');
+//Product  
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/auction-products/{id}', 'auctionProducts');
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    Route::post('/change-pass', [AuthController::class, 'changePassword']);
 });

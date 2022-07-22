@@ -6,11 +6,12 @@ use App\Models\Asset;
 
 class AssetFilesHandle
 {
+    // minh chi lam upload file thoi
     public function handle($request, $store)
     {
         $files = $request->file('assets');
         $allowedfileExtension = ['jpg', 'png'];
-        $exe_flg = true;
+        $flag = true;
         // kiểm tra tất cả các files xem có đuôi mở rộng đúng không
         foreach ($files as $file) {
             $fileName = $file->getClientOriginalName();
@@ -18,14 +19,17 @@ class AssetFilesHandle
             $check = in_array($extension, $allowedfileExtension);
             if (!$check) {
                 // nếu có file nào không đúng đuôi mở rộng thì đổi flag thành false
-                $exe_flg = false;
+                $flag = false;
                 break;
             }
         }
 
-        if ($exe_flg) {
-            // duyệt từng ảnh và thực hiện lưu
-            foreach ($request->assets as $asset) {
+        if (!$flag) {
+        }
+
+
+        // duyệt từng ảnh và thực hiện lưu
+        foreach ($request->assets as $asset) {
                 $fileName = $asset->store('assets');
                 Asset::create([
                     'file_name' => $fileName,
@@ -34,7 +38,7 @@ class AssetFilesHandle
                     'assetable_type' => $store->getTable()
                 ]);
             }
-        }
+        
     }
 
     //     if ($request->has('title_image')) {

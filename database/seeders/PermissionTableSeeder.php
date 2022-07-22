@@ -14,6 +14,7 @@ class PermissionTableSeeder extends Seeder
      */
     public function run()
     {
+        //user:update-product
         Permission::create(['name' => 'Update Full Name']);
         Permission::create(['name' => 'Change Password']);
         Permission::create(['name' => 'Update Address']);
@@ -25,7 +26,7 @@ class PermissionTableSeeder extends Seeder
         Permission::create(['name' => 'Update Product Description When Preview']);
         Permission::create(['name' => 'Update Product Images When Preview']);
 
-        Permission::create(['name' => 'Admin Login']);
+//        Permission::create(['name' => 'Admin Login']);
         Permission::create(['name' => 'Update Product Status']);
         Permission::create(['name' => 'Add Product Start Price']);
         Permission::create(['name' => 'Add Product Min Step Price']);

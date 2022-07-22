@@ -32,7 +32,7 @@ class SessionController extends Controller
      */
     public function index(Request $request)
     {
-        $limit  = $request->limit;
+        $limit  = $request->input('limit', 10); // can check so > 0, tot nhat la % 10 == 0
         $sessions = Session::paginate($limit);
         return Responder::success($sessions, 'get sessions success');
     }
@@ -55,11 +55,11 @@ class SessionController extends Controller
      */
     public function store(StoreSessionRequest $request)
     {
-        $request->validated();
+        $validated = $request->validated();
         try {
-            $session = $this->createSessionAction->handle($request->toArray());
+            $session = $this->createSessionAction->handle($validated);
         } catch (CreateSessionException $e) {
-            return $e->getMessage();
+            return $e->getMessage(); //de kieu json. Responder::fail();
         }
         return Responder::success($session, 'store success');
     }
