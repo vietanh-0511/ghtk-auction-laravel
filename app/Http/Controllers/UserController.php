@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Supports\Responder;
 use Exception;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -15,9 +16,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $limit  = $request->limit;
+        $users = User::paginate($limit);
         return Responder::success($users, 'get users success');
     }
 
@@ -42,7 +44,7 @@ class UserController extends Controller
         try {
             $user = User::create($request->all());
         } catch (Exception $e) {
-            return Responder::fail($user, $e->getMessage());
+            return $e->getMessage();
         }
         $user->assignRole('user');
         return Responder::success($user, 'store success');
@@ -59,7 +61,7 @@ class UserController extends Controller
         try {
             $users = User::findOrFail($id);
         } catch (Exception $e) {
-            return Responder::fail($users, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($users, 'get users success');
     }
@@ -87,7 +89,7 @@ class UserController extends Controller
         try {
             $userUpdated = User::where('id', $id)->update($request->all());
         } catch (Exception $e) {
-            return Responder::fail($userUpdated, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($userUpdated, 'update success');
     }

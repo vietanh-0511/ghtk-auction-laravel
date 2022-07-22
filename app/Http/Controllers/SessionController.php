@@ -30,9 +30,10 @@ class SessionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $sessions = Session::all();
+        $limit  = $request->limit;
+        $sessions = Session::paginate($limit);
         return Responder::success($sessions, 'get sessions success');
     }
 
@@ -58,7 +59,7 @@ class SessionController extends Controller
         try {
             $session = $this->createSessionAction->handle($request->toArray());
         } catch (CreateSessionException $e) {
-            return Responder::fail($session, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($session, 'store success');
     }
@@ -74,7 +75,7 @@ class SessionController extends Controller
         try {
             $session = Session::findOrFail($id);
         } catch (Exception $e) {
-            return Responder::fail($session, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($session, 'get session success');
     }
@@ -103,7 +104,7 @@ class SessionController extends Controller
         try {
             $session = $this->updateSessionAction->handle($request->toArray(), $id);
         } catch (UpdateSessionException $e) {
-            return Responder::fail($session, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($session, 'update success');
     }

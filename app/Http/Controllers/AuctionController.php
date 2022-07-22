@@ -29,9 +29,10 @@ class AuctionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $auctions = Auction::all();
+        $limit  = $request->limit;
+        $auctions = Auction::paginate($limit);
         return Responder::success($auctions, 'get auctions success');
     }
 
@@ -57,7 +58,7 @@ class AuctionController extends Controller
         try {
             $auction = $this->createAuctionAction->handle($request->toArray());
         } catch (CreateAuctionException $e) {
-            return Responder::fail($auction, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($auction, 'store success');
     }
@@ -73,7 +74,7 @@ class AuctionController extends Controller
         try {
             $auctions = Auction::findOrFail($id);
         } catch (Exception $e) {
-            return Responder::fail($auctions, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($auctions, 'get auctions success');
     }
@@ -102,7 +103,7 @@ class AuctionController extends Controller
         try {
             $auctionUpdated = $this->updateAuctionAction->handle($request->toArray(), $id);
         } catch (UpdateAuctionException $e) {
-            return Responder::fail($auctionUpdated, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($auctionUpdated, 'update success');
     }

@@ -11,6 +11,7 @@ use App\Services\Product\CreateProductAction;
 use App\Services\Product\UpdateProductAction;
 use App\Supports\Responder;
 use Exception;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -31,9 +32,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $limit  = $request->limit;
+        $products = Product::paginate($limit);
         return Responder::success($products, 'get products success');
     }
 
@@ -59,7 +61,7 @@ class ProductController extends Controller
         try {
             $product = $this->createProductAction->handle($request);
         } catch (CreateProductException $e) {
-            return Responder::fail($product, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($product, 'store success');
     }
@@ -75,7 +77,7 @@ class ProductController extends Controller
         try {
             $product = Product::findOrFail($id);
         } catch (Exception $e) {
-            return Responder::fail($product, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($product, 'get product success');
     }
@@ -104,7 +106,7 @@ class ProductController extends Controller
         try {
             $product = $this->updateProductAction->handle($request->toArray(), $id);
         } catch (UpdateProductException $e) {
-            return Responder::fail($product, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($product, 'update success');
     }

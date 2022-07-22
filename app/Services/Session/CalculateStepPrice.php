@@ -6,7 +6,8 @@ class CalculateStepPrice
 {
     public function handle($request)
     {
-        $stepPrice = $request['start_price'] * ($request['price_step'] / 100);
-        $request['price_step'] = $stepPrice;
+        $priceStep = $request['start_price'] * ($request['price_step'] / 100);
+        $request['price_step'] = $priceStep;
+        // dd($request['price_step']);
     }
 }
