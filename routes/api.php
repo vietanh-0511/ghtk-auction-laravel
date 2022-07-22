@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
-  use App\Http\Controllers\AuthController;
-  use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
@@ -60,19 +61,18 @@ Route::group(
             Route::put('/session/{id}', 'update');
             Route::delete('/session/{id}', 'destroy');
         });
-
-        //Bid
-        Route::controller(BidController::class)->group(function () {
-            Route::get('/bid', 'index');
-            Route::get('/bid/{id}', 'show');
-            Route::post('/bid', 'store');
-            Route::put('/bid/{id}', 'update');
-            Route::delete('/bid/{id}', 'destroy');
-        });
     }
 );
 
 
+//Bid
+Route::controller(BidController::class)->group(function () {
+    Route::get('/bid', 'index');
+    Route::get('/bid/{id}', 'show');
+    Route::post('/bid', 'store');
+    Route::put('/bid/{id}', 'update');
+    Route::delete('/bid/{id}', 'destroy');
+});
 
 //Auction  
 Route::controller(AuctionController::class)->group(function () {
@@ -82,6 +82,7 @@ Route::controller(AuctionController::class)->group(function () {
 //Product  
 Route::controller(ProductController::class)->group(function () {
     Route::get('/auction-products/{id}', 'auctionProducts');
+});
 
 Route::group([
   'middleware' => 'api',
