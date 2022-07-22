@@ -30,9 +30,10 @@ class SessionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $sessions = Session::paginate(10);
+        $limit = $request->limit;
+        $sessions = Session::paginate($limit);
         return Responder::success($sessions, 'get sessions success');
     }
 
