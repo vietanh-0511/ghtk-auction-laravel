@@ -26,9 +26,10 @@ class BidController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bid = Bid::paginate(10);
+        $limit = $request->limit;
+        $bid = Bid::paginate($limit);
         return response()->json([
             'messages'=>'list bids',
             'data'=>$bid,
