@@ -11,6 +11,7 @@ use App\Services\Product\CreateProductAction;
 use App\Services\Product\UpdateProductAction;
 use App\Supports\Responder;
 use Exception;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -31,9 +32,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $limit = $request->limit;
+        $products = Product::paginate($limit);
         return Responder::success($products, 'get products success');
     }
 

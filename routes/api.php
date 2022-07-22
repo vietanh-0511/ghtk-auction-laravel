@@ -18,23 +18,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//Auction
-Route::controller(AuctionController::class)->group(function () {
-    Route::get('/getauction', 'auctionListView');
-});
 
-//Product
-Route::controller(ProductController::class)->group(function () {
-    Route::get('/auction-products/{id}', 'auctionProducts');
-});
-
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-// 'api/admin/'
-//
-// 'api/products'
 
 Route::group(
     ['prefix' => 'admin'],
@@ -66,7 +50,6 @@ Route::group(
             Route::post('/product', 'store');
             Route::put('/product/{id}', 'update');
             Route::delete('/product/{id}', 'destroy');
-            Route::get('/auction-products/{id}', 'auctionProducts');
         });
 
         //Session
@@ -85,9 +68,20 @@ Route::group(
             Route::post('/bid', 'store');
             Route::put('/bid/{id}', 'update');
             Route::delete('/bid/{id}', 'destroy');
-});
+        });
     }
 );
+
+
+
+//Auction  
+Route::controller(AuctionController::class)->group(function () {
+    Route::get('/getauction', 'auctionListView');
+});
+
+//Product  
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/auction-products/{id}', 'auctionProducts');
 
 Route::group([
   'middleware' => 'api',
