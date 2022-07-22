@@ -23,8 +23,16 @@ class CreateSessionAction
         if (!$this->checkIfProductInOnotherSession->handle($request)) {
             throw new SessionProductException('This product is in another session!');
         }
+<<<<<<< HEAD
         $this->calculateStepPrice->handle($request);
         // dd($request['price_step']);
+=======
+        // $this->calculateStepPrice->handle($request);
+        $priceStep = $request['start_price'] * ($request['price_step'] / 100);
+        $request['price_step'] = (int)$priceStep;
+        // dd($request);
+
+>>>>>>> dev
         Session::create($request);
     }
 }

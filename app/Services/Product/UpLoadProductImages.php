@@ -21,6 +21,6 @@ class UploadProductImages
                     echo "Upload Successfully";
                 }
             }
-        }
+        } 
     }
 }

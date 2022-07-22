@@ -1,6 +1,6 @@
 <?php
 
-return [
+  return [
 
     /*
     |--------------------------------------------------------------------------
@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'api',
-        'passwords' => 'users',
+      'guard' => 'api',
+      'passwords' => 'users',
     ],
 
     /*
@@ -36,15 +36,15 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-
-        'api' => [
-            'driver' => 'passport',
-            'provider' => 'users',
-        ],
+      'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+      ],
+      'api' => [
+        'driver' => 'jwt',
+        'provider' => 'users',
+        'hash' => false,
+      ],
     ],
 
     /*
@@ -65,15 +65,15 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
+      'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+      ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+      // 'users' => [
+      //     'driver' => 'database',
+      //     'table' => 'users',
+      // ],
     ],
 
     /*
@@ -92,12 +92,12 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
+      'users' => [
+        'provider' => 'users',
+        'table' => 'password_resets',
+        'expire' => 60,
+        'throttle' => 60,
+      ],
     ],
 
     /*
@@ -113,4 +113,4 @@ return [
 
     'password_timeout' => 10800,
 
-];
+  ];

@@ -14,6 +14,7 @@ class PermissionTableSeeder extends Seeder
      */
     public function run()
     {
+        //user:update-product
         Permission::create(['name' => 'Update Full Name']);
         Permission::create(['name' => 'Change Password']);
         Permission::create(['name' => 'Update Address']);
