@@ -13,10 +13,13 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import './assets/layout/layout.scss';
 import EmptyPage from "./pages/EmptyPage";
+import UserManagement from "./pages/UserManagement";
 import HomeLayout from "./components/HomeLayout";
 import RegisterPage from "./pages/RegisterPage";
 import Layout from "./components/Layout";
 import NoMatch from "./pages/NoMatch";
+
+
 
 export const App = () => {
   return (
@@ -33,7 +36,7 @@ export const App = () => {
 
       <Route path="/admin" element={<AdminLayout/>}>
         <Route path="dashboard" element={<EmptyPage title="Tổng quan"/>}/>
-        <Route path="users" element={<EmptyPage title="Quản lý người dùng"/>}/>
+        <Route path="users" element={<UserManagement title="Quản lý người dùng"/>}/>
         <Route path="settings" element={<EmptyPage title="Cấu hình hệ thống"/>}/>
         <Route path="products" element={<EmptyPage title="Quản lý sản phẩm"/>}/>
         <Route path="auctions" element={<EmptyPage title="Quản lý đấu giá"/>}/>
