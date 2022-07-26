@@ -16,3 +16,5 @@ yarn-error.log
 package-lock.json
 public/js/app.js
 sail
+composer.lock
+/public/js
