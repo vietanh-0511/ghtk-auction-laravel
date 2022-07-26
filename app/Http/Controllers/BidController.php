@@ -26,9 +26,10 @@ class BidController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bid = Bid::all();
+        $limit = $request->limit;
+        $bid = Bid::paginate($limit);
         return response()->json([
             'messages'=>'list bids',
             'data'=>$bid,
@@ -62,10 +63,7 @@ class BidController extends Controller
         } catch (CreateBidException $e) {
             return Responder::fail($bid, $e->getMessage());
         }
-        // catch (Exception $e) {
-        //     return Responder::fail($bid, 'error');
-        // }
-
+        
         return Responder::success($bid, 'success bid');
     }
 
@@ -77,7 +75,12 @@ class BidController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $bid = Bid::findOrFail($id);
+        } catch (Exception $e) {
+            return Responder::fail($bid, $e->getMessage());
+        }
+        return Responder::success($bid, 'get bid success');
     }
 
     /**
@@ -111,7 +114,7 @@ class BidController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Bid::where('id', $id)->delete();
     }
     
     public function updateBidMessage()

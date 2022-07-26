@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Models;
+  namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+  use Illuminate\Contracts\Auth\MustVerifyEmail;
+  use Illuminate\Database\Eloquent\Factories\HasFactory;
+  use Illuminate\Database\Eloquent\SoftDeletes;
+  use Illuminate\Foundation\Auth\User as Authenticatable;
+  use Illuminate\Notifications\Notifiable;
+  use Laravel\Sanctum\HasApiTokens;
+  use Spatie\Permission\Traits\HasRoles;
+  use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
-{
+  class User extends Authenticatable implements JWTSubject
+  {
     use HasRoles, HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
@@ -20,11 +21,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'full_name',
-        'email',
-        'password',
-        'address',
-        'phone'
+      'full_name',
+      'email',
+      'password',
+      'address',
+      'phone'
     ];
 
     /**
@@ -33,14 +34,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'email_verified_at',
-        'remember_token',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'roles',
-        'permissions',
+      'password',
+      'email_verified_at',
+      'remember_token',
+      'created_at',
+      'updated_at',
+      'deleted_at',
+      'roles',
+      'permissions',
     ];
 
     /**
@@ -49,16 +50,36 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+      'email_verified_at' => 'datetime',
     ];
 
     public function bids()
     {
-        return $this->hasMany(Bid::class);
+      return $this->hasMany(Bid::class);
     }
 
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = bcrypt($value);
+      $this->attributes['password'] = bcrypt($value);
     }
-}
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+      return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+      return [];
+    }
+  }

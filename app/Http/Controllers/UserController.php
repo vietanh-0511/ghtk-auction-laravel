@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Supports\Responder;
 use Exception;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -17,7 +18,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $limit = $request->limit;
+        $users = User::paginate($limit);
         return Responder::success($users, 'get users success');
     }
 
