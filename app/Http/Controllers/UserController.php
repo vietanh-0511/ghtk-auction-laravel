@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
+use App\Supports\Responder;
+use Exception;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -13,7 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $limit = $request->limit;
+        $users = User::paginate($limit);
+        return Responder::success($users, 'get users success');
     }
 
     /**
@@ -32,9 +39,15 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        try {
+            $user = User::create($request->all());
+        } catch (Exception $e) {
+            return Responder::fail($user, $e->getMessage());
+        }
+        $user->assignRole('user');
+        return Responder::success($user, 'store success');
     }
 
     /**
@@ -45,7 +58,12 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $users = User::findOrFail($id);
+        } catch (Exception $e) {
+            return Responder::fail($users, $e->getMessage());
+        }
+        return Responder::success($users, 'get users success');
     }
 
     /**
@@ -66,9 +84,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        //
+        try {
+            $userUpdated = User::where('id', $id)->update($request->all());
+        } catch (Exception $e) {
+            return Responder::fail($userUpdated, $e->getMessage());
+        }
+        return Responder::success($userUpdated, 'update success');
     }
 
     /**
@@ -79,6 +102,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            User::where('id', $id)->delete();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
+
 }
