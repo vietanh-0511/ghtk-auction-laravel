@@ -19,7 +19,6 @@ class ProductFactory extends Factory
                         'ONEset', 'Vortex Bottle', 'Terra Shsave', 'Gym Kit', 'Villafy', 'Stickem',
                         'Snap It', 'Scruncho'
                 );
-        $price = array(100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 2000, 3000);
         $description = array('This product has a good rating',
                             'Great choice',
                             'Best sellers',
@@ -28,8 +27,6 @@ class ProductFactory extends Factory
                         );
         return [
             'name' => $name[array_rand($name)],
-            'desirable_price' => $price[array_rand($price)],
-            'title_image' => 'titleimage',
             'description' => $description[array_rand($description)],
         ];
     }
