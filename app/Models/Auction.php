@@ -11,15 +11,19 @@ class Auction extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name',
+        'title',
         'status',
         'start_time',
-        'end_time'
+        'end_time',
+    ];
+
+    protected $hidden = [
+        'updated_at',
+        'deleted_at',
     ];
 
     public function sessions()
     {
         return $this->hasMany(Session::class);
     }
-
 }

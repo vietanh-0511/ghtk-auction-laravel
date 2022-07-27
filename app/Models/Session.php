@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Session extends Model
@@ -16,16 +18,26 @@ class Session extends Model
         'highest_bid',
         'winner_id',
         'product_id',
-        'auction_id'
+        'auction_id',
     ];
 
-    public function auction()
+    protected $hidden = [
+        'updated_at',
+        'deleted_at',
+    ];
+
+    public function bids()
     {
-        return $this->belongsTo(Auction::class);
+        return $this->hasMany(Bid::class);
     }
 
     public function product()
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
+    }
+
+    public function auction()
+    {
+        return $this->belongsTo(Auction::class);
     }
 }
