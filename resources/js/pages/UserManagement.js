@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { Space, Table, Tag, Button } from "antd";
-const { Column } = Table;
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import "primeicons/primeicons.css";
 
 const UserManagement = ({
   title = "Empty Page",
@@ -9,43 +13,119 @@ const UserManagement = ({
   const object = [
     {
       id: 1,
-      fullname: "Quang",
-      email: "User1@gmail.com",
+      fullname: "Quang123",
+      email: "User123@gmail.com",
       password: "User@123",
       address: "oke oke",
       phone: "0333568287",
-    }
+    },
   ];
+  const textEditor = (options) => {
+    return (
+      <InputText
+        type="text"
+        value={options.value}
+        onChange={(e) => options.editorCallback(e.target.value)}
+      />
+    );
+  };
+  const statusEditor = (options) => {
+    return (
+      <Dropdown
+        value={options.value}
+        optionLabel="label"
+        optionValue="value"
+        onChange={(e) => options.editorCallback(e.value)}
+        placeholder="Select a Status"
+        itemTemplate={(option) => {
+          return (
+            <span
+              className={`product-badge status-${option.value.toLowerCase()}`}
+            >
+              {option.label}
+            </span>
+          );
+        }}
+      />
+    );
+  };
   return (
     <div className="grid">
       <div className="col-12">
         <div className="card">
           <h5>{title}</h5>
-          <Table dataSource={object}>
-            <Column title="STT" dataIndex="id" />
-            <Column title="Full Name" dataIndex="fullname" />
-            <Column title="Email" dataIndex="email" />
-            <Column title="Password" dataIndex="password" />
-            <Column title="Address" dataIndex="address" />
-            <Column title="Phone" dataIndex="phone" />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "10px",
+            }}
+          >
+            <Button label="Back" className="p-button-primary" />
+            <Button label="Create" className="p-button-primary" />
+          </div>
+          <DataTable
+            value={object}
+            editMode="row"
+            dataKey="id"
+            responsiveLayout="scroll"
+          >
             <Column
-              title="Action"
-              key="action"
-              render={(_, record) => (
-                <Space size="large">
-                  <Button
-                    type="primary"
-                    style={{ background: "orange", borderColor: "orange" }}
-                  >
-                    Edit
-                  </Button>
-                  <Button type="primary" danger>
-                    Delete
-                  </Button>
-                </Space>
-              )}
-            />
-          </Table>
+              field="id"
+              header="id"
+              editor={(options) => textEditor(options)}
+              style={{ width: "20%" }}
+            ></Column>
+            <Column
+              field="fullname"
+              header="fullname"
+              editor={(options) => textEditor(options)}
+              style={{ width: "20%" }}
+            ></Column>
+            <Column
+              field="email"
+              header="email"
+              editor={(options) => textEditor(options)}
+              style={{ width: "20%" }}
+            ></Column>
+            <Column
+              field="password"
+              header="password"
+              editor={(options) => textEditor(options)}
+              style={{ width: "20%" }}
+            ></Column>
+            <Column
+              field="address"
+              header="address"
+              editor={(options) => textEditor(options)}
+              style={{ width: "20%" }}
+            ></Column>
+            <Column
+              field="phone"
+              header="phone"
+              editor={(options) => textEditor(options)}
+              style={{ width: "20%" }}
+            ></Column>
+            <Column
+              header="Action"
+              rowEditor
+              headerStyle={{ width: "10%", minWidth: "8rem" }}
+              style={{ textAlign: "center" }}
+              bodyStyle={{ paddingRight: 0, textAlign: "center" }}
+              colSpan={2}
+              alignHeader={"center"}
+            ></Column>
+            <Column
+              body={
+                <Button
+                  icon="pi pi-times"
+                  className="p-button-rounded p-button-danger p-button-text"
+                  aria-label="Cancel"
+                />
+              }
+              style={{ paddingLeft: 0 }}
+            ></Column>
+          </DataTable>
         </div>
       </div>
     </div>
