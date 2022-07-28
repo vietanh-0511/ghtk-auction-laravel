@@ -118,13 +118,13 @@ class AuctionController extends Controller
     public function destroy($id)
     {
         if (!Auction::query()->where('id', $id)->exists()) {
-            throw new Exception('the auction with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
         }
         $deleteAuction = Auction::where('id', $id)->delete();
         return Responder::success($deleteAuction, 'delete success');
     }
 
-    public function auctionListView(Request $request) // = index
+    public function auctionListView(Request $request) // user
     {
         $limit = $request->limit;
         $auctions = Auction::paginate($limit);
