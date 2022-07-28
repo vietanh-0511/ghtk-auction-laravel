@@ -18,13 +18,13 @@ class UpdateSessionAction
         $this->calculateStepPrice = $calculateStepPrice;
     }
 
-    public function handle($request, $id)
+    public function handle(array $validated, $id)
     {
-        if (!$this->checkIfProductInOnotherSession->handle($request)) {
+        if ($this->checkIfProductInOnotherSession->handle($validated)) {
             throw new SessionProductException('This product is in another session!');
         }
-        $this->calculateStepPrice->handle($request);
-
-        Session::where('id', $id)->update($request);
+        $validated['price_step'] = $this->calculateStepPrice->handle($validated);
+        // dd($validated);
+        Session::where('id', $id)->update($validated);
     }
 }

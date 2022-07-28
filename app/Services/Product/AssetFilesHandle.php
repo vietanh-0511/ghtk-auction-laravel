@@ -25,27 +25,18 @@ class AssetFilesHandle
         }
 
         if (!$flag) {
+            return false;
         }
-
 
         // duyệt từng ảnh và thực hiện lưu
         foreach ($request->assets as $asset) {
-                $fileName = $asset->store('assets');
-                Asset::create([
-                    'file_name' => $fileName,
-                    'mime_type' => $extension,
-                    'assetable' => $store->id,
-                    'assetable_type' => $store->getTable()
-                ]);
-            }
-        
+            // $fileName = $asset->store('assets');
+            Asset::create([
+                'file_name' => $fileName,
+                'mime_type' => $extension,
+                'assetable' => $store->id,
+                'assetable_type' => $store->getTable()
+            ]);
+        }
     }
-
-    //     if ($request->has('title_image')) {
-    //         $file = $request->file('title_image');
-    //         $fileName = $file->getClientOriginalName();
-    //         $file->move(public_path('images'), $fileName);
-    //     }
-    //     $request->merge(['title_image' => $fileName]);
-    // }
 }

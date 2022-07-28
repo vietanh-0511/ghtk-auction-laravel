@@ -6,12 +6,8 @@ use App\Models\Session;
 
 class CheckIfProductInOnotherSession
 {
-    public function handle($request)
+    public function handle(array $validated): bool
     {
-        $sessionProduct = Session::where('id', '=', $request['product_id'])->get();
-        if (count($sessionProduct) >= 1) {
-            return false;
-        }
-        return true;
+        return Session::where('product_id', '=', $validated['product_id'])->exists();
     }
 }

@@ -18,21 +18,12 @@ class CreateSessionAction
         $this->calculateStepPrice = $calculateStepPrice;
     }
 
-    public function handle($request)
+    public function handle(array $validated)
     {
-        if (!$this->checkIfProductInOnotherSession->handle($request)) {
+        if ($this->checkIfProductInOnotherSession->handle($validated)) {
             throw new SessionProductException('This product is in another session!');
         }
-<<<<<<< HEAD
-        $this->calculateStepPrice->handle($request);
-        // dd($request['price_step']);
-=======
-        // $this->calculateStepPrice->handle($request);
-        $priceStep = $request['start_price'] * ($request['price_step'] / 100);
-        $request['price_step'] = (int)$priceStep;
-        // dd($request);
-
->>>>>>> dev
-        Session::create($request);
+        $validated['price_step'] = $this->calculateStepPrice->handle($validated);
+        Session::create($validated);
     }
 }

@@ -7,17 +7,14 @@ use App\Supports\Responder;
 
 class CheckAuctionTime
 {
-    public function handle($request)
+    public function handle(array $validated)
     {
-        $start_time = $request['start_time'];
-        $end_time = $request['end_time'];
-        $time = Auction::where([
+        $start_time = $validated['start_time'];
+        $end_time = $validated['end_time'];
+        return Auction::query()
+            ->where([
             ['start_time', $start_time],
             ['end_time', $end_time]
-        ])->get();
-        if (count($time) >= 1) {
-            return false;
-        }
-        return true;
+            ])->exists();
     }
 }

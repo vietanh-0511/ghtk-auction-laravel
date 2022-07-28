@@ -16,6 +16,7 @@ class CreateProductAction
     public function handle($request)
     {
         $store = Product::create($request->all());
+        // dd($request->has('assets'));
         if ($request->has('assets')) {
             $this->assetFilesHandle->handle($request, $store);
         }

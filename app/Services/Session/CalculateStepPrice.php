@@ -4,10 +4,13 @@ namespace App\Services\Session;
 
 class CalculateStepPrice
 {
-    public function handle($request)
+    /**
+     * @param array $request
+     * @return int
+     */
+    public function handle(array $validated): int
     {
-        $priceStep = $request['start_price'] * ($request['price_step'] / 100);
-        $request['price_step'] = $priceStep;
-        // dd($request['price_step']);
+        $priceStep = $validated['start_price'] * ($validated['price_step'] / 100);
+        return $priceStep;
     }
 }

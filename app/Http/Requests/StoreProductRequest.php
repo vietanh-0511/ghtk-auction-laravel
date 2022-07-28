@@ -26,6 +26,7 @@ class StoreProductRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['required'],
+            'assets' => ['required', 'mimes:jpeg,png,jpg,gif', 'max:2048']
         ];
     }
 }

@@ -15,6 +15,7 @@ class RoleHasPermissionsTableSeeder extends Seeder
      */
     public function run()
     {
+        //user:update-product - name permission
         Role::findByName('admin')->givePermissionTo(Permission::all());
         $permissions[] = Permission::findByName('Update Full Name');
         $permissions[] = Permission::findByName('Change Password');

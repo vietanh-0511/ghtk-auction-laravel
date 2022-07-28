@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\CreateSessionException;
-use App\Exceptions\UpdateSessionException;
 use App\Http\Requests\StoreSessionRequest;
 use App\Models\Session;
 use App\Services\Session\CreateSessionAction;
 use App\Services\Session\UpdateSessionAction;
 use App\Supports\Responder;
 use Exception;
+use Illuminate\Http\Request;
 
 class SessionController extends Controller
 {
@@ -31,7 +30,7 @@ class SessionController extends Controller
      */
     public function index(Request $request)
     {
-        $limit  = $request->input('limit', 10); // can check so > 0, tot nhat la % 10 == 0
+        $limit = $request->limit;
         $sessions = Session::paginate($limit);
         return Responder::success($sessions, 'get sessions success');
     }
@@ -55,10 +54,11 @@ class SessionController extends Controller
     public function store(StoreSessionRequest $request)
     {
         $validated = $request->validated();
+        $session = '';
         try {
             $session = $this->createSessionAction->handle($validated);
-        } catch (CreateSessionException $e) {
-            return $e->getMessage(); //de kieu json. Responder::fail();
+        } catch (Exception $e) {
+            return Responder::fail($session, $e->getMessage());
         }
         return Responder::success($session, 'store success');
     }
@@ -71,10 +71,11 @@ class SessionController extends Controller
      */
     public function show($id)
     {
+        $session = '';
         try {
             $session = Session::findOrFail($id);
         } catch (Exception $e) {
-            return $e->getMessage();
+            return Responder::fail($session, $e->getMessage());
         }
         return Responder::success($session, 'get session success');
     }
@@ -99,11 +100,12 @@ class SessionController extends Controller
      */
     public function update(StoreSessionRequest $request, $id)
     {
-        $request->validated();
+        $validated = $request->validated();
+        $session = '';
         try {
-            $session = $this->updateSessionAction->handle($request->toArray(), $id);
-        } catch (UpdateSessionException $e) {
-            return $e->getMessage();
+            $session = $this->updateSessionAction->handle($validated, $id);
+        } catch (Exception $e) {
+            return Responder::fail($session, $e->getMessage());
         }
         return Responder::success($session, 'update success');
     }
@@ -116,6 +118,10 @@ class SessionController extends Controller
      */
     public function destroy($id)
     {
-        Session::where('id', $id)->delete();
+        if (!Session::query()->where('id', $id)->exists()) {
+            throw new Exception('the session with the id ' . $id . ' does not exist.');
+        }
+        $session = Session::where('id', $id)->delete();
+        return Responder::success($session,'delete success');
     }
 }

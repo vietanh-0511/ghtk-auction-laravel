@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -21,7 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(
-    ['prefix' => 'admin'],
+    [
+        'prefix' => 'admin',
+        // 'middleware' => 'adminLogin'
+    ],
     function () {
 
         //User
@@ -71,6 +73,12 @@ Route::group(
         });
     }
 );
+
+//Auction  
+Route::controller(AuctionController::class)->group(function () {
+    Route::get('/getauction', 'auctionListView');
+});
+
 
 //Auction  
 Route::controller(AuctionController::class)->group(function () {
