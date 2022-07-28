@@ -15,4 +15,7 @@ yarn-error.log
 /.vscode
 package-lock.json
 public/js/app.js
+sail
 composer.lock
+/public/js
+/public/css

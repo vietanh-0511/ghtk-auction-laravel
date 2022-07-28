@@ -1,13 +1,13 @@
 import React from 'react';
 
-const EmptyPage = () => {
+const EmptyPage = ({ title='Empty Page', subtitle='This is empty page' }) => {
 
   return (
     <div className="grid">
       <div className="col-12">
         <div className="card">
-          <h5>Empty Page</h5>
-          <p>Use this page to start from scratch and place your custom content.</p>
+          <h5>{ title }</h5>
+          <p>{ subtitle }</p>
         </div>
       </div>
     </div>
