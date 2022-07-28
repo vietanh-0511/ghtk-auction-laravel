@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import "primeicons/primeicons.css";
+import { getUser } from "../apiClient";
 
 const UserManagement = ({
   title = "Empty Page",
   subtitle = "This is empty page",
 }) => {
+  const [dataUser, getDataUer] = useState([])
+
+  console.log(dataUser)
+
+  useEffect(() => {
+    getUser()
+    .then(res => getDataUer(res.data.data.data))
+  },[]);
   const object = [
     {
       id: 1,
@@ -29,6 +38,8 @@ const UserManagement = ({
       />
     );
   };
+  // const paginatorLeft = <Button type="button" icon="pi pi-refresh" className="p-button-text" />;
+  // const paginatorRight = <Button type="button" icon="pi pi-cloud" className="p-button-text" />;
   const statusEditor = (options) => {
     return (
       <Dropdown
@@ -57,18 +68,23 @@ const UserManagement = ({
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
               marginBottom: "10px",
             }}
           >
-            <Button label="Back" className="p-button-primary" />
-            <Button label="Create" className="p-button-primary" />
+            <Button label="Back"icon="pi pi-replay"  className="p-button-primary"
+            style={{
+              marginRight:"15px",
+            }} />
+            <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" />
           </div>
           <DataTable
-            value={object}
+            value={dataUser}
             editMode="row"
             dataKey="id"
-            responsiveLayout="scroll"
+            paginator responsiveLayout="scroll"
+            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" rows={10} rowsPerPageOptions={[10,20,50]}
+           
           >
             <Column
               field="id"
@@ -77,8 +93,8 @@ const UserManagement = ({
               style={{ width: "20%" }}
             ></Column>
             <Column
-              field="fullname"
-              header="fullname"
+              field="full_name"
+              header="full_name"
               editor={(options) => textEditor(options)}
               style={{ width: "20%" }}
             ></Column>
