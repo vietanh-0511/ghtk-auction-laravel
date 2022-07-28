@@ -1,28 +1,28 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import {Navigate, useOutlet} from 'react-router-dom';
-import {CSSTransition} from 'react-transition-group';
+import { Navigate, useOutlet } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
 
-import {AppTopbar} from './AppTopbar';
-import {AppFooter} from './AppFooter';
+import { AppTopbar } from './AppTopbar';
+import { AppFooter } from './AppFooter';
 
 import PrimeReact from 'primereact/api';
 
 import '../assets/layout/layout.scss';
-import {useAuth} from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 const Layout = () => {
   const [overlayMenuActive, setOverlayMenuActive] = useState(false);
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
   const outlet = useOutlet();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const appMenu = [
     {
       label: "Người dùng",
       iconClass: "pi pi-cog",
-      routePath: "/"
+      routePath: "#"
     }
   ];
 
@@ -33,6 +33,23 @@ const Layout = () => {
       return <Navigate to="/login" />;
     }
   }
+
+  const items = [
+    {
+      label: 'Info',
+      icon: 'pi pi-info-circle',
+      command: () => {
+        window.location.hash = "#"
+      }
+    },
+    {
+      label: 'Log out',
+      icon: 'pi pi-sign-out',
+      command: () => {
+
+      }
+    }
+  ];
 
   PrimeReact.ripple = true;
 
@@ -111,23 +128,24 @@ const Layout = () => {
 
   return (
     <div className="layout-wrapper layout-static layout-static-sidebar-inactive layout-theme-light"
-         onClick={onWrapperClick}>
+      onClick={onWrapperClick}>
 
       <AppTopbar onToggleMenuClick={onToggleMenuClick}
-                 layoutColorMode={layoutColorMode}
-                 mobileTopbarMenuActive={mobileTopbarMenuActive}
-                 onMobileTopbarMenuClick={onMobileTopbarMenuClick}
-                 appMenu={appMenu}
+        layoutColorMode={layoutColorMode}
+        mobileTopbarMenuActive={mobileTopbarMenuActive}
+        onMobileTopbarMenuClick={onMobileTopbarMenuClick}
+        appMenu={appMenu}
+        items={items}
       />
 
       <div className="layout-main-container">
         <div className="layout-main">
           {outlet}
         </div>
-        <AppFooter layoutColorMode={layoutColorMode}/>
+        <AppFooter layoutColorMode={layoutColorMode} />
       </div>
 
-      <CSSTransition classNames="layout-mask" timeout={{enter: 200, exit: 200}} in={mobileMenuActive} unmountOnExit>
+      <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
         <div className="layout-mask p-component-overlay"></div>
       </CSSTransition>
     </div>
