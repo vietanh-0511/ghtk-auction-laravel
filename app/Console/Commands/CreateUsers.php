@@ -23,7 +23,7 @@
      *
      * @var string
      */
-    protected $description = 'Create a user have an email, password, and role...';
+    protected $description = 'Create an user have an email, password, and role...';
 
     /**
      * Create a new command instance.
@@ -50,13 +50,13 @@
       $user['address'] = $this->option('address');
       $user['phone'] = $this->option('phone');
 
-      if(User::query()->where('email', '=', $user['email'])->exists())
+      if(User::where('email', '=', $user['email'])->exists())
       {
         $this->error('ERROR: The email: `'.$user['email'].'` has existed');
         return;
       }
 
-      if(!$this->isValidRole($user['role']))
+      if(!Role::where('name', $user['role'])->exists())
       {
         $this->error('ERROR: The role `'.$user['role'].'` is invalid!');
         return;
@@ -65,41 +65,23 @@
       $this->insertUser($user);
     }
 
-    private function isValidRole(string $role): bool
-    {
-      foreach (Role::all() as $r)
-      {
-        if ($role === $r->name)
-          return true;
-      }
-      return false;
-    }
-
     private function insertUser(array $user): void
     {
       try {
         DB::beginTransaction();
-        $id = DB::table('users')->insertGetId([
+        $u = User::create([
           'full_name' => $user['full_name'],
           'email' => $user['email'],
-          'password' => bcrypt($user['password']),
+          'password' => $user['password'],
           'address' => $user['address'],
           'phone' => $user['phone'],
-          'created_at' => Carbon::now(),
-          'updated_at' => Carbon::now()
         ]);
-
-        $role_id =  DB::table('roles')->select('id')->where('name', $user['role'])->first()->id;
-        DB::table('model_has_roles')->insert([
-          'role_id' => $role_id,
-          'model_type' => User::class,
-          'model_id' => $id,
-        ]);
+        $u->assignRole($user['role']);
         DB::commit();
         $this->info('Successful! Created `'.$user['role'].'`: `'.$user['email'].'`');
       } catch (\Exception $e) {
         DB::rollBack();
-        $this->error('Something wrong!');
+        $this->error($e->getMessage());
         return;
       }
     }
