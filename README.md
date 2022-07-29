@@ -55,4 +55,18 @@ npm install --save laravel-echo pusher-js
 Cấu hình .env
 
 
+### Create user via command line
 
+`php artisan users:create <email> <password> <role> [OPTION]`
+
+```
+OPTION
+
+-F, --full_name : add user's full_name (default: 'Default Name')
+-A, --address : add user's address (default: 'Default Address')
+-P, --phone : add user's phone number (default: 0000000000)
+
+ex. php artisan users:create a1@gmail.com Aa@123123 user --full_name "Mía Nguyễn" --address "Hanoi" --phone 0123456789
+    same:
+    php artisan users:create a1@gmail.com Aa@123123 user -F "Mía Nguyễn" -A "Hanoi" -P 0123456789
+```

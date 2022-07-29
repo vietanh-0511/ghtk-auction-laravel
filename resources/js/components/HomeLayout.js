@@ -1,27 +1,31 @@
 import React, {useState, useEffect, useRef} from 'react';
-import classNames from 'classnames';
-import {Route, Routes, useLocation} from 'react-router-dom';
+import {useOutlet, Navigate} from 'react-router-dom';
 import {CSSTransition} from 'react-transition-group';
 
 import {AppTopbar} from './AppTopbar';
 import {AppFooter} from './AppFooter';
-import {AppMenu} from './AppMenu';
-
-import EmptyPage from './pages/EmptyPage';
 
 import PrimeReact from 'primereact/api';
 
-import "primereact/resources/themes/tailwind-light/theme.css";
-import 'primereact/resources/primereact.css';
-import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
-import './assets/layout/layout.scss';
+import '../assets/layout/layout.scss';
+import {useAuth} from "../hooks/useAuth";
 
-const Layout = () => {
-  const [staticMenuInactive, setStaticMenuInactive] = useState(false);
+const HomeLayout = () => {
   const [overlayMenuActive, setOverlayMenuActive] = useState(false);
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
+  const outlet = useOutlet();
+
+  const { user } = useAuth();
+
+  if (user) {
+    if (user.role === 'admin') {
+      return <Navigate to="/admin/dashboard" />;
+    }
+    if (user.role === 'customer') {
+      return <Navigate to="/auctions/live" />;
+    }
+  }
 
   PrimeReact.ripple = true;
 
@@ -106,7 +110,7 @@ const Layout = () => {
     {
       label: 'Home',
       items: [
-        {label: 'Dashboard', icon: 'pi pi-fw pi-desktop', to: '/admin'},
+        {label: 'Dashboard', icon: 'pi pi-fw pi-desktop', to: '/admin/dashboard'},
         {label: 'Quản lý người dùng', icon: 'pi pi-fw pi-user', to: '/admin/users'},
         {label: 'Cài đặt hệ thống', icon: 'pi pi-fw pi-cog', to: '/admin/settings'},
       ]
@@ -134,39 +138,32 @@ const Layout = () => {
       element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
   }
 
-  const wrapperClass = classNames('layout-wrapper', {
-    'layout-overlay': layoutMode === 'overlay',
-    'layout-static': layoutMode === 'static',
-    'layout-static-sidebar-inactive': staticMenuInactive && layoutMode === 'static',
-    'layout-overlay-sidebar-active': overlayMenuActive && layoutMode === 'overlay',
-    'layout-mobile-sidebar-active': mobileMenuActive,
-    'p-input-filled': inputStyle === 'filled',
-    'p-ripple-disabled': ripple === false,
-    'layout-theme-light': layoutColorMode === 'light'
-  });
+  const appMenu = [
+    {
+      label: "Đăng nhập",
+      iconClass: "pi pi-user",
+      routePath: "/login"
+    },
+    {
+      label: "Đăng Ký",
+      iconClass: "pi pi-pencil",
+      routePath: "/register"
+    }
+  ];
 
   return (
-    <div className={wrapperClass} onClick={onWrapperClick}>
+    <div className="layout-wrapper layout-static layout-static-sidebar-inactive layout-theme-light" onClick={onWrapperClick}>
       <AppTopbar onToggleMenuClick={onToggleMenuClick}
                  layoutColorMode={layoutColorMode}
                  mobileTopbarMenuActive={mobileTopbarMenuActive}
                  onMobileTopbarMenuClick={onMobileTopbarMenuClick}
-                 onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}/>
-
-      <div className="layout-sidebar" onClick={onSidebarClick}>
-        <AppMenu model={menu} onMenuItemClick={onMenuItemClick} layoutColorMode={layoutColorMode}/>
-      </div>
+                 onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}
+                 appMenu={appMenu}
+      />
 
       <div className="layout-main-container">
         <div className="layout-main">
-          <Routes>
-            <Route path="/admin" element={<EmptyPage/>}></Route>
-            <Route path="/admin/users" element={<EmptyPage/>}></Route>
-            <Route path="/admin/settings" element={<EmptyPage/>}></Route>
-            <Route path="/admin/products" element={<EmptyPage/>}></Route>
-            <Route path="/admin/auctions" element={<EmptyPage/>}></Route>
-            <Route path="/admin/settings" element={<EmptyPage/>}></Route>
-          </Routes>
+          {outlet}
         </div>
 
         <AppFooter layoutColorMode={layoutColorMode}/>
@@ -180,4 +177,4 @@ const Layout = () => {
 
 }
 
-export default Layout;
+export default HomeLayout;

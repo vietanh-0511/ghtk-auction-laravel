@@ -13,6 +13,33 @@ try {
 
 window.axios = require('axios');
 
+window.axiosApiInstance = window.axios.create({
+  baseURL: `http://localhost:8002/api`,
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
+
+window.axiosApiInstance.interceptors.request.use((config) => {
+  const token = window.localStorage.getItem('token');
+  config.headers = {
+    'Authorization': `Bearer ${token}`
+  }
+  return config
+});
+
+window.axiosApiInstance.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    let res = error.response;
+    console.error("Looks like there was a problem. Status Code: " + res.status);
+    return Promise.reject(error);
+  }
+);
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**
@@ -26,8 +53,8 @@ import Echo from 'laravel-echo';
 window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    forceTLS: true
+  broadcaster: 'pusher',
+  key: process.env.MIX_PUSHER_APP_KEY,
+  cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+  forceTLS: true
 });

@@ -63,15 +63,7 @@ class BidController extends Controller
         } catch (CreateBidException $e) {
             return Responder::fail($bid, $e->getMessage());
         }
-        // catch (Exception $e) {
-        //     return Responder::fail($bid, 'error');
-        // }
-
-//         Cache::set('last-bid', $bid);
-// 
-//         $lastBid = Cache::rememberForever('cnt-bid',  function() {
-//             return Bid::count();
-//         });
+        
         return Responder::success($bid, 'success bid');
     }
 
@@ -83,7 +75,12 @@ class BidController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $bid = Bid::findOrFail($id);
+        } catch (Exception $e) {
+            return Responder::fail($bid, $e->getMessage());
+        }
+        return Responder::success($bid, 'get bid success');
     }
 
     /**
@@ -117,7 +114,7 @@ class BidController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Bid::where('id', $id)->delete();
     }
     
     public function updateBidMessage()
