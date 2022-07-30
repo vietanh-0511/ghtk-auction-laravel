@@ -7,8 +7,13 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { Form, Field } from "react-final-form";
+import { Password } from "primereact/password";
+import { Checkbox } from "primereact/checkbox";
+import { Divider } from "primereact/divider";
 import "./DataTableDemo.css";
-import { deleteUser, getUser } from "../../apiClient";
+import { createUser, deleteUser, getUser } from "../../apiClient";
+import axios from "axios";
 
 const UserManagement = ({ title = "Empty Page" }) => {
   let emptyuser = {
@@ -16,20 +21,87 @@ const UserManagement = ({ title = "Empty Page" }) => {
     full_name: "",
     email: "",
     password: "",
+    password_confirmation: "",
     address: "",
     phone: "",
   };
 
+const [showMessage, setShowMessage] = useState(false);
+const [formData, setFormData] = useState({});
+
   const [dataUsers, setDataUsers] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
   const [deleteUserDialog, setDeleteUserDialog] = useState(false);
-  const [deleteusersDialog, setDeleteusersDialog] = useState(false);
-  const [user, setuser] = useState(emptyuser);
+  const [deleteUsersDialog, setDeleteusersDialog] = useState(false);
+  const [user, setUser] = useState(emptyuser);
   const [selectedUsers, setSelectedUsers] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
+
+  const validate = (data) => {
+    let errors = {};
+
+    if (!data.name) {
+      errors.name = "Name is required.";
+    }
+
+    if (!data.email) {
+      errors.email = "Email is required.";
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(data.email)) {
+      errors.email = "Invalid email address. E.g. example@email.com";
+    }
+
+    if (!data.password) {
+      errors.password = "Password is required.";
+    }
+
+    if (!data.accept) {
+      errors.accept = "You need to agree to the terms and conditions.";
+    }
+
+    return errors;
+  };
+
+  const onSubmit = (data, form) => {
+    setFormData(data);
+    setShowMessage(true);
+
+    form.restart();
+  };
+
+  const isFormFieldValid = (meta) => !!(meta.touched && meta.error);
+  const getFormErrorMessage = (meta) => {
+    return (
+      isFormFieldValid(meta) && <small className="p-error">{meta.error}</small>
+    );
+  };
+
+  const dialogFooter = (
+    <div className="flex justify-content-center">
+      <Button
+        label="OK"
+        className="p-button-text"
+        autoFocus
+        onClick={() => setShowMessage(false)}
+      />
+    </div>
+  );
+  const passwordHeader = <h6>Pick a password</h6>;
+  const passwordFooter = (
+    <React.Fragment>
+      <Divider />
+      <p className="mt-2">Suggestions</p>
+      <ul className="pl-2 ml-2 mt-0" style={{ lineHeight: "1.5" }}>
+        <li>At least one lowercase</li>
+        <li>At least one uppercase</li>
+        <li>At least one numeric</li>
+        <li>Minimum 8 characters</li>
+      </ul>
+    </React.Fragment>
+  );
+
 
   useEffect(() => {
     getUser().then((res) => {
@@ -38,7 +110,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
   }, []);
 
   const openNew = () => {
-    setuser(emptyuser);
+    setUser(emptyuser);
     setSubmitted(false);
     setUserDialog(true);
   };
@@ -56,47 +128,13 @@ const UserManagement = ({ title = "Empty Page" }) => {
     setDeleteusersDialog(false);
   };
 
-  const saveuser = () => {
-    setSubmitted(true);
-
-    if (user.name.trim()) {
-      let _users = [...dataUsers];
-      let _user = { ...user };
-      if (user.id) {
-        const index = findIndexById(user.id);
-
-        _users[index] = _user;
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "user Updated",
-          life: 3000,
-        });
-      } else {
-        _user.id = createId();
-        _user.image = "user-placeholder.svg";
-        _users.push(_user);
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "user Created",
-          life: 3000,
-        });
-      }
-
-      setDataUsers(_users);
-      setUserDialog(false);
-      setuser(emptyuser);
-    }
-  };
-
-  const edituser = (user) => {
-    setuser({ ...user });
+  const editUser = (user) => {
+    setUser({ ...user });
     setUserDialog(true);
   };
 
   const confirmDeleteuser = (user) => {
-    setuser(user);
+    setUser(user);
     setDeleteUserDialog(true);
   };
 
@@ -108,7 +146,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const deleteuser = () => {
     deleteUser(idUser).then(() => {
       setDeleteUserDialog(false);
-      setuser(emptyuser);
+      setUser(emptyuser);
       getData();
     });
 
@@ -123,7 +161,8 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const findIndexById = (id) => {
     let index = -1;
     for (let i = 0; i < dataUsers.length; i++) {
-      if (users[i].id === id) {
+      console.log(user.id);
+      if (user[i].id === id) {
         index = i;
         break;
       }
@@ -142,25 +181,44 @@ const UserManagement = ({ title = "Empty Page" }) => {
     return id;
   };
 
-  const deleteSelectedUsers = () => {
-    let _users = dataUsers.filter((val) => !selectedUsers.includes(val));
-    setDataUsers(_users);
-    setDeleteusersDialog(false);
-    setSelectedUsers(null);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "users Deleted",
-      life: 3000,
-    });
-  };
+   const saveUser = () => {
+     setSubmitted(true);
 
+     if (user.full_name.trim()) {
+       let _users = [...dataUsers];
+       let user = { ...user };
+       if (user.id) {
+         const index = findIndexById(user.id);
+
+         _users[index] = user;
+         toast.current.show({
+           severity: "success",
+           summary: "Successful",
+           detail: "Product Updated",
+           life: 3000,
+         });
+       } else {
+         user.id = createId();
+         _users.push(user);
+         toast.current.show({
+           severity: "success",
+           summary: "Successful",
+           detail: "Product Created",
+           life: 3000,
+         });
+       }
+
+       setDataUsers(_users);
+       setUserDialog(false);
+       setUser(emptyProduct);
+     }
+   };
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || "";
     let _user = { ...user };
     _user[`${name}`] = val;
 
-    setuser(_user);
+    setUser(_user);
   };
 
   const leftToolbarTemplate = () => {
@@ -190,7 +248,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-success mr-2"
-          onClick={() => edituser(rowData)}
+          onClick={() => editUser(rowData)}
         />
         <Button
           icon="pi pi-trash"
@@ -227,7 +285,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
         label="Save"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={saveuser}
+        onClick={saveUser}
       />
     </React.Fragment>
   );
@@ -289,92 +347,128 @@ const UserManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={userDialog}
             style={{ width: "450px" }}
-            header="user Details"
+            header="Product Details"
             modal
             className="p-fluid"
             footer={userDialogFooter}
             onHide={hideDialog}
           >
-            <div className="field">
-              <label htmlFor="full_name">Full Name</label>
+            <div style={{padding:'1.5rem'}}>
+              <Form
+                onSubmit={onSubmit}
+                initialValues={{
+                  name: "",
+                  email: "",
+                  password: "",
+                  date: null,
+                  country: null,
+                  accept: false,
+                }}
+                validate={validate}
+                render={({ handleSubmit }) => (
+                  <form onSubmit={handleSubmit} className="p-fluid">
+                    <Field
+                      name="name"
+                      render={({ input, meta }) => (
+                        <div className="field">
+                          <span className="p-float-label">
+                            <InputText
+                              id="name"
+                              {...input}
+                              autoFocus
+                              className={classNames({
+                                "p-invalid": isFormFieldValid(meta),
+                              })}
+                            />
+                            <label
+                              htmlFor="name"
+                              className={classNames({
+                                "p-error": isFormFieldValid(meta),
+                              })}
+                            >
+                              Name*
+                            </label>
+                          </span>
+                          {getFormErrorMessage(meta)}
+                        </div>
+                      )}
+                    />
+                    <Field
+                      name="email"
+                      render={({ input, meta }) => (
+                        <div className="field">
+                          <span className="p-float-label p-input-icon-right">
+                            <i className="pi pi-envelope" />
+                            <InputText
+                              id="email"
+                              {...input}
+                              className={classNames({
+                                "p-invalid": isFormFieldValid(meta),
+                              })}
+                            />
+                            <label
+                              htmlFor="email"
+                              className={classNames({
+                                "p-error": isFormFieldValid(meta),
+                              })}
+                            >
+                              Email*
+                            </label>
+                          </span>
+                          {getFormErrorMessage(meta)}
+                        </div>
+                      )}
+                    />
+                    <Field
+                      name="password"
+                      render={({ input, meta }) => (
+                        <div className="field">
+                          <span className="p-float-label">
+                            <Password
+                              id="password"
+                              {...input}
+                              toggleMask
+                              className={classNames({
+                                "p-invalid": isFormFieldValid(meta),
+                              })}
+                              header={passwordHeader}
+                              footer={passwordFooter}
+                            />
+                            <label
+                              htmlFor="password"
+                              className={classNames({
+                                "p-error": isFormFieldValid(meta),
+                              })}
+                            >
+                              Password*
+                            </label>
+                          </span>
+                          {getFormErrorMessage(meta)}
+                        </div>
+                      )}
+                    />
+
+                    <Button type="submit" label="Submit" className="mt-2" />
+                  </form>
+                )}
+              />
+            </div>
+            {/* <div className="field">
+              <label htmlFor="name">Name</label>
               <InputText
-                id="full_name"
+                id="name"
                 value={user.name}
-                onChange={(e) => onInputChange(e, "full_name")}
+                onChange={(e) => onInputChange(e, "name")}
                 required
                 autoFocus
                 className={classNames({
-                  "p-invalid": submitted && !user.full_name,
+                  "p-invalid": submitted && !user.name,
                 })}
               />
-              {submitted && !user.full_name && (
+              {submitted && !user.name && (
                 <small className="p-error">Name is required.</small>
               )}
-            </div>
-            <div className="field">
-              <label htmlFor="email">Email</label>
-              <InputText
-                id="email"
-                value={user.email}
-                onChange={(e) => onInputChange(e, "email")}
-                required
-                autoFocus
-                className={classNames({
-                  "p-invalid": submitted && !user.email,
-                })}
-              />
-              {submitted && !user.email && (
-                <small className="p-error">Email is required.</small>
-              )}
-            </div>
-            <div className="field">
-              <label htmlFor="password">Password</label>
-              <InputText
-                id="password"
-                value={user.password}
-                onChange={(e) => onInputChange(e, "password")}
-                required
-                autoFocus
-                className={classNames({
-                  "p-invalid": submitted && !user.password,
-                })}
-              />
-              {submitted && !user.password && (
-                <small className="p-error">Password is required.</small>
-              )}
-            </div>
-            <div className="field">
-              <label htmlFor="address">Address</label>
-              <InputText
-                id="address"
-                value={user.address}
-                onChange={(e) => onInputChange(e, "address")}
-                required
-                autoFocus
-                className={classNames({
-                  "p-invalid": submitted && !user.address,
-                })}
-              />
-              {submitted && !user.address && (
-                <small className="p-error">Address is required.</small>
-              )}
-            </div>
-            <div className="field">
-              <label htmlFor="phone">Phone</label>
-              <InputText
-                id="phone"
-                value={user.phone}
-                onChange={(e) => onInputChange(e, "phone")}
-                required
-                autoFocus
-                className={classNames({
-                  "p-invalid": submitted && !user.phone,
-                })}
-              />
-              {submitted && !user.phone && (
-                <small className="p-error">Phone is required.</small>
-              )}
-            </div>
+            </div> */}
           </Dialog>
 
           <Dialog
@@ -399,7 +493,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
           </Dialog>
 
           <Dialog
-            visible={deleteusersDialog}
+            visible={deleteUsersDialog}
             style={{ width: "450px" }}
             header="Confirm"
             modal
@@ -411,9 +505,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 style={{ fontSize: "2rem" }}
               />
               {user && (
-                <span>
-                  Are you sure you want to delete the selected users?
-                </span>
+                <span>Are you sure you want to delete the selected users?</span>
               )}
             </div>
           </Dialog>

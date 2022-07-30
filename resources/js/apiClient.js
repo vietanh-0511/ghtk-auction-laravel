@@ -23,3 +23,7 @@ export function createUser(data) {
 export function deleteUser(id) {
   return window.axiosApiInstance.delete(`/admin/user/${id}`)
 }
+
+export function updateUser(id) {
+  return window.axiosApiInstance.put(`/admin/user/${id}`)
+}
