@@ -29,7 +29,7 @@ class AuctionController extends Controller
      */
     public function index(Request $request)
     {
-        $limit  = $request->input('limit', 10);
+        $limit = $request->input('limit', 10);
         $auctions = Auction::paginate($limit);
         return Responder::success($auctions, 'get auctions success');
     }

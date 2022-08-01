@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Exceptions\CreateProductException;
 use App\Exceptions\UpdateProductException;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
-use App\Models\Session;
 use App\Services\Product\CreateProductAction;
 use App\Services\Product\UpdateProductAction;
 use App\Supports\Responder;
@@ -34,7 +34,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $limit = $request->limit;
+        $limit = $request->input('limit', 10);
         $products = Product::paginate($limit);
         return Responder::success($products, 'get products success');
     }
@@ -57,11 +57,11 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $request->validated();
+        $product = '';
         try {
             $product = $this->createProductAction->handle($request);
-        } catch (CreateProductException $e) {
-            return $e->getMessage();
+        } catch (Exception $e) {
+            return Responder::fail($product, $e->getMessage());
         }
         return Responder::success($product, 'store success');
     }
@@ -74,11 +74,13 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        try {
-            $product = Product::findOrFail($id);
-        } catch (Exception $e) {
-            return $e->getMessage();
+        if (!Product::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }
+        $product = Product::query()
+        ->join('assets', 'products.id', '=', 'assets.assetable')
+        ->where('products.id', $id)
+        ->get();
         return Responder::success($product, 'get product success');
     }
 
@@ -100,13 +102,13 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreProductRequest $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
-        $request->validated();
+        $product = '';
         try {
-            $product = $this->updateProductAction->handle($request->toArray(), $id);
-        } catch (UpdateProductException $e) {
-            return $e->getMessage();
+            $product = $this->updateProductAction->handle($request, $id);
+        } catch (Exception $e) {
+            return Responder::fail($product, $e->getMessage());
         }
         return Responder::success($product, 'update success');
     }
@@ -119,7 +121,11 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        Product::where('id', $id)->delete();
+        if (!Product::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
+        }
+        $deleteProduct = Product::where('id', $id)->delete();
+        return Responder::success($deleteProduct, 'delete success');
     }
 
     

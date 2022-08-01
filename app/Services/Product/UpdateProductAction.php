@@ -15,7 +15,7 @@ class UpdateProductAction
 
     public function handle($request, $id)
     {
-        $store = Product::where('id', $id)->update($request);
+        $store = Product::where('id', $id)->update($request->all());
         if ($request->has('assets')) {
             $this->assetFilesHandle->handle($request, $store);
         }
