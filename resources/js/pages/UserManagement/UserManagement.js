@@ -32,10 +32,10 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
 
   let idUser = user.id;
-
+  console.log(dataUsers);
   useEffect(() => {
     getUser().then((res) => {
-      setDataUsers(res.data.data.data);
+      setDataUsers(res.data.data);
     });
   }, []);
 
@@ -69,7 +69,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
   };
 
   const getData = () => {
-    getUser().then((res) => setDataUsers(res.data.data.data));
+    getUser().then((res) => setDataUsers(res.data.data));
   };
 
   const deleteuser = () => {

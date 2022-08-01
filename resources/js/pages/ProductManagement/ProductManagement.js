@@ -35,12 +35,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const toast = useRef(null);
   const dt = useRef(null);
 
+  const idProduct = product.id;
   console.log(autProducts);
 
   useEffect(() => {
     getProduct().then((res) => {
-      console.log(res)
-      setAutProducts(res.data.data.data);
+      console.log(res);
+      setAutProducts(res.data.data);
     });
   }, []);
 
@@ -106,12 +107,15 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     setProduct(product);
     setDeleteProductDialog(true);
   };
-
-  const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+  const getData = () => {
+    getProduct().then((res) => setAutProducts(res.data.data));
+  };
+  const deleteProductInList = () => {
+    deleteProduct(idProduct).then(() => {
+      setDeleteProductDialog(false);
+      setProduct(emptyProduct);
+      getData();
+    });
     toast.current.show({
       severity: "success",
       summary: "Successful",
@@ -259,7 +263,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         label="Yes"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteProduct}
+        onClick={deleteProductInList}
       />
     </React.Fragment>
   );
@@ -304,28 +308,15 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               header={header}
               responsiveLayout="scroll"
             >
-              <Column
-                field="id"
-                header="ID"
-                sortable
-                style={{ minWidth: "12rem" }}
-              ></Column>
-              <Column
-                field="name"
-                header="Name"
-                sortable
-                style={{ minWidth: "16rem" }}
-              ></Column>
+              <Column field="id" header="ID" sortable></Column>
+              <Column field="name" header="Name" sortable></Column>
               <Column
                 field="image"
+                body={imageBodyTemplate}
                 header="Image"
-                // body={imageBodyTemplate}
               ></Column>
-              <Column
-                field="description"
-                header="Description"
-                style={{ minWidth: "16rem" }}
-              ></Column>
+              <Column field="description" header="Description"></Column>
+              <Column field="created_at" header="Created At" sortable></Column>
               <Column
                 body={actionBodyTemplate}
                 exportable={false}

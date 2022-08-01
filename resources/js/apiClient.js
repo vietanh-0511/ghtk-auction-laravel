@@ -29,8 +29,8 @@ export function updateUser(id) {
 }
 
 // Product Management: Autions
-export function getProduct(page) {
-  return window.axiosApiInstance.get(`/admin/product?page=${page}`);
+export function getProduct() {
+  return window.axiosApiInstance.get(`/admin/product`);
 }
 
 export function createProduct(data) {
