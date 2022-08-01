@@ -146,10 +146,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     return id;
   };
 
-  const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
-
   const deleteSelectedProducts = () => {
     let _products = products.filter((val) => !selectedProducts.includes(val));
     setProducts(_products);
@@ -179,13 +175,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           icon="pi pi-plus"
           className="p-button-success mr-2"
           onClick={openNew}
-        />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          className="p-button-danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
         />
       </React.Fragment>
     );
@@ -334,17 +323,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             footer={productDialogFooter}
             onHide={hideDialog}
           >
-            {product.image && (
-              <img
-                src={`images/product/${product.image}`}
-                onError={(e) =>
-                  (e.target.src =
-                    "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-                }
-                alt={product.image}
-                className="product-image block m-auto pb-3"
-              />
-            )}
             <div className="field">
               <label htmlFor="name">Name</label>
               <InputText
@@ -359,6 +337,22 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               />
               {submitted && !product.name && (
                 <small className="p-error">Name is required.</small>
+              )}
+            </div>
+            <div className="field">
+              <label htmlFor="description">Description</label>
+              <InputText
+                id="description"
+                value={product.description}
+                onChange={(e) => onInputChange(e, "description")}
+                required
+                autoFocus
+                className={classNames({
+                  "p-invalid": submitted && !product.description,
+                })}
+              />
+              {submitted && !product.description && (
+                <small className="p-error">Description is required.</small>
               )}
             </div>
           </Dialog>
