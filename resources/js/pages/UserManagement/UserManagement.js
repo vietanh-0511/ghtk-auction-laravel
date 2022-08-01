@@ -7,8 +7,7 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { v4 as uuidv4 } from "uuid";
-import "./DataTableDemo.css";
+import "../../../css/DataTableComponent.css";
 import { createUser, deleteUser, getUser, updateUser } from "../../apiClient";
 
 const UserManagement = ({ title = "Empty Page" }) => {
@@ -88,7 +87,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
     });
   };
 
-
   const createId = () => {
     let id = "";
     let chars =
@@ -107,9 +105,9 @@ const UserManagement = ({ title = "Empty Page" }) => {
       let newUser = { ...user };
       if (user.id) {
         updateUser(idUser).then((id) => {
-          console.log(id)
+          console.log(id);
           getData();
-        })
+        });
         _users[idUser] = newUser;
         toast.current.show({
           severity: "success",

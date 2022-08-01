@@ -27,3 +27,21 @@ export function deleteUser(id) {
 export function updateUser(id) {
   return window.axiosApiInstance.put(`/admin/user/${id}`)
 }
+
+// Product Management: Autions
+export function getProduct(page) {
+  return window.axiosApiInstance.get(`/admin/product?page=${page}`);
+}
+
+export function createProduct(data) {
+  return window.axiosApiInstance.post("/admin/product", data);
+}
+
+export function deleteProduct(id) {
+  return window.axiosApiInstance.delete(`/admin/product/${id}`)
+}
+
+export function updateProduct(id) {
+  return window.axiosApiInstance.put(`/admin/product/${id}`)
+}
+

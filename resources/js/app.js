@@ -18,6 +18,7 @@ import RegisterPage from "./pages/RegisterPage";
 import Layout from "./components/Layout";
 import NoMatch from "./pages/NoMatch";
 import UserManagement from "./pages/UserManagement/UserManagement";
+import ProductManagement from "./pages/ProductManagement/ProductManagement";
 
 export const App = () => {
   return (
@@ -44,7 +45,7 @@ export const App = () => {
         />
         <Route
           path="products"
-          element={<EmptyPage title="Quản lý sản phẩm" />}
+          element={<ProductManagement title="Quản lý sản phẩm" />}
         />
         <Route
           path="auctions"
