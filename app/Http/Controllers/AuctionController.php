@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\CreateAuctionException;
-use App\Exceptions\UpdateAuctionException;
 use App\Http\Requests\StoreAutionRequest;
 use App\Models\Auction;
 use App\Services\Auction\CreateAuctionAction;
@@ -31,7 +29,7 @@ class AuctionController extends Controller
      */
     public function index(Request $request)
     {
-        $limit  = $request->limit;
+        $limit  = $request->input('limit', 10);
         $auctions = Auction::paginate($limit);
         return Responder::success($auctions, 'get auctions success');
     }
@@ -54,11 +52,12 @@ class AuctionController extends Controller
      */
     public function store(StoreAutionRequest $request)
     {
-        $request->validated();
+        $validated = $request->validated();
+        $auction = '';
         try {
-            $auction = $this->createAuctionAction->handle($request->toArray());
-        } catch (CreateAuctionException $e) {
-            return $e->getMessage();
+            $auction = $this->createAuctionAction->handle($validated);
+        } catch (Exception $e) {
+            return Responder::fail($auction, $e->getMessage());
         }
         return Responder::success($auction, 'store success');
     }
@@ -71,12 +70,11 @@ class AuctionController extends Controller
      */
     public function show($id)
     {
-        try {
-            $auctions = Auction::findOrFail($id);
-        } catch (Exception $e) {
-            return $e->getMessage();
+        if (!Auction::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
         }
-        return Responder::success($auctions, 'get auctions success');
+        $auction = Auction::where('id', $id)->first();
+        return Responder::success($auction, 'get auction success');
     }
 
     /**
@@ -99,13 +97,14 @@ class AuctionController extends Controller
      */
     public function update(StoreAutionRequest $request, $id)
     {
-        $request->validated();
+        $validated = $request->validated();
+        $auction = '';
         try {
-            $auctionUpdated = $this->updateAuctionAction->handle($request->toArray(), $id);
-        } catch (UpdateAuctionException $e) {
-            return $e->getMessage();
+            $auction = $this->updateAuctionAction->handle($validated, $id);
+        } catch (Exception $e) {
+            return Responder::fail($auction, $e->getMessage());
         }
-        return Responder::success($auctionUpdated, 'update success');
+        return Responder::success($auction, 'update success');
     }
 
     /**
@@ -116,19 +115,17 @@ class AuctionController extends Controller
      */
     public function destroy($id)
     {
-        Auction::where('id', $id)->delete();
+        if (!Auction::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
+        }
+        $deleteAuction = Auction::where('id', $id)->delete();
+        return Responder::success($deleteAuction, 'delete success');
     }
 
     public function auctionListView(Request $request) // = index
     {
-        $limit = $request->limit;
+        $limit = $request->input('limit', 10);
         $auctions = Auction::paginate($limit);
-        return response()->json([
-            'messages' => 'list bids',
-            'data' => $auctions,
-            'status' => true
-        ]);
+        return Responder::success($auctions, 'list auctions');
     }
-
-    
 }
