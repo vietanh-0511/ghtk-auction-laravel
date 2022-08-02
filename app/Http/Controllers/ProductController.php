@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\CreateProductException;
-use App\Exceptions\UpdateProductException;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Asset;
 use App\Models\Product;
+use App\Models\Session;
 use App\Services\Product\CreateProductAction;
 use App\Services\Product\UpdateProductAction;
 use App\Supports\Responder;
@@ -22,8 +22,7 @@ class ProductController extends Controller
     public function __construct(
         CreateProductAction $createProductAction,
         UpdateProductAction $updateProductAction
-    )
-    {
+    ) {
         $this->createProductAction = $createProductAction;
         $this->updateProductAction = $updateProductAction;
     }
@@ -78,10 +77,10 @@ class ProductController extends Controller
             return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }
         $product = Product::query()
-        ->join('assets', 'products.id', '=', 'assets.assetable')
-        ->where('products.id', $id)
-        ->get();
-        return Responder::success($product, 'get product success');
+            ->where('id', $id)
+            ->first();
+        $assets = Asset::query()->where('assetable', $id)->get();
+        return Responder::success([$product, $assets], 'get product success');
     }
 
     /**
@@ -104,6 +103,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, $id)
     {
+        dd($request->input('name'));
         $product = '';
         try {
             $product = $this->updateProductAction->handle($request, $id);
@@ -124,9 +124,9 @@ class ProductController extends Controller
         if (!Product::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }
+        Asset::where('assetable', $id)->delete();
+        Session::where('product_id', $id)->delete();
         $deleteProduct = Product::where('id', $id)->delete();
         return Responder::success($deleteProduct, 'delete success');
     }
-
-    
 }
