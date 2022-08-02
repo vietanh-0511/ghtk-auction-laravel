@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LimitRequest;
 use App\Http\Requests\StoreAutionRequest;
 use App\Models\Auction;
 use App\Services\Auction\CreateAuctionAction;
@@ -30,6 +31,9 @@ class AuctionController extends Controller
     public function index(Request $request)
     {
         $limit = $request->input('limit', 10);
+        if ($limit <= 0) {
+            return Responder::fail($limit, 'limit invalid');
+        }
         $auctions = Auction::paginate($limit);
         return Responder::success($auctions, 'get auctions success');
     }
@@ -120,12 +124,5 @@ class AuctionController extends Controller
         }
         $deleteAuction = Auction::where('id', $id)->delete();
         return Responder::success($deleteAuction, 'delete success');
-    }
-
-    public function auctionListView(Request $request) // = index
-    {
-        $limit = $request->input('limit', 10);
-        $auctions = Auction::paginate($limit);
-        return Responder::success($auctions, 'list auctions');
     }
 }

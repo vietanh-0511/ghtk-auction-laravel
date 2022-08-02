@@ -34,6 +34,9 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $limit = $request->input('limit', 10);
+        if ($limit <= 0) {
+            return Responder::fail($limit, 'limit invalid');
+        }
         $products = Product::paginate($limit);
         return Responder::success($products, 'get products success');
     }
@@ -103,7 +106,6 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, $id)
     {
-        dd($request->input('name'));
         $product = '';
         try {
             $product = $this->updateProductAction->handle($request, $id);

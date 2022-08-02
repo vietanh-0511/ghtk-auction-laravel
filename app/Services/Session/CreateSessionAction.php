@@ -2,32 +2,28 @@
 
 namespace App\Services\Session;
 
-use App\Exceptions\SessionProductException;
 use App\Models\Session;
+use Exception;
 
 class CreateSessionAction
 {
-    private $checkIfProductInOnotherSession;
-    private $calculateStepPrice;
+    private $checkPrice;
+    private $checkProduct;
 
     public function __construct(
-        CheckIfProductInOnotherSession $checkIfProductInOnotherSession,
-        CalculateStepPrice $calculateStepPrice
+        CheckPrice $checkPrice,
+        CheckProrduct $checkProrduct
     ) {
-        $this->checkIfProductInOnotherSession = $checkIfProductInOnotherSession;
-        $this->calculateStepPrice = $calculateStepPrice;
+        $this->checkPrice = $checkPrice;
+        $this->checkProduct = $checkProrduct;
     }
 
-    public function handle($request)
+    public function handle(array $validated)
     {
-        if (!$this->checkIfProductInOnotherSession->handle($request)) {
-            throw new SessionProductException('This product is in another session!');
+        if (!$this->checkProduct->handle($validated)) {
+            throw new Exception('Product does not exist');
         }
-        // $this->calculateStepPrice->handle($request);
-        $priceStep = $request['start_price'] * ($request['price_step'] / 100);
-        $request['price_step'] = (int)$priceStep;
-        // dd($request);
-
-        Session::create($request);
+        $this->checkPrice->handle($validated);
+        Session::create($validated);
     }
 }

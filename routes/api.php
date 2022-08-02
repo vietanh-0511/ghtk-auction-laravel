@@ -66,7 +66,7 @@ Route::group(
 
 //Auction  
 Route::controller(AuctionController::class)->group(function () {
-    Route::get('/getauction', 'auctionListView');
+  Route::get('/getauction', 'index');
 });
 
 //Bid
