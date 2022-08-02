@@ -34,8 +34,9 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $limit = $request->limit;
-        $products = Product::paginate($limit);
+        // $limit = $request->input('limit',15);
+        // $products = Product::paginate($limit);
+        $products= Product::all();
         return Responder::success($products, 'get products success');
     }
 
