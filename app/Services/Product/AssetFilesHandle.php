@@ -3,6 +3,8 @@
 namespace App\Services\Product;
 
 use App\Models\Asset;
+use App\Supports\Responder;
+use Exception;
 
 class AssetFilesHandle
 {
@@ -10,38 +12,25 @@ class AssetFilesHandle
     {
         $files = $request->file('assets');
         $allowedfileExtension = ['jpg', 'png'];
-        $exe_flg = true;
-        // kiểm tra tất cả các files xem có đuôi mở rộng đúng không
+        // kiểm tra đuôi mở rộng các files
         foreach ($files as $file) {
             $fileName = $file->getClientOriginalName();
             $extension = $file->getClientOriginalExtension();
             $check = in_array($extension, $allowedfileExtension);
-            if (!$check) {
-                // nếu có file nào không đúng đuôi mở rộng thì đổi flag thành false
-                $exe_flg = false;
-                break;
+
+            if ($check == false) {
+                throw new Exception('invalid file format');
             }
         }
-
-        if ($exe_flg) {
-            // duyệt từng ảnh và thực hiện lưu
-            foreach ($request->assets as $asset) {
-                $fileName = $asset->store('assets');
-                Asset::create([
-                    'file_name' => $fileName,
-                    'mime_type' => $extension,
-                    'assetable' => $store->id,
-                    'assetable_type' => $store->getTable()
-                ]);
-            }
+        // duyệt từng ảnh và thực hiện lưu
+        foreach ($request->assets as $asset) {
+            $fileName = $asset->store('assets');
+            Asset::create([
+                'file_name' => $fileName,
+                'mime_type' => $asset->getMimeType(),
+                'assetable' => $store->id,
+                'assetable_type' => $store->name
+            ]);
         }
     }
-
-    //     if ($request->has('title_image')) {
-    //         $file = $request->file('title_image');
-    //         $fileName = $file->getClientOriginalName();
-    //         $file->move(public_path('images'), $fileName);
-    //     }
-    //     $request->merge(['title_image' => $fileName]);
-    // }
 }

@@ -45,7 +45,7 @@ class UserController extends Controller
         try {
             $user = User::create($request->all());
         } catch (Exception $e) {
-            return Responder::fail($user, $e->getMessage());
+            return $e->getMessage();
         }
         $user->assignRole('user');
         return Responder::success($user, 'store success');
@@ -62,7 +62,7 @@ class UserController extends Controller
         try {
             $users = User::findOrFail($id);
         } catch (Exception $e) {
-            return Responder::fail($users, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($users, 'get users success');
     }
@@ -90,7 +90,7 @@ class UserController extends Controller
         try {
             $userUpdated = User::where('id', $id)->update($request->all());
         } catch (Exception $e) {
-            return Responder::fail($userUpdated, $e->getMessage());
+            return $e->getMessage();
         }
         return Responder::success($userUpdated, 'update success');
     }

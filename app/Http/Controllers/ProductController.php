@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\CreateProductException;
-use App\Exceptions\UpdateProductException;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Models\Asset;
 use App\Models\Product;
 use App\Models\Session;
 use App\Services\Product\CreateProductAction;
@@ -22,8 +22,7 @@ class ProductController extends Controller
     public function __construct(
         CreateProductAction $createProductAction,
         UpdateProductAction $updateProductAction
-    )
-    {
+    ) {
         $this->createProductAction = $createProductAction;
         $this->updateProductAction = $updateProductAction;
     }
@@ -34,9 +33,11 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        // $limit = $request->input('limit',15);
-        // $products = Product::paginate($limit);
-        $products= Product::all();
+        $limit = $request->input('limit', 10);
+        if ($limit <= 0) {
+            return Responder::fail($limit, 'limit invalid');
+        }
+        $products = Product::paginate($limit);
         return Responder::success($products, 'get products success');
     }
 
@@ -58,10 +59,10 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $request->validated();
+        $product = '';
         try {
             $product = $this->createProductAction->handle($request);
-        } catch (CreateProductException $e) {
+        } catch (Exception $e) {
             return Responder::fail($product, $e->getMessage());
         }
         return Responder::success($product, 'store success');
@@ -75,12 +76,14 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        try {
-            $product = Product::findOrFail($id);
-        } catch (Exception $e) {
-            return Responder::fail($product, $e->getMessage());
+        if (!Product::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }
-        return Responder::success($product, 'get product success');
+        $product = Product::query()
+            ->where('id', $id)
+            ->first();
+        $assets = Asset::query()->where('assetable', $id)->get();
+        return Responder::success([$product, $assets], 'get product success');
     }
 
     /**
@@ -101,12 +104,12 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreProductRequest $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
-        $request->validated();
+        $product = '';
         try {
-            $product = $this->updateProductAction->handle($request->toArray(), $id);
-        } catch (UpdateProductException $e) {
+            $product = $this->updateProductAction->handle($request, $id);
+        } catch (Exception $e) {
             return Responder::fail($product, $e->getMessage());
         }
         return Responder::success($product, 'update success');
@@ -120,8 +123,12 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        Product::where('id', $id)->delete();
+        if (!Product::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
+        }
+        Asset::where('assetable', $id)->delete();
+        Session::where('product_id', $id)->delete();
+        $deleteProduct = Product::where('id', $id)->delete();
+        return Responder::success($deleteProduct, 'delete success');
     }
-
-    
 }
