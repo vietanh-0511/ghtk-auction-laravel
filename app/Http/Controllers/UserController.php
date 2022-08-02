@@ -18,8 +18,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $limit = $request->limit;
-        $users = User::paginate($limit);
+        // $limit = $request->limit;
+        // $users = User::paginate($limit);
+         $users = User::all();
         return Responder::success($users, 'get users success');
     }
 
