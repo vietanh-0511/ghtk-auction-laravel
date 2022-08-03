@@ -116,13 +116,15 @@ const UserManagement = ({ title = "Empty Page" }) => {
           life: 3000,
         });
       } else {
-        newUser.id = createId();
-        _users.push(newUser);
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Created",
-          life: 3000,
+        createUser(newUser).then(() => {
+          newUser.id = createId();
+          _users.push(newUser);
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Product Created",
+            life: 3000,
+          });
         });
       }
       setDataUsers(_users);
