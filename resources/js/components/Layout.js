@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { Navigate, useOutlet } from 'react-router-dom';
+import { useNavigate, useOutlet } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 
 import { AppTopbar } from './AppTopbar';
@@ -16,6 +16,7 @@ const Layout = () => {
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
   const outlet = useOutlet();
+  const navigate = useNavigate();
   const { user } = useAuth();
 
   const appMenu = [
@@ -26,13 +27,9 @@ const Layout = () => {
     }
   ];
 
-  if (!user) {
-    return <Navigate to="/login" />;
-  } else {
-    if (user.role === 'admin') {
-      return <Navigate to="/login" />;
-    }
-  }
+  useEffect(() => {
+    if (!user || user.role === 'admin') navigate('/login', { replace: true });
+  }, [user])
 
   const items = [
     {

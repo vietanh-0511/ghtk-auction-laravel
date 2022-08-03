@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "primereact/button";
@@ -10,13 +10,6 @@ export const AppTopbar = (props) => {
 
   const { user } = useAuth();
   const menu = React.useRef(null);
-
-
-  const handleClick = (menuItem, event) => {
-    event.preventDefault();
-    return <Navigate to={menuItem.routePath} />;
-  }
-
 
   const renderLi = () => {
     return props.appMenu.map((ele, idx) => {

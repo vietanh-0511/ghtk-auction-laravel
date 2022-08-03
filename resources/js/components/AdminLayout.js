@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { Navigate, useOutlet } from 'react-router-dom';
+import { useNavigate, useOutlet } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 
 import { AppTopbar } from './AppTopbar';
@@ -18,15 +18,12 @@ const AdminLayout = () => {
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
   const outlet = useOutlet();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  if (!user) {
-    return <Navigate to="/login" />;
-  } else {
-    if (user.role === 'customer') {
-      return <Navigate to="/login" />;
-    }
-  }
+  useEffect(() => {
+    if (!user || user.role === 'user') navigate('/login', { replace: true });
+  }, [user])
 
   PrimeReact.ripple = true;
 
