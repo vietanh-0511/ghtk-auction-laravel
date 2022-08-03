@@ -63,10 +63,6 @@ Route::group(
   }
 );
 
-//Auction
-Route::controller(AuctionController::class)->group(function () {
-  Route::get('/getauction', 'index');
-});
 
 //Bid
 Route::controller(BidController::class)->group(function () {
