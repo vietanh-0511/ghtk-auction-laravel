@@ -4,7 +4,8 @@ namespace App\Services\Bid;
 
 use App\Exceptions\BidPriceException;
 use App\Models\Bid;
-use App\Supports\Responder;
+use App\Models\Session;
+use Exception;
 
 class CreateBidAction
 {
@@ -20,16 +21,14 @@ class CreateBidAction
         $this->updateWinner = $updateWinner;
     }
 
-    public function handle($request, $userId)
+    public function handle(array $validated, $userId)
     {
-        if (!$this->bidPriceChecker->handle($request)) {
-            throw new BidPriceException('Price invalid');
+        if (!Session::query()->where('id', $validated['session_id'])->exists()) {
+            throw new Exception("Session does not exist");
         }
-
-        $request['user_id'] = $userId;
-
-        $bid = Bid::create($request);
-
+        $this->bidPriceChecker->handle($validated);
+        $validated['user_id'] = $userId;
+        $bid = Bid::create($validated);
         $this->updateWinner->handle($bid);
     }
 }

@@ -2,9 +2,8 @@
 
 namespace App\Services\Auction;
 
-use App\Exceptions\TimeCheckException;
 use App\Models\Auction;
-use App\Supports\Responder;
+use Exception;
 
 class UpdateAuctionAction
 {
@@ -17,8 +16,11 @@ class UpdateAuctionAction
 
     public function handle(array $validated, $id)
     {
+        if (!Auction::query()->where('id', $id)->exists()) {
+            throw new Exception("the auction with id " . $id . " does not exist");
+        }
         if ($this->checkAuctionTime->handle($validated)) {
-            throw new TimeCheckException("this auction has already exists");
+            throw new Exception("this auction has already exists");
         }
 
         Auction::where('id', $id)->update($validated);

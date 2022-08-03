@@ -61,6 +61,15 @@ Route::group(
       Route::put('/session/{id}', 'update');
       Route::delete('/session/{id}', 'destroy');
     });
+
+    //Bid
+    Route::controller(BidController::class)->group(function () {
+      Route::get('/bid', 'index');
+      Route::get('/bid/{id}', 'show');
+      Route::post('/bid', 'store');
+      Route::put('/bid/{id}', 'update');
+      Route::delete('/bid/{id}', 'destroy');
+    });
   }
 );
 
@@ -80,12 +89,20 @@ Route::controller(BidController::class)->group(function () {
 
 //Auction
 Route::controller(AuctionController::class)->group(function () {
-  Route::get('/getauction', 'auctionListView');
+  Route::get('/auction', 'index');
+  Route::get('/auction/{id}', 'show');
 });
 
 //Product
 Route::controller(ProductController::class)->group(function () {
-  Route::get('/auction-products/{id}', 'auctionProducts');
+  Route::get('/product', 'index');
+  Route::get('/product/{id}', 'show');
+});
+
+//Session
+Route::controller(SessionController::class)->group(function () {
+  Route::get('/session', 'index');
+  Route::get('/session/{id}', 'show');
 });
 
 Route::group([
