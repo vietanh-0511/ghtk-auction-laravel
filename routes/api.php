@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -20,14 +19,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//  Admin
+  Route::group([
+    'prefix' => 'admin',
+//    'middleware' => 'isAdmin',
+  ], function () {
 
-Route::group(
-  ['prefix' => 'admin'],
-  function () {
-
-    //User
     Route::controller(UserController::class)->group(function () {
-      // Route::post('/login', 'login');
       Route::get('/user', 'index');
       Route::get('/user/{id}', 'show');
       Route::post('/user', 'store');
@@ -35,7 +33,6 @@ Route::group(
       Route::delete('/user/{id}', 'destroy');
     });
 
-    //Auction
     Route::controller(AuctionController::class)->group(function () {
       Route::get('/auction', 'index');
       Route::get('/auction/{id}', 'show');
@@ -44,7 +41,6 @@ Route::group(
       Route::delete('/auction/{id}', 'destroy');
     });
 
-    //Product
     Route::controller(ProductController::class)->group(function () {
       Route::get('/product', 'index');
       Route::get('/product/{id}', 'show');
@@ -53,7 +49,6 @@ Route::group(
       Route::delete('/product/{id}', 'destroy');
     });
 
-    //Session
     Route::controller(SessionController::class)->group(function () {
       Route::get('/session', 'index');
       Route::get('/session/{id}', 'show');
@@ -61,31 +56,36 @@ Route::group(
       Route::put('/session/{id}', 'update');
       Route::delete('/session/{id}', 'destroy');
     });
-  }
-);
 
+  });
 
-//Bid
-Route::controller(BidController::class)->group(function () {
-  Route::get('/bid', 'index');
-  Route::get('/bid/{id}', 'show');
-  Route::post('/bid', 'store');
-  Route::put('/bid/{id}', 'update');
-  Route::delete('/bid/{id}', 'destroy');
-});
+//  Authenticated User
+  Route::group([
+//    'middleware' => 'isUser',
+  ], function () {
 
-//Auction
-Route::controller(AuctionController::class)->group(function () {
-  Route::get('/getauction', 'auctionListView');
-});
+    Route::controller(BidController::class)->group(function () {
+      Route::get('/bid', 'index');
+      Route::get('/bid/{id}', 'show');
+      Route::post('/bid', 'store');
+      Route::put('/bid/{id}', 'update');
+      Route::delete('/bid/{id}', 'destroy');
+    });
 
-//Product
-Route::controller(ProductController::class)->group(function () {
-  Route::get('/auction-products/{id}', 'auctionProducts');
-});
+    Route::controller(AuctionController::class)->group(function () {
+      Route::get('/getauction', 'auctionListView');
+    });
+
+    Route::controller(ProductController::class)->group(function () {
+      Route::get('/auction-products/{id}', 'auctionProducts');
+    });
+
+  });
+
+//  Anonymous User
+
 
 Route::group([
-  'middleware' => 'api',
   'prefix' => 'auth'
 ], function () {
   Route::post('/login', [AuthController::class, 'login']);
