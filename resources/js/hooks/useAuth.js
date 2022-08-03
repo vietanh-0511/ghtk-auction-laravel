@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     window.axiosApiInstance.post('/auth/login', data).then(res => {
       const _user = res.data.data;
       setUser(_user);
-      console.log(_user);
       setToken(res.data.access_token);
       if (_user.role === 'admin') navigate("/admin/dashboard", { replace: true });
       if (_user.role === 'user') navigate("/auctions/live", { replace: true });

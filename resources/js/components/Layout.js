@@ -17,7 +17,7 @@ const Layout = () => {
   const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
   const outlet = useOutlet();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const appMenu = [
     {
@@ -43,7 +43,7 @@ const Layout = () => {
       label: 'Log out',
       icon: 'pi pi-sign-out',
       command: () => {
-
+        logout();
       }
     }
   ];
