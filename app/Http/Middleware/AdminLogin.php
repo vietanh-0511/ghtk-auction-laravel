@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Middleware\Admin;
+namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class IsAdmin
+class AdminLogin
 {
     /**
      * Handle an incoming request.
@@ -18,14 +18,13 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-      $admin = $request->user();
-      if($admin !== null && $admin->hasRole('admin'))
-      {
-        return $next($request);
-      }
-      return response()->json([
-        'status' => false,
-        'message' => 'Unauthorized',
-      ], Response::HTTP_UNAUTHORIZED);
+        if($request->user()->hasRole('admin'))
+        {
+            return $next($request);
+        }
+        return response()->json([
+          'status' => false,
+          'message' => 'Unauthorized',
+        ], Response::HTTP_UNAUTHORIZED);
     }
 }
