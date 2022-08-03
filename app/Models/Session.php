@@ -14,7 +14,7 @@ class Session extends Model
 
     protected $fillable = [
         'start_price',
-        'step_price',
+        'price_step',
         'highest_bid',
         'winner_id',
         'product_id',
