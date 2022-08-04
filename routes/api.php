@@ -95,3 +95,4 @@ Route::group([
   Route::get('/user-profile', [AuthController::class, 'userProfile']);
   Route::post('/change-pass', [AuthController::class, 'changePassword']);
 });
+

@@ -25,7 +25,8 @@
       'email',
       'password',
       'address',
-      'phone'
+      'phone',
+      'roles',
     ];
 
     /**
@@ -40,7 +41,6 @@
       'created_at',
       'updated_at',
       'deleted_at',
-      'roles',
       'permissions',
     ];
 
