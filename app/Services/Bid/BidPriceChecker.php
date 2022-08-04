@@ -3,34 +3,30 @@
 namespace App\Services\Bid;
 
 use App\Models\Session;
+use Exception;
 
 class BidPriceChecker
 {
-    public function handle($request)
+    public function handle($validated)
     {
-        //get input price
-        $price = $request['amount'];
-
         //get session info
-        $sessionInfo = Session::where('id', $request['session_id'])->first();
+        $sessionInfo = Session::where('id', $validated['session_id'])->first();
         $winnerId = $sessionInfo->winner_id;
         $highestBid = $sessionInfo->highest_bid;
-        $stepPrice = $sessionInfo->price_step;
+        $priceStep = $sessionInfo->price_step;
 
         //calculate next bid price
-        $nextBib = $highestBid + $stepPrice;
+        $nextBib = $highestBid + $priceStep;
 
         if ($winnerId == '') {
-            if ($price < $sessionInfo->price_step) {
-                return false;
+            if ($validated['amount'] < $sessionInfo->start_price) {
+                throw new Exception("Bid amount cannot less than start price");
             }
-            return true;
         }
         if ($winnerId != '') {
-            if ($price < $nextBib) {
-                return false;
+            if ($validated['amount'] < $nextBib) {
+                throw new Exception("Bid amount cannot less than " . $nextBib);
             }
-            return true;
         }
     }
 }

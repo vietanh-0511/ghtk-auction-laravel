@@ -33,7 +33,10 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-     
+        // $limit = $request->input('limit', 10);
+        // if ($limit <= 0 || !is_int($limit)) {
+        //     return Responder::fail($limit, 'limit invalid');
+        // }
         $products = Product::all();
         return Responder::success($products, 'get products success');
     }

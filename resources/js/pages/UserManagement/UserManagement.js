@@ -32,7 +32,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
 
   let idUser = user.id;
-  console.log(dataUsers);
   useEffect(() => {
     getUser().then((res) => {
       setDataUsers(res.data.data);

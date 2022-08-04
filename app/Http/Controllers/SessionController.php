@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSessionRequest;
+use App\Http\Requests\UpdateSessionRequest;
 use App\Models\Session;
 use App\Services\Session\CreateSessionAction;
 use App\Services\Session\UpdateSessionAction;
@@ -30,11 +31,11 @@ class SessionController extends Controller
      */
     public function index(Request $request)
     {
-        $limit  = $request->input('limit', 10);
-        if ($limit <= 0) {
-            return Responder::fail($limit, 'limit invalid');
-        }
-        $sessions = Session::paginate($limit);
+        // $limit  = $request->input('limit', 10);
+        // if ($limit <= 0 || !is_int($limit)) {
+        //     return Responder::fail($limit, 'limit invalid');
+        // }
+        $sessions = Session::all();
         return Responder::success($sessions, 'get sessions success');
     }
 
@@ -99,7 +100,7 @@ class SessionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreSessionRequest $request, $id)
+    public function update(UpdateSessionRequest $request, $id)
     {
         $validated = $request->validated();
         $session = '';
