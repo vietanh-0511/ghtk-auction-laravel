@@ -15,12 +15,12 @@ class UpdateAuctionAction
         $this->checkAuctionTime = $checkAuctionTime;
     }
 
-    public function handle($request, $id)
+    public function handle(array $validated, $id)
     {
-        if (!$this->checkAuctionTime->handle($request)) {
+        if ($this->checkAuctionTime->handle($validated)) {
             throw new TimeCheckException("this auction has already exists");
         }
 
-        Auction::where('id', $id)->update($request);
+        Auction::where('id', $id)->update($validated);
     }
 }

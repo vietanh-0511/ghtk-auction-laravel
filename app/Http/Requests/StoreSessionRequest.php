@@ -25,9 +25,9 @@ class StoreSessionRequest extends FormRequest
     {
         return [
             "start_price" => ['required', 'numeric', 'min:0'],
-            "price_step" => ['required', 'numeric', 'min:0', 'max:100'],
-            "product_id" => ['required'],
-            "auction_id" => ['required']
+            "price_step" => ['required', 'numeric', 'min:0'],
+            "product_id" => ['required', 'numeric', 'unique:App\Models\Session,product_id'],
+            "auction_id" => ['required', 'numeric']
         ];
     }
 }

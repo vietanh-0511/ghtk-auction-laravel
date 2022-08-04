@@ -23,9 +23,9 @@ class AuthController extends Controller
         'status' => false,
         'message' => 'Unauthorized',
         'data' => null,
-      ], 401);
+      ], Response::HTTP_UNAUTHORIZED);
     }
-    return $this->createNewToken($token);
+    return $this->createNewToken($token, 'Signin successful');
   }
 
   public function register(RegisterRequest $request)
@@ -63,21 +63,23 @@ class AuthController extends Controller
     ], Response::HTTP_OK);
   }
 
-  protected function createNewToken($token)
+  protected function createNewToken($token, $message='Refresh token successful')
   {
+    $data = auth()->user()->toArray();
+    $data['role'] = auth()->user()->getRoleNames()->first();
     return response()->json([
       'status' => true,
-      'message' => 'Refresh token successful',
+      'message' => $message,
       'access_token' => $token,
       'expires_in' => auth()->factory()->getTTL() * 60,
-      'data' => auth()->user(),
+      'data' => $data,
     ], Response::HTTP_OK);
   }
 
   public function changePassword(ChangePasswordRequest $request)
   {
     $userId = auth()->user()->id;
-    $user = User::where('id', $userId)->update(
+    User::where('id', $userId)->update(
       ['password' => bcrypt($request->new_password)]
     );
     return response()->json([

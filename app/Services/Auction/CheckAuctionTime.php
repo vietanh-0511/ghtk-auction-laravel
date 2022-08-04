@@ -3,21 +3,26 @@
 namespace App\Services\Auction;
 
 use App\Models\Auction;
-use App\Supports\Responder;
+use Carbon\Carbon;
+use Exception;
 
 class CheckAuctionTime
 {
-    public function handle($request)
+    public function handle(array $validated)
     {
-        $start_time = $request['start_time'];
-        $end_time = $request['end_time'];
-        $time = Auction::where([
-            ['start_time', $start_time],
-            ['end_time', $end_time]
-        ])->get();
-        if (count($time) >= 1) {
-            return false;
+        $start_time = $validated['start_time'];
+        $end_time = $validated['end_time'];
+        $current = Carbon::now('Asia/Ho_Chi_Minh');
+        if (strtotime($start_time) > strtotime($end_time)) {
+            throw new Exception('Auction start time invalid (start time later than end time)');
         }
-        return true;
+        if (strtotime($start_time) < strtotime($current)) {
+            throw new Exception('Auction start time invalid');
+        }
+        return Auction::query()
+            ->where([
+                ['start_time', $start_time],
+                ['end_time', $end_time]
+            ])->exists();
     }
 }
