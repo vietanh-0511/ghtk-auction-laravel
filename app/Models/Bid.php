@@ -12,7 +12,7 @@ class Bid extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'price',
+        'amount',
         'session_id',
         'user_id',
     ];

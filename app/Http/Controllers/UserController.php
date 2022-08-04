@@ -18,8 +18,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        // $limit = $request->limit;
-        // $users = User::paginate($limit);
+        // $limit = $request->input('limit', 10);
+        // if ($limit <= 0 || !is_int($limit)) {
+        //     return Responder::fail($limit, 'limit invalid');
+        // }
          $users = User::all();
         return Responder::success($users, 'get users success');
     }
@@ -42,10 +44,11 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        $validated = $request->validated();
         try {
-            $user = User::create($request->all());
+            $user = User::create($validated);
         } catch (Exception $e) {
-            return $e->getMessage();
+            return Responder::fail($validated, $e->getMessage());
         }
         $user->assignRole('user');
         return Responder::success($user, 'store success');
@@ -59,12 +62,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        try {
-            $users = User::findOrFail($id);
-        } catch (Exception $e) {
-            return $e->getMessage();
+        if (!User::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
         }
-        return Responder::success($users, 'get users success');
+        $user = User::where('id', $id)->first();
+        return Responder::success($user, 'get users success');
     }
 
     /**
@@ -87,10 +89,11 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, $id)
     {
+        $validated = $request->validated();
         try {
-            $userUpdated = User::where('id', $id)->update($request->all());
+            $userUpdated = User::where('id', $id)->update($validated);
         } catch (Exception $e) {
-            return $e->getMessage();
+            return Responder::fail($validated, $e->getMessage());
         }
         return Responder::success($userUpdated, 'update success');
     }
@@ -103,11 +106,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            User::where('id', $id)->delete();
-        } catch (\Throwable $th) {
-            //throw $th;
+        if (!User::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
         }
+        $deleteUser = User::where('id', $id)->delete();
+        return Responder::success($deleteUser, 'delete success');
     }
 
 }
