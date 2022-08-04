@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
 =======
 >>>>>>> Stashed changes
         // \App\Models\User::factory(10)->create();
-        \App\Models\Product::factory(100)->create();
-        \App\Models\User::factory(100)->create();
+        \App\Models\Product::factory(0)->create();
+        \App\Models\User::factory(0)->create();
 
 <<<<<<< Updated upstream
 =======

@@ -31,19 +31,11 @@ class SessionController extends Controller
      */
     public function index(Request $request)
     {
-<<<<<<< Updated upstream
-        $limit  = $request->input('limit', 10);
-        if ($limit <= 0) {
-            return Responder::fail($limit, 'limit invalid');
-        }
-        $sessions = Session::paginate($limit);
-=======
         // $limit  = $request->input('limit', 10);
         // if ($limit <= 0 || !is_int($limit)) {
         //     return Responder::fail($limit, 'limit invalid');
         // }
         $sessions = Session::all();
->>>>>>> Stashed changes
         return Responder::success($sessions, 'get sessions success');
     }
 

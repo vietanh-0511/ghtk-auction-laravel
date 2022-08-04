@@ -22,11 +22,7 @@ window.axiosApiInstance = window.axios.create({
 });
 
 window.axiosApiInstance.interceptors.request.use((config) => {
-<<<<<<< Updated upstream
-  const token = window.localStorage.getItem('token');
-=======
   const token = window.localStorage.getItem('token').slice(1,-1);
->>>>>>> Stashed changes
   config.headers = {
     'Authorization': `Bearer ${token}`
   }

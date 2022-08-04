@@ -11,34 +11,18 @@ export const AuthProvider = ({ children }) => {
 
   const login = (data) => {
     window.axiosApiInstance.post('/auth/login', data).then(res => {
-<<<<<<< Updated upstream
-      // @FIXME: need user.role here
-      setUser(res.data.data);
-      setToken(res.data.access_token);
-      if (user.role === 'admin') {
-        navigate("/admin/dashboard", {replace: true});
-      }
-      if (user.role === 'customer') {
-        navigate("/auctions/live", {replace: true});
-      }
-=======
       const _user = res.data.data;
       setUser(_user);
       setToken(res.data.access_token);
       if (_user.role === 'admin') navigate("/admin/dashboard", { replace: true });
       if (_user.role === 'user') navigate("/auctions/live", { replace: true });
->>>>>>> Stashed changes
     })
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-<<<<<<< Updated upstream
-    navigate("/", {replace: true});
-=======
     navigate("/", { replace: true });
->>>>>>> Stashed changes
   };
 
   const value = useMemo(

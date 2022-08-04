@@ -36,17 +36,9 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
 
   const idProduct = product.id;
-<<<<<<< Updated upstream
-  console.log(autProducts);
 
   useEffect(() => {
     getProduct().then((res) => {
-      console.log(res);
-=======
-
-  useEffect(() => {
-    getProduct().then((res) => {
->>>>>>> Stashed changes
       setAutProducts(res.data.data);
     });
   }, []);

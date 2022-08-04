@@ -29,19 +29,11 @@ class AuctionController extends Controller
      */
     public function index(Request $request)
     {
-<<<<<<< Updated upstream
-        $limit = $request->input('limit', 10);
-        if ($limit <= 0) {
-            return Responder::fail($limit, 'limit invalid');
-        }
-        $auctions = Auction::paginate($limit);
-=======
         // $limit = $request->input('limit', 10);
         // if ($limit <= 0 || !is_int($limit)) {
         //     return Responder::fail($limit, 'limit invalid');
         // }
         $auctions = Auction::all();
->>>>>>> Stashed changes
         return Responder::success($auctions, 'get auctions success');
     }
 
