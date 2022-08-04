@@ -22,7 +22,7 @@ window.axiosApiInstance = window.axios.create({
 });
 
 window.axiosApiInstance.interceptors.request.use((config) => {
-  const token = window.localStorage.getItem('token');
+  const token = window.localStorage.getItem('token').slice(1,-1);
   config.headers = {
     'Authorization': `Bearer ${token}`
   }
