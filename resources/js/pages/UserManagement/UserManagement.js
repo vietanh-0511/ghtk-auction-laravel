@@ -32,7 +32,10 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
 
   let idUser = user.id;
+<<<<<<< Updated upstream
   console.log(dataUsers);
+=======
+>>>>>>> Stashed changes
   useEffect(() => {
     getUser().then((res) => {
       setDataUsers(res.data.data);

@@ -34,7 +34,7 @@ class StoreUserRequest extends FormRequest
                 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
             ],
             'address' => 'required|string|max:120',
-            'phone' => 'required|min:10|max:16',
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:16',
         ];
     }
 }

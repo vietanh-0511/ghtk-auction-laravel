@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreBidRequest extends FormRequest
+class UpdateSessionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +25,14 @@ class StoreBidRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => ['required', 'numeric', 'min:0'],
-            'session_id' => ['required', 'numeric']
+            "start_price" => ['required', 'numeric', 'min:0'],
+            "price_step" => ['required', 'numeric', 'min:0'],
+            "product_id" => [
+                'required',
+                'numeric',
+                Rule::unique('sessions', 'product_id')->ignore($this->id)
+            ],
+            "auction_id" => ['required', 'numeric']
         ];
     }
 }

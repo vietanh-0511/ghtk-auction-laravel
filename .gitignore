@@ -19,3 +19,8 @@ sail
 composer.lock
 /public/js
 /public/css
+<<<<<<< Updated upstream
+=======
+
+private.readme.md
+>>>>>>> Stashed changes

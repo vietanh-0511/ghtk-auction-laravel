@@ -11,7 +11,11 @@ class AssetFilesHandle
     public function handle($request, $store)
     {
         $files = $request->file('assets');
+<<<<<<< Updated upstream
         $allowedfileExtension = ['jpg', 'png'];
+=======
+        $allowedfileExtension = ['jpg', 'png', 'jpeg'];
+>>>>>>> Stashed changes
         // kiểm tra đuôi mở rộng các files
         foreach ($files as $file) {
             $fileName = $file->getClientOriginalName();

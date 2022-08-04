@@ -17,8 +17,8 @@ class CreateAssetsTable extends Migration
             $table->id();
             $table->string('file_name', 1000);
             $table->string('mime_type');
-            $table->unsignedBigInteger('assetable');
-            $table->string('assetable_type');
+            $table->unsignedBigInteger('assettable');
+            $table->string('assettable_type');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +31,6 @@ class CreateAssetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_images');
+        Schema::dropIfExists('assets');
     }
 }

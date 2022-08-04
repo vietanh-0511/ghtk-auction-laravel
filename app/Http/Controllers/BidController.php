@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Events\bidUpdate;
 use Carbon\Carbon;
-use App\Exceptions\CreateBidException;
 use App\Http\Requests\StoreBidRequest;
 use App\Services\Bid\CreateBidAction;
 use App\Supports\Responder;
@@ -28,13 +27,12 @@ class BidController extends Controller
      */
     public function index(Request $request)
     {
-        $limit = $request->limit;
-        $bid = Bid::paginate($limit);
-        return response()->json([
-            'messages'=>'list bids',
-            'data'=>$bid,
-            'status'=>true
-        ]);
+        // $limit = $request->input('limit', 10);
+        // if ($limit <= 0 || !is_int($limit)) {
+        //     return Responder::fail($limit, 'limit invalid');
+        // }
+        $bid = Bid::all();
+        return Responder::success($bid, 'get bids success');
     }
 
     /**
@@ -55,12 +53,12 @@ class BidController extends Controller
      */
     public function store(StoreBidRequest $request)
     {
-        $request->validated();
-
+        $validated = $request->validated();
         $userId = $request->user('api')->id;
+        $bid = '';
         try {
-            $bid = $this->createBidAction->handle($request->toArray(), $userId);
-        } catch (CreateBidException $e) {
+            $bid = $this->createBidAction->handle($validated, $userId);
+        } catch (Exception $e) {
             return Responder::fail($bid, $e->getMessage());
         }
         
@@ -75,11 +73,11 @@ class BidController extends Controller
      */
     public function show($id)
     {
-        try {
-            $bid = Bid::findOrFail($id);
-        } catch (Exception $e) {
-            return Responder::fail($bid, $e->getMessage());
+        $bid = '';
+        if (!Bid::query()->where('id', $id)->exists()) {
+            return Responder::fail($bid, 'the bid with the id ' . $id . ' does not exist.');
         }
+        $bid = Bid::where('id', $id)->first();
         return Responder::success($bid, 'get bid success');
     }
 
@@ -114,7 +112,11 @@ class BidController extends Controller
      */
     public function destroy($id)
     {
-        Bid::where('id', $id)->delete();
+        if (!Bid::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the bid with the id ' . $id . ' does not exist.');
+        }
+        $deleteBid = Bid::where('id', $id)->delete();
+        return Responder::success($deleteBid, 'delete success');
     }
     
     public function updateBidMessage()
@@ -126,12 +128,4 @@ class BidController extends Controller
         $time = Carbon::now('Asia/Ho_Chi_Minh');
         event(new bidUpdate($price, $name, $auction, $session, $time));
     }
-
-    // public function bidView($id)
-    // {
-    //     $bidProductInfo = Product::where('products.id', $id)
-    //         ->join('auctions', 'auctions.id', '=', 'products.auction_id')
-    //         ->first();
-    //     return view('user.bid', ['info' => $bidProductInfo]);
-    // }
 }
