@@ -29,7 +29,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -37,25 +37,17 @@ class ProductController extends Controller
         // if ($limit <= 0 || !is_int($limit)) {
         //     return Responder::fail($limit, 'limit invalid');
         // }
-        $products = Product::all();
+        $search = $request->query('search') ?? '';
+        $products = Product::where('name','like',"%$search%")->orderByDesc('id')->get();
         return Responder::success($products, 'get products success');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreProductRequest $request)
     {
@@ -72,7 +64,8 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -86,23 +79,14 @@ class ProductController extends Controller
         return Responder::success([$product, $assets], 'get product success');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateProductRequest $request, $id)
     {
@@ -119,7 +103,8 @@ class ProductController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
