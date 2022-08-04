@@ -1,16 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import {Navigate, useOutlet} from 'react-router-dom';
-import {CSSTransition} from 'react-transition-group';
+import { useNavigate, useOutlet } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
 
-import {AppTopbar} from './AppTopbar';
-import {AppFooter} from './AppFooter';
-import {AppMenu} from './AppMenu';
+import { AppTopbar } from './AppTopbar';
+import { AppFooter } from './AppFooter';
+import { AppMenu } from './AppMenu';
 
 import PrimeReact from 'primereact/api';
 
 import '../assets/layout/layout.scss';
-import {useAuth} from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 const AdminLayout = () => {
   const [staticMenuInactive, setStaticMenuInactive] = useState(false);
@@ -18,15 +18,12 @@ const AdminLayout = () => {
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
   const outlet = useOutlet();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-  if (!user) {
-    return <Navigate to="/login" />;
-  } else {
-    if (user.role === 'customer') {
-      return <Navigate to="/login" />;
-    }
-  }
+  useEffect(() => {
+    if (!user || user.role === 'user') navigate('/login', { replace: true });
+  }, [user])
 
   PrimeReact.ripple = true;
 
@@ -111,16 +108,16 @@ const AdminLayout = () => {
     {
       label: 'Home',
       items: [
-        {label: 'Dashboard', icon: 'pi pi-fw pi-desktop', to: '/admin/dashboard'},
-        {label: 'Quản lý người dùng', icon: 'pi pi-fw pi-user', to: '/admin/users'},
-        {label: 'Cài đặt hệ thống', icon: 'pi pi-fw pi-cog', to: '/admin/settings'},
+        { label: 'Dashboard', icon: 'pi pi-fw pi-desktop', to: '/admin/dashboard' },
+        { label: 'Quản lý người dùng', icon: 'pi pi-fw pi-user', to: '/admin/users' },
+        { label: 'Cài đặt hệ thống', icon: 'pi pi-fw pi-cog', to: '/admin/settings' },
       ]
     },
     {
       label: 'Auctions', icon: 'pi pi-fw pi-sitemap',
       items: [
-        {label: 'Quản lý Sản phẩm', icon: 'pi pi-fw pi-box', to: '/admin/products'},
-        {label: 'Quản lý Auctions', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/auctions'},
+        { label: 'Quản lý Sản phẩm', icon: 'pi pi-fw pi-box', to: '/admin/products' },
+        { label: 'Quản lý Auctions', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/auctions' },
       ]
     },
   ];
@@ -154,21 +151,39 @@ const AdminLayout = () => {
     {
       label: "Ngưởi dùng",
       iconClass: "pi pi-cog",
-      routePath: "/login"
+      routePath: "#"
     },
+  ];
+
+  const items = [
+    {
+      label: 'Info',
+      icon: 'pi pi-info-circle',
+      command: () => {
+        window.location.hash = "#"
+      }
+    },
+    {
+      label: 'Log out',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        logout();
+      }
+    }
   ];
 
   return (
     <div className={wrapperClass} onClick={onWrapperClick}>
       <AppTopbar onToggleMenuClick={onToggleMenuClick}
-                 layoutColorMode={layoutColorMode}
-                 mobileTopbarMenuActive={mobileTopbarMenuActive}
-                 onMobileTopbarMenuClick={onMobileTopbarMenuClick}
-                 appMenu={appMenu}
+        layoutColorMode={layoutColorMode}
+        mobileTopbarMenuActive={mobileTopbarMenuActive}
+        onMobileTopbarMenuClick={onMobileTopbarMenuClick}
+        appMenu={appMenu}
+        items={items}
       />
 
       <div className="layout-sidebar" onClick={onSidebarClick}>
-        <AppMenu model={menu} onMenuItemClick={onMenuItemClick} layoutColorMode={layoutColorMode}/>
+        <AppMenu model={menu} onMenuItemClick={onMenuItemClick} layoutColorMode={layoutColorMode} />
       </div>
 
       <div className="layout-main-container">
@@ -176,10 +191,10 @@ const AdminLayout = () => {
           {outlet}
         </div>
 
-        <AppFooter layoutColorMode={layoutColorMode}/>
+        <AppFooter layoutColorMode={layoutColorMode} />
       </div>
 
-      <CSSTransition classNames="layout-mask" timeout={{enter: 200, exit: 200}} in={mobileMenuActive} unmountOnExit>
+      <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
         <div className="layout-mask p-component-overlay"></div>
       </CSSTransition>
     </div>

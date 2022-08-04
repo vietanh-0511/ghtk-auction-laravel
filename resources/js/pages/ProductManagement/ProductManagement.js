@@ -36,11 +36,9 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
 
   const idProduct = product.id;
-  console.log(autProducts);
 
   useEffect(() => {
     getProduct().then((res) => {
-      console.log(res);
       setAutProducts(res.data.data);
     });
   }, []);

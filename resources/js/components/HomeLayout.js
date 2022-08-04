@@ -1,31 +1,33 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {useOutlet, Navigate} from 'react-router-dom';
-import {CSSTransition} from 'react-transition-group';
+import React, { useState, useEffect, useRef } from 'react';
+import { useOutlet, useNavigate } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
 
-import {AppTopbar} from './AppTopbar';
-import {AppFooter} from './AppFooter';
+import { AppTopbar } from './AppTopbar';
+import { AppFooter } from './AppFooter';
 
 import PrimeReact from 'primereact/api';
 
 import '../assets/layout/layout.scss';
-import {useAuth} from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 const HomeLayout = () => {
   const [overlayMenuActive, setOverlayMenuActive] = useState(false);
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
   const outlet = useOutlet();
+  const navigate = useNavigate();
 
   const { user } = useAuth();
 
-  if (user) {
-    if (user.role === 'admin') {
-      return <Navigate to="/admin/dashboard" />;
+  useEffect(() => {
+    if (user) {
+      user.role === 'admin' ?
+        navigate('/admin/dashboard', { replace: true })
+        : user.role === 'user' ?
+          navigate('/auctions/live', { replace: true })
+          : null
     }
-    if (user.role === 'customer') {
-      return <Navigate to="/auctions/live" />;
-    }
-  }
+  }, [user])
 
   PrimeReact.ripple = true;
 
@@ -110,16 +112,16 @@ const HomeLayout = () => {
     {
       label: 'Home',
       items: [
-        {label: 'Dashboard', icon: 'pi pi-fw pi-desktop', to: '/admin/dashboard'},
-        {label: 'Quản lý người dùng', icon: 'pi pi-fw pi-user', to: '/admin/users'},
-        {label: 'Cài đặt hệ thống', icon: 'pi pi-fw pi-cog', to: '/admin/settings'},
+        { label: 'Dashboard', icon: 'pi pi-fw pi-desktop', to: '/admin/dashboard' },
+        { label: 'Quản lý người dùng', icon: 'pi pi-fw pi-user', to: '/admin/users' },
+        { label: 'Cài đặt hệ thống', icon: 'pi pi-fw pi-cog', to: '/admin/settings' },
       ]
     },
     {
       label: 'Auctions', icon: 'pi pi-fw pi-sitemap',
       items: [
-        {label: 'Quản lý Sản phẩm', icon: 'pi pi-fw pi-box', to: '/admin/products'},
-        {label: 'Quản lý Auctions', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/auctions'},
+        { label: 'Quản lý Sản phẩm', icon: 'pi pi-fw pi-box', to: '/admin/products' },
+        { label: 'Quản lý Auctions', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/auctions' },
       ]
     },
   ];
@@ -154,11 +156,11 @@ const HomeLayout = () => {
   return (
     <div className="layout-wrapper layout-static layout-static-sidebar-inactive layout-theme-light" onClick={onWrapperClick}>
       <AppTopbar onToggleMenuClick={onToggleMenuClick}
-                 layoutColorMode={layoutColorMode}
-                 mobileTopbarMenuActive={mobileTopbarMenuActive}
-                 onMobileTopbarMenuClick={onMobileTopbarMenuClick}
-                 onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}
-                 appMenu={appMenu}
+        layoutColorMode={layoutColorMode}
+        mobileTopbarMenuActive={mobileTopbarMenuActive}
+        onMobileTopbarMenuClick={onMobileTopbarMenuClick}
+        onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick}
+        appMenu={appMenu}
       />
 
       <div className="layout-main-container">
@@ -166,10 +168,10 @@ const HomeLayout = () => {
           {outlet}
         </div>
 
-        <AppFooter layoutColorMode={layoutColorMode}/>
+        <AppFooter layoutColorMode={layoutColorMode} />
       </div>
 
-      <CSSTransition classNames="layout-mask" timeout={{enter: 200, exit: 200}} in={mobileMenuActive} unmountOnExit>
+      <CSSTransition classNames="layout-mask" timeout={{ enter: 200, exit: 200 }} in={mobileMenuActive} unmountOnExit>
         <div className="layout-mask p-component-overlay"></div>
       </CSSTransition>
     </div>

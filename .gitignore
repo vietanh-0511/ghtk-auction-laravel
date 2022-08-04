@@ -19,3 +19,5 @@ sail
 composer.lock
 /public/js
 /public/css
+
+private.readme.md
