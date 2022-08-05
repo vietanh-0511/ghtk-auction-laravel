@@ -2,6 +2,7 @@
 
   namespace App\Models;
 
+  use DateTimeInterface;
   use Illuminate\Contracts\Auth\MustVerifyEmail;
   use Illuminate\Database\Eloquent\Factories\HasFactory;
   use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,6 +35,7 @@
      * @var array<int, string>
      */
     protected $hidden = [
+      'password',
       'email_verified_at',
       'remember_token',
       'created_at',
@@ -51,6 +53,11 @@
     protected $casts = [
       'email_verified_at' => 'datetime',
     ];
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+      return $date->format('Y-m-d H:i:s');
+    }
 
     public function bids()
     {
