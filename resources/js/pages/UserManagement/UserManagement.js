@@ -281,7 +281,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
                     htmlFor="full_name"
                     className={classNames({ "p-error": errors.name })}
                   >
-                    Full Name*
+                    Ho ten*
                   </label>
                 </span>
                 {getFormErrorMessage("name")}
