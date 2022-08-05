@@ -15,39 +15,6 @@ class CreateUserSeeder extends Seeder
      */
     public function run()
     {
-      $user = User::create([
-        'full_name' => 'user',
-        'email' => 'user.auctions@gmail.com',
-        'password' => 'User@123123',
-        'address' => 'Hanoi',
-        'phone' => '0857694721'
-      ]);
-    }
-
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-      $user = User::create([
-        'full_name' => 'user',
-        'email' => 'user.auctions@gmail.com',
-        'password' => 'User@123123',
-        'address' => 'Hanoi',
-        'phone' => '0857694721'
-      ]);
-
-    $user->assignRole('user');
-    }
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
         $user = User::create([
             'full_name' => 'user',
             'email' => 'user.auctions@gmail.com',
