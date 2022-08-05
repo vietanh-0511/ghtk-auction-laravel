@@ -74,6 +74,7 @@ ex. php artisan users:create a1@gmail.com Aa@123123 user --full_name "MÃ­a Nguyá
 ### Frontend
 
 ```
+sail artisan sail:publish
 sail npm run watch
 ```
 
