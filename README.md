@@ -70,3 +70,17 @@ ex. php artisan users:create a1@gmail.com Aa@123123 user --full_name "Mía Nguy�
     same:
     php artisan users:create a1@gmail.com Aa@123123 user -F "Mía Nguyễn" -A "Hanoi" -P 0123456789
 ```
+
+### Frontend
+
+```bash
+sail npm run watch
+```
+
+Tự động thay đổi khi có thay đổi file js:
+
+http://localhost:3000/app/
+
+Bản thường:
+
+http://localhost:8002/app/
