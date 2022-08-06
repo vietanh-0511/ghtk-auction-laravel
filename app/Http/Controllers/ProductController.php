@@ -38,7 +38,10 @@ class ProductController extends Controller
         //     return Responder::fail($limit, 'limit invalid');
         // }
         $search = $request->query('search') ?? '';
-        $products = Product::where('name','like',"%$search%")->orderByDesc('id')->get();
+        $products = Product::query()->where('name', 'like', "%$search%")->orderByDesc('id')->get();
+        foreach ($products as $product) {
+            $product['asset'] = Asset::query()->where('assetable', '=', $product->id)->first();
+        }
         return Responder::success($products, 'get products success');
     }
 
@@ -76,7 +79,7 @@ class ProductController extends Controller
             ->where('id', $id)
             ->first();
         $assets = Asset::query()->where('assetable', $id)->get();
-        return Responder::success([$product, $assets], 'get product success');
+        return Responder::success([$product, 'assets' => $assets], 'get product success');
     }
 
 
