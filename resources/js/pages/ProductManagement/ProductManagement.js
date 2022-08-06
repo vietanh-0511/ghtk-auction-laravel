@@ -17,83 +17,89 @@ import {
 
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
-    id: null,
     name: "",
-    image: null,
+    asset: [],
     description: "",
-    created_at: null,
   };
 
-  const [autProducts, setAutProducts] = useState([]);
+  const [dataProducts, setDataProducts] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
+  let idProduct = product.id;
 
-  const idProduct = product.id;
+  // const validate = (value, type) => {
+  //   var check = false;
+  //   switch (type) {
+  //     case "email":
+  //       check = value
+  //         .toLowerCase()
+  //         .match(
+  //           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  //         );
+  //       break;
+  //     case "password":
+  //       check = value.match(
+  //         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
+  //       );
+  //       break;
+  //     case "confirmation":
+  //       check = pr.password === product.password_confirmation;
+  //       break;
+  //     case "phone":
+  //       check = product.phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/);
+  //       break;
+  //   }
+  //   return !check;
+  // };
+
+  // const validateAll = () => {
+  //   return product.id
+  //     ? product.full_name &&
+  //         product.email &&
+  //         product.address &&
+  //         product.phone &&
+  //         !(
+  //           validate(product.email, "email") && validate(product.phone, "phone")
+  //         )
+  //     : product.full_name &&
+  //         product.email &&
+  //         product.password &&
+  //         product.password_confirmation &&
+  //         product.address &&
+  //         product.phone &&
+  //         !(
+  //           validate(product.email, "email") &&
+  //           validate(product.password, "password") &&
+  //           validate(product.password_confirmation, "confirmation") &&
+  //           validate(product.phone, "phone")
+  //         );
+  // };
 
   useEffect(() => {
     getProduct().then((res) => {
-      setAutProducts(res.data.data);
+      setDataProducts(res.data.data);
     });
   }, []);
 
   const openNew = () => {
-    setProduct(emptyProduct);
     setSubmitted(false);
     setProductDialog(true);
   };
 
   const hideDialog = () => {
+    setProduct(emptyProduct);
     setSubmitted(false);
     setProductDialog(false);
   };
 
   const hideDeleteProductDialog = () => {
     setDeleteProductDialog(false);
-  };
-
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
-  };
-
-  const saveProduct = () => {
-    setSubmitted(true);
-
-    if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
-      if (product.id) {
-        const index = findIndexById(product.id);
-
-        _products[index] = _product;
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Updated",
-          life: 3000,
-        });
-      } else {
-        _product.id = createId();
-        _product.image = "product-placeholder.svg";
-        _products.push(_product);
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Created",
-          life: 3000,
-        });
-      }
-
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptyProduct);
-    }
   };
 
   const editProduct = (product) => {
@@ -105,15 +111,18 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     setProduct(product);
     setDeleteProductDialog(true);
   };
+
   const getData = () => {
-    getProduct().then((res) => setAutProducts(res.data.data));
+    getProduct().then((res) => setDataProducts(res.data.data));
   };
-  const deleteProductInList = () => {
+
+  const deleteProductAuc = () => {
     deleteProduct(idProduct).then(() => {
       setDeleteProductDialog(false);
       setProduct(emptyProduct);
       getData();
     });
+
     toast.current.show({
       severity: "success",
       summary: "Successful",
@@ -122,47 +131,40 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     });
   };
 
-  const findIndexById = (id) => {
-    let index = -1;
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
-        index = i;
-        break;
-      }
+  const saveProduct = () => {
+    setSubmitted(true);
+    // if (validateAll()) {
+    if (product.id) {
+      updateProduct(product.id, product).then(() => {
+        getData();
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Product Updated",
+          life: 3000,
+        });
+        hideDialog();
+      });
+    } else {
+      createProduct(product).then(() => {
+        getData();
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Product Created",
+          life: 3000,
+        });
+        hideDialog();
+      });
     }
-
-    return index;
-  };
-
-  const createId = () => {
-    let id = "";
-    let chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Products Deleted",
-      life: 3000,
-    });
+    // }
   };
 
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || "";
-    let _product = { ...product };
-    _product[`${name}`] = val;
-
-    setProduct(_product);
+    let _Product = { ...product };
+    _Product[`${name}`] = val;
+    setProduct(_Product);
   };
 
   const leftToolbarTemplate = () => {
@@ -175,20 +177,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           onClick={openNew}
         />
       </React.Fragment>
-    );
-  };
-
-  const imageBodyTemplate = (rowData) => {
-    return (
-      <img
-        src={`images/product/${rowData.image}`}
-        onError={(e) =>
-          (e.target.src =
-            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-        }
-        alt={rowData.image}
-        className="product-image"
-      />
     );
   };
 
@@ -222,6 +210,21 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       </span>
     </div>
   );
+
+  const imageBodyTemplate = (rowData) => {
+    return (
+      <img
+        src={`images/product/${rowData.image}`}
+        onError={(e) =>
+          (e.target.src =
+            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+        }
+        alt={rowData.image}
+        className="product-image"
+      />
+    );
+  };
+
   const productDialogFooter = (
     <React.Fragment>
       <Button
@@ -238,6 +241,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       />
     </React.Fragment>
   );
+
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -250,23 +254,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         label="Yes"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteProductInList}
-      />
-    </React.Fragment>
-  );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        className="p-button-text"
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        className="p-button-text"
-        onClick={deleteSelectedProducts}
+        onClick={deleteProductAuc}
       />
     </React.Fragment>
   );
@@ -276,13 +264,12 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       <div className="col-12">
         <div className="datatable-crud-demo">
           <Toast ref={toast} />
-
           <div className="card">
             <h5>{title}</h5>
             <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
             <DataTable
               ref={dt}
-              value={autProducts}
+              value={dataProducts}
               selection={selectedProducts}
               onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
@@ -290,19 +277,24 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               rows={10}
               rowsPerPageOptions={[5, 10, 25]}
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Products"
               globalFilter={globalFilter}
               header={header}
               responsiveLayout="scroll"
             >
               <Column field="id" header="ID" sortable></Column>
-              <Column field="name" header="Name" sortable></Column>
+              <Column field="name" header="Product Name" sortable></Column>
               <Column
-                field="image"
+                field="asset"
                 body={imageBodyTemplate}
-                header="Image"
+                header="Images"
+                sortable
               ></Column>
-              <Column field="description" header="Description"></Column>
+              <Column
+                field="description"
+                header="Description"
+                sortable
+              ></Column>
               <Column field="created_at" header="Created At" sortable></Column>
               <Column
                 body={actionBodyTemplate}
@@ -315,14 +307,15 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={productDialog}
             style={{ width: "450px" }}
-            header="Product Details"
+            header={product.id ? "Update Product" : "Create Product"}
             modal
             className="p-fluid"
             footer={productDialogFooter}
             onHide={hideDialog}
           >
+            {/* name */}
             <div className="field">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="name">Full Name</label>
               <InputText
                 id="name"
                 value={product.name}
@@ -334,9 +327,29 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !product.name && (
-                <small className="p-error">Name is required.</small>
+                <small className="p-error">Product name is required.</small>
               )}
             </div>
+
+            {/* Asset */}
+            {/* <div className="field">
+              <label htmlFor="asset">Full Name</label>
+              <InputText
+                id="asset"
+                value={product.name}
+                onChange={(e) => onInputChange(e, "asset")}
+                required
+                autoFocus
+                className={classNames({
+                  "p-invalid": submitted && !product.asset,
+                })}
+              />
+              {submitted && !product.asset && (
+                <small className="p-error">Product name is required.</small>
+              )}
+            </div> */}
+
+            {/* description */}
             <div className="field">
               <label htmlFor="description">Description</label>
               <InputText
@@ -344,7 +357,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 value={product.description}
                 onChange={(e) => onInputChange(e, "description")}
                 required
-                autoFocus
                 className={classNames({
                   "p-invalid": submitted && !product.description,
                 })}
@@ -370,28 +382,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               />
               {product && (
                 <span>
-                  Are you sure you want to delete <b>{product.name}</b>?
-                </span>
-              )}
-            </div>
-          </Dialog>
-
-          <Dialog
-            visible={deleteProductsDialog}
-            style={{ width: "450px" }}
-            header="Confirm"
-            modal
-            footer={deleteProductsDialogFooter}
-            onHide={hideDeleteProductsDialog}
-          >
-            <div className="confirmation-content">
-              <i
-                className="pi pi-exclamation-triangle mr-3"
-                style={{ fontSize: "2rem" }}
-              />
-              {product && (
-                <span>
-                  Are you sure you want to delete the selected products?
+                  Are you sure you want to{" "}
+                  <b style={{ color: "red" }}>delete</b> <b>{product.name}</b>?
                 </span>
               )}
             </div>

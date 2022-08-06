@@ -149,23 +149,14 @@ const AdminLayout = () => {
 
   const appMenu = [
     {
-      label: "Ngưởi dùng",
+      label: "Người dùng",
       iconClass: "pi pi-cog",
       routePath: "#"
     },
-  ];
-
-  const items = [
-    {
-      label: 'Info',
-      icon: 'pi pi-info-circle',
-      command: () => {
-        window.location.hash = "#"
-      }
-    },
     {
       label: 'Log out',
-      icon: 'pi pi-sign-out',
+      iconClass: 'pi pi-sign-out',
+      routePath: "#",
       command: () => {
         logout();
       }
@@ -179,7 +170,6 @@ const AdminLayout = () => {
         mobileTopbarMenuActive={mobileTopbarMenuActive}
         onMobileTopbarMenuClick={onMobileTopbarMenuClick}
         appMenu={appMenu}
-        items={items}
       />
 
       <div className="layout-sidebar" onClick={onSidebarClick}>
