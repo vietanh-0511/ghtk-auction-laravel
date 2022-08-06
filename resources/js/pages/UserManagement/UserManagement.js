@@ -10,14 +10,12 @@ import { InputText } from "primereact/inputtext";
 import "../../../css/DataTableComponent.css";
 import { createUser, deleteUser, getUser, updateUser } from "../../apiClient";
 
-
 const UserManagement = ({ title = "Empty Page" }) => {
   let emptyUser = {
-    id: null,
     full_name: "",
     email: "",
     password: "", // create
-    password_confirmation: '', // create
+    password_confirmation: "", // create
     address: "",
     phone: "",
   };
@@ -25,7 +23,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const [dataUsers, setDataUsers] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
   const [deleteUserDialog, setDeleteUserDialog] = useState(false);
-  const [deleteUsersDialog, setDeleteusersDialog] = useState(false);
   const [user, setUser] = useState(emptyUser);
   const [selectedUsers, setSelectedUsers] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -37,30 +34,48 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const validate = (value, type) => {
     var check = false;
     switch (type) {
-      case 'email':
-        check = value.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+      case "email":
+        check = value
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          );
         break;
-      case 'password':
-        check = value.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/);
+      case "password":
+        check = value.match(
+          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
+        );
         break;
-      case 'confirmation':
+      case "confirmation":
         check = user.password === user.password_confirmation;
         break;
-      case 'phone':
+      case "phone":
         check = user.phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/);
         break;
     }
     return !check;
-  }
+  };
 
   const validateAll = () => {
-    return user.id ?
-      user.full_name && user.email && user.address && user.phone
-      && !(validate(user.email, 'email') && validate(user.phone, 'phone'))
-      :
-      user.full_name && user.email && user.password && user.password_confirmation && user.address && user.phone
-      && !(validate(user.email, 'email') && validate(user.password, 'password') && validate(user.password_confirmation, 'confirmation') && validate(user.phone, 'phone'))
-  }
+    return user.id
+      ? user.full_name &&
+          user.email &&
+          user.address &&
+          user.phone &&
+          !(validate(user.email, "email") && validate(user.phone, "phone"))
+      : user.full_name &&
+          user.email &&
+          user.password &&
+          user.password_confirmation &&
+          user.address &&
+          user.phone &&
+          !(
+            validate(user.email, "email") &&
+            validate(user.password, "password") &&
+            validate(user.password_confirmation, "confirmation") &&
+            validate(user.phone, "phone")
+          );
+  };
 
   useEffect(() => {
     getUser().then((res) => {
@@ -81,10 +96,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
 
   const hideDeleteUserDialog = () => {
     setDeleteUserDialog(false);
-  };
-
-  const hideDeleteusersDialog = () => {
-    setDeleteusersDialog(false);
   };
 
   const editUser = (user) => {
@@ -120,27 +131,25 @@ const UserManagement = ({ title = "Empty Page" }) => {
     setSubmitted(true);
     if (validateAll()) {
       if (user.id) {
-        updateUser(user.id, user).then((res) => {
-          console.log(res);
+        updateUser(user.id, user).then(() => {
           getData();
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "User Updated",
+            life: 3000,
+          });
+          hideDialog();
         });
-        // toast.current.show({
-        //   severity: "success",
-        //   summary: "Successful",
-        //   detail: "Product Updated",
-        //   life: 3000,
-        // });
-        hideDialog();
       } else {
-        createUser(user).then((res) => {
-          console.log(res);
+        createUser(user).then(() => {
           getData();
-          // toast.current.show({
-          //   severity: "success",
-          //   summary: "Successful",
-          //   detail: "Product Created",
-          //   life: 3000,
-          // });
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "User Created",
+            life: 3000,
+          });
           hideDialog();
         });
       }
@@ -151,7 +160,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
     const val = (e.target && e.target.value) || "";
     let _user = { ...user };
     _user[`${name}`] = val;
-
     setUser(_user);
   };
 
@@ -272,7 +280,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={userDialog}
             style={{ width: "450px" }}
-            header="Product Details"
+            header={user.id ? "Update User" : "Create User"}
             modal
             className="p-fluid"
             footer={userDialogFooter}
@@ -297,58 +305,81 @@ const UserManagement = ({ title = "Empty Page" }) => {
             </div>
 
             {/* email */}
-            {!user.id && <div className="field">
-              <label htmlFor="email">Email</label>
-              <InputText
-                id="email"
-                value={user.email}
-                onChange={(e) => onInputChange(e, "email")}
-                required
-                
-                className={classNames({
-                  "p-invalid": submitted && (!user.email || validate(user.email, 'email')),
-                })}
-              />
-              {submitted && (!user.email || validate(user.email, 'email')) && (
-                <small className="p-error">Email is {!user.email ? 'required' : 'wrong'}.</small>
-              )}
-            </div>}
+            {!user.id && (
+              <div className="field">
+                <label htmlFor="email">Email</label>
+                <InputText
+                  id="email"
+                  value={user.email}
+                  onChange={(e) => onInputChange(e, "email")}
+                  required
+                  className={classNames({
+                    "p-invalid":
+                      submitted &&
+                      (!user.email || validate(user.email, "email")),
+                  })}
+                />
+                {submitted &&
+                  (!user.email || validate(user.email, "email")) && (
+                    <small className="p-error">
+                      Email is {!user.email ? "required" : "wrong"}.
+                    </small>
+                  )}
+              </div>
+            )}
 
             {/* pass */}
-            {!user.id && <div className="field">
-              <label htmlFor="password">Password</label>
-              <InputText
-                id="password"
-                value={user.password}
-                onChange={(e) => onInputChange(e, "password")}
-                required
-                
-                className={classNames({
-                  "p-invalid": submitted && (!user.password || validate(user.password, 'password')),
-                })}
-              />
-              {submitted && (!user.password || validate(user.password, 'password')) && (
-                <small className="p-error">Password is {!user.password ? 'required' : 'wrong'}.</small>
-              )}
-            </div>}
+            {!user.id && (
+              <div className="field">
+                <label htmlFor="password">Password</label>
+                <InputText
+                  id="password"
+                  value={user.password}
+                  onChange={(e) => onInputChange(e, "password")}
+                  required
+                  className={classNames({
+                    "p-invalid":
+                      submitted &&
+                      (!user.password || validate(user.password, "password")),
+                  })}
+                />
+                {submitted &&
+                  (!user.password || validate(user.password, "password")) && (
+                    <small className="p-error">
+                      Password is {!user.password ? "required" : "wrong"}.
+                    </small>
+                  )}
+              </div>
+            )}
 
             {/* conf */}
-            {!user.id && <div className="field">
-              <label htmlFor="password_confirmation">Password confirmation</label>
-              <InputText
-                id="password_confirmation"
-                value={user.password_confirmation}
-                onChange={(e) => onInputChange(e, "password_confirmation")}
-                required
-                
-                className={classNames({
-                  "p-invalid": submitted && (!user.password_confirmation || validate(user.password_confirmation, 'confirmation')),
-                })}
-              />
-              {submitted && (!user.password_confirmation || validate(user.password_confirmation, 'confirmation')) && (
-                <small className="p-error">Password confirmation is {!user.password_confirmation ? 'required' : 'wrong'}.</small>
-              )}
-            </div>}
+            {!user.id && (
+              <div className="field">
+                <label htmlFor="password_confirmation">
+                  Password confirmation
+                </label>
+                <InputText
+                  id="password_confirmation"
+                  value={user.password_confirmation}
+                  onChange={(e) => onInputChange(e, "password_confirmation")}
+                  required
+                  className={classNames({
+                    "p-invalid":
+                      submitted &&
+                      (!user.password_confirmation ||
+                        validate(user.password_confirmation, "confirmation")),
+                  })}
+                />
+                {submitted &&
+                  (!user.password_confirmation ||
+                    validate(user.password_confirmation, "confirmation")) && (
+                    <small className="p-error">
+                      Password confirmation is{" "}
+                      {!user.password_confirmation ? "required" : "wrong"}.
+                    </small>
+                  )}
+              </div>
+            )}
 
             {/* address */}
             <div className="field">
@@ -358,7 +389,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 value={user.address}
                 onChange={(e) => onInputChange(e, "address")}
                 required
-                
                 className={classNames({
                   "p-invalid": submitted && !user.address,
                 })}
@@ -376,13 +406,15 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 value={user.phone}
                 onChange={(e) => onInputChange(e, "phone")}
                 required
-                
                 className={classNames({
-                  "p-invalid": submitted && (!user.phone || validate(user.phone, 'phone')),
+                  "p-invalid":
+                    submitted && (!user.phone || validate(user.phone, "phone")),
                 })}
               />
-              {submitted && (!user.phone || validate(user.phone, 'phone')) && (
-                <small className="p-error">Phone is {!user.phone ? 'required' : 'wrong'}.</small>
+              {submitted && (!user.phone || validate(user.phone, "phone")) && (
+                <small className="p-error">
+                  Phone is {!user.phone ? "required" : "wrong"}.
+                </small>
               )}
             </div>
           </Dialog>
@@ -402,7 +434,9 @@ const UserManagement = ({ title = "Empty Page" }) => {
               />
               {user && (
                 <span>
-                  Are you sure you want to delete <b>{user.name}</b>?
+                  Are you sure you want to{" "}
+                  <b style={{ color: "red" }}>delete</b> <b>{user.full_name}</b>
+                  ?
                 </span>
               )}
             </div>
