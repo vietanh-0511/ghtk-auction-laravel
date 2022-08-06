@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 // Admin
 Route::group([
   'prefix' => 'admin',
-  // 'middleware' => 'isAdmin'
+  'middleware' => 'isAdmin'
 ], function () {
 
   Route::controller(UserController::class)->group(function () {
