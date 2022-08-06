@@ -17,6 +17,7 @@ export function getUser() {
 }
 
 export function createUser(data) {
+  console.log(data);
   return window.axiosApiInstance.post("/admin/user", data);
 }
 
@@ -24,8 +25,8 @@ export function deleteUser(id) {
   return window.axiosApiInstance.delete(`/admin/user/${id}`)
 }
 
-export function updateUser(id) {
-  return window.axiosApiInstance.put(`/admin/user/${id}`)
+export function updateUser(id, data) {
+  return window.axiosApiInstance.put(`/admin/user/${id}`, data)
 }
 
 // Product Management: Autions
