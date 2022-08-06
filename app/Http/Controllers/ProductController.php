@@ -29,7 +29,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -37,25 +37,20 @@ class ProductController extends Controller
         // if ($limit <= 0 || !is_int($limit)) {
         //     return Responder::fail($limit, 'limit invalid');
         // }
-        $products = Product::all();
+        $search = $request->query('search') ?? '';
+        $products = Product::query()->where('name', 'like', "%$search%")->orderByDesc('id')->get();
+        foreach ($products as $product) {
+            $product['asset'] = Asset::query()->where('assetable', '=', $product->id)->first();
+        }
         return Responder::success($products, 'get products success');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreProductRequest $request)
     {
@@ -72,10 +67,14 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the product id must be a number');
+        }
         if (!Product::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }
@@ -83,30 +82,27 @@ class ProductController extends Controller
             ->where('id', $id)
             ->first();
         $assets = Asset::query()->where('assetable', $id)->get();
-        return Responder::success([$product, $assets], 'get product success');
+        return Responder::success([$product, 'assets' => $assets], 'get product success');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateProductRequest $request, $id)
     {
         $product = '';
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the product id must be a number');
+        }
+        if (!Product::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
+        }
         try {
             $product = $this->updateProductAction->handle($request, $id);
         } catch (Exception $e) {
@@ -119,10 +115,14 @@ class ProductController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the product id must be a number');
+        }
         if (!Product::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }

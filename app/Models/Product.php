@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use DateTimeInterface;
 
 class Product extends Model
 {
@@ -23,6 +24,10 @@ class Product extends Model
         'deleted_at'
     ];
 
+    protected function serializeDate(DateTimeInterface $date)
+    {
+      return $date->format('Y-m-d H:i:s');
+    }
 
     public function session()
     {
