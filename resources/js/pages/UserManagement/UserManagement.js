@@ -7,7 +7,6 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import "../../../css/DataTableComponent.css";
 import { createUser, deleteUser, getUser, updateUser } from "../../apiClient";
 
 const UserManagement = ({ title = "Empty Page" }) => {

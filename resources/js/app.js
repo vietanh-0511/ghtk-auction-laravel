@@ -19,6 +19,7 @@ import Layout from "./components/Layout";
 import NoMatch from "./pages/NoMatch";
 import UserManagement from "./pages/UserManagement/UserManagement";
 import ProductManagement from "./pages/ProductManagement/ProductManagement";
+import AuctionManagement from "./pages/AuctionManagement/AuctionManagement";
 
 export const App = () => {
   return (
@@ -49,7 +50,7 @@ export const App = () => {
         />
         <Route
           path="auctions"
-          element={<EmptyPage title="Quản lý đấu giá" />}
+          element={<AuctionManagement title="Quản lý đấu giá" />}
         />
       </Route>
     </Routes>
