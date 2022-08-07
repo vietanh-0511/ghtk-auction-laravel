@@ -54,6 +54,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'user id must be a number');
+        }
         if (!User::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
         }
@@ -73,6 +76,12 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, $id)
     {
         $validated = $request->validated();
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'user id must be a number');
+        }
+        if (!User::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
+        }
         try {
             $userUpdated = User::where('id', $id)->update($validated);
         } catch (Exception $e) {
@@ -90,8 +99,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'user id must be a number');
+        }
         if (!User::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
+        }
+        $user = User::find($id);
+        if ($user->hasRole('admin')) {
+            return Responder::fail($id, 'you cannot delete admin account');
         }
         $deleteUser = User::where('id', $id)->delete();
         return Responder::success($deleteUser, 'delete success');

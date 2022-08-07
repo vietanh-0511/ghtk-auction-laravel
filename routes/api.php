@@ -29,6 +29,8 @@ Route::group([
   Route::controller(UserController::class)->group(function () {
     Route::get('/user', 'index');
     Route::get('/user/{id}', 'show');
+    Route::post('/user', 'store');
+    Route::put('/user/{id}', 'update');
     Route::delete('/user/{id}', 'destroy');
   });
 
