@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AuctionStatusEnum;
 use App\Http\Requests\StoreAutionRequest;
 use App\Models\Auction;
 use App\Models\Session;
@@ -35,6 +36,10 @@ class AuctionController extends Controller
         //     return Responder::fail($limit, 'limit invalid');
         // }
         $auctions = Auction::query()->orderByDesc('id')->get();
+        foreach ($auctions as $auction) {
+            $status = $auction->status;
+            $auction->status = AuctionStatusEnum::getKey($status);
+        }
         return Responder::success($auctions, 'get auctions success');
     }
 
@@ -73,6 +78,7 @@ class AuctionController extends Controller
             return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
         }
         $auction = Auction::query()->where('id', $id)->first();
+        $auction->status = AuctionStatusEnum::getKey($auction->status);
         return Responder::success($auction, 'get auction success');
     }
 
