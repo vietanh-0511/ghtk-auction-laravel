@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 // Admin
 Route::group([
   'prefix' => 'admin',
-  'middleware' => 'isAdmin'
+  'middleware' => 'checkRole:admin'
 ], function () {
 
   Route::controller(UserController::class)->group(function () {
@@ -35,18 +35,24 @@ Route::group([
   });
 
   Route::controller(AuctionController::class)->group(function () {
+    Route::get('/auction', 'index');
+    Route::get('/auction/{id}', 'show');
     Route::post('/auction', 'store');
     Route::put('/auction/{id}', 'update');
     Route::delete('/auction/{id}', 'destroy');
   });
 
   Route::controller(ProductController::class)->group(function () {
+    Route::get('/product', 'index');
+    Route::get('/product/{id}', 'show');
     Route::post('/product', 'store');
     Route::put('/product/{id}', 'update');
     Route::delete('/product/{id}', 'destroy');
   });
 
   Route::controller(SessionController::class)->group(function () {
+    Route::get('/session', 'index');
+    Route::get('/session/{id}', 'show');
     Route::post('/session', 'store');
     Route::put('/session/{id}', 'update');
     Route::delete('/session/{id}', 'destroy');
@@ -69,29 +75,28 @@ Route::group([
 
 // Authenticated User
 Route::group([
-  'middleware' => 'isUser'
+  'middleware' => 'checkRole:user'
 ], function () {
+  Route::controller(AuctionController::class)->group(function () {
+    Route::get('/auction', 'index');
+    Route::get('/auction/{id}', 'show');
+  });
+
+  Route::controller(SessionController::class)->group(function () {
+    Route::get('/session', 'index');
+    Route::get('/session/{id}', 'show');
+  });
+
+  Route::controller(ProductController::class)->group(function () {
+    Route::get('/product', 'index');
+    Route::get('/product/{id}', 'show');
+  });
+
   Route::controller(BidController::class)->group(function () {
     Route::get('/bid', 'index');
     Route::get('/bid/{id}', 'show');
     Route::post('/bid', 'store');
   });
-});
-
-// Anonymous User
-Route::controller(AuctionController::class)->group(function () {
-  Route::get('/auction', 'index');
-  Route::get('/auction/{id}', 'show');
-});
-
-Route::controller(SessionController::class)->group(function () {
-  Route::get('/session', 'index');
-  Route::get('/session/{id}', 'show');
-});
-
-Route::controller(ProductController::class)->group(function () {
-  Route::get('/product', 'index');
-  Route::get('/product/{id}', 'show');
 });
 
 Route::group(

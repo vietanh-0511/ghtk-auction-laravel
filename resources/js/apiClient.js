@@ -31,7 +31,7 @@ export function updateUser(id, data) {
 
 // Product Management: Autions
 export function getProduct() {
-  return window.axiosApiInstance.get(`/product`);
+  return window.axiosApiInstance.get(`/admin/product`);
 }
 
 export function createProduct(data) {
