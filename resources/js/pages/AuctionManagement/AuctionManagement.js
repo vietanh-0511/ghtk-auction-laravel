@@ -50,7 +50,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
-  console.log(dataAuctions);
+
   let idAuction = Auction.id;
 
   useEffect(() => {

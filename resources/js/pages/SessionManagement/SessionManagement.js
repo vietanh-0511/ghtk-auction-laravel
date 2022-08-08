@@ -7,6 +7,9 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { MultiSelect } from "primereact/multiselect";
+
 import {
   createSession,
   getProduct,
@@ -15,6 +18,7 @@ import {
   deleteSession,
   getAuction,
 } from "../../apiClient";
+import { parseInt } from "lodash";
 
 const SessionManagement = ({ title = "Empty Page" }) => {
   let emptySection = {
@@ -31,8 +35,8 @@ const SessionManagement = ({ title = "Empty Page" }) => {
   const [selectedSections, setSelectedSections] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [products, setProducts] = useState([]); 
-  const [auctions, setAutcions] = useState([]); 
+  const [products, setProducts] = useState([]);
+  const [auctions, setAutcions] = useState([]);
   const toast = useRef(null);
   const dt = useRef(null);
 
@@ -41,17 +45,14 @@ const SessionManagement = ({ title = "Empty Page" }) => {
   useEffect(() => {
     getSession().then((res) => {
       setDataSections(res.data.data);
-      console.log("get sesstion: ",res);
     });
 
     getProduct().then((res) => {
       setProducts(res.data.data);
-      console.log("get product: ", res);
     });
 
     getAuction().then((res) => {
       setAutcions(res.data.data);
-      console.log("get Auction: ", res);
     });
   }, []);
   const openNew = () => {
@@ -103,10 +104,11 @@ const SessionManagement = ({ title = "Empty Page" }) => {
     setSubmitted(true);
 
     const _Section = { ...Section };
-
-    // if (validateAll()) {
+    _Section.price_step = parseInt(_Section.price_step);
+    _Section.start_price = parseInt(_Section.start_price);
+    console.log(_Section);
     if (_Section.id) {
-      updateSession(_Section.id, Section).then(() => {
+      updateSession(_Section.id, _Section).then(() => {
         getData();
         toast.current.show({
           severity: "success",
@@ -128,13 +130,13 @@ const SessionManagement = ({ title = "Empty Page" }) => {
         hideDialog();
       });
     }
-    // }
   };
 
   const onInputChange = (e, name) => {
     let _Section = { ...Section };
+    console.log(e.value);
     var val;
-    if (name === "start_time" || name === "end_time") val = e.value;
+    if (name === "start_price" || name === "price_step") val = e.value;
     val = (e.target && e.target.value) || "";
     _Section[`${name}`] = val;
     setSection(_Section);
@@ -243,6 +245,16 @@ const SessionManagement = ({ title = "Empty Page" }) => {
             >
               <Column field="id" header="ID" sortable></Column>
               <Column
+                field="product.name"
+                header="Product Name"
+                sortable
+              ></Column>
+              <Column
+                field="auction.title"
+                header="Auction Name"
+                sortable
+              ></Column>
+              <Column
                 field="start_price"
                 header="Start price"
                 sortable
@@ -254,9 +266,6 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 sortable
               ></Column>
               <Column field="winner_id" header="Winner id" sortable></Column>
-              <Column field="product_id" header="Product id" sortable></Column>
-              <Column field="auction_id" header="Auction id" sortable></Column>
-
               <Column
                 body={sessionBodyTemplate}
                 exportable={false}
@@ -274,21 +283,65 @@ const SessionManagement = ({ title = "Empty Page" }) => {
             footer={SectionDialogFooter}
             onHide={hideDialog}
           >
+            {/* start price */}
             <div className="field">
-              <label htmlFor="title">Title</label>
+              <label htmlFor="start_price">Start Price</label>
               <InputText
-                id="title"
-                value={Section.title}
-                onChange={(e) => onInputChange(e, "title")}
+                id="start_price"
+                value={Section.start_price}
+                onChange={(e) => onInputChange(e, "start_price")}
                 required
                 autoFocus
                 className={classNames({
-                  "p-invalid": submitted && !Section.title,
+                  "p-invalid": submitted && !Section.start_price,
                 })}
               />
               {submitted && !Section.title && (
-                <small className="p-error">Title is required.</small>
+                <small className="p-error">Start Price is required.</small>
               )}
+            </div>
+
+            {/* price step */}
+            <div className="field">
+              <label htmlFor="price_step">Price Step</label>
+              <InputText
+                id="price_step"
+                value={Section.price_step}
+                onChange={(e) => onInputChange(e, "price_step")}
+                required
+                className={classNames({
+                  "p-invalid": submitted && !Section.price_step,
+                })}
+              />
+              {submitted && !Section.title && (
+                <small className="p-error">Price Step is required.</small>
+              )}
+            </div>
+
+            {/* Mutil Select */}
+            <div className="field">
+              <label htmlFor="product_id">Product</label>
+              <Dropdown
+                optionValue="id"
+                value={Section.product_id}
+                options={products}
+                onChange={(e) => onInputChange(e, "product_id")}
+                placeholder="Select a Product"
+                optionLabel="name"
+                virtualScrollerOptions={{ itemSize: 38 }}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="auction_id">Auction</label>
+              <Dropdown
+                optionValue="id"
+                value={Section.auction_id}
+                options={auctions}
+                onChange={(e) => onInputChange(e, "auction_id")}
+                optionLabel="title"
+                placeholder="Select a Auction"
+                virtualScrollerOptions={{ itemSize: 38 }}
+              />
             </div>
           </Dialog>
 
@@ -308,7 +361,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
               {Section && (
                 <span>
                   Are you sure you want to{" "}
-                  <b style={{ color: "red" }}>delete</b> <b>{Section.title}</b>?
+                  <b style={{ color: "red" }}>delete</b> <b>{}</b>?
                 </span>
               )}
             </div>
