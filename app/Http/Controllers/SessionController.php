@@ -35,7 +35,7 @@ class SessionController extends Controller
         // if ($limit <= 0 || !is_int($limit)) {
         //     return Responder::fail($limit, 'limit invalid');
         // }
-        $sessions = Session::query()->orderByDesc('id')->get();
+        $sessions = Session::query()->with(['product', 'auction'])->orderByDesc('id')->get();
         return Responder::success($sessions, 'get sessions success');
     }
 
@@ -73,7 +73,7 @@ class SessionController extends Controller
         if (!Session::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
         }
-        $session = Session::where('id', $id)->first();
+        $session = Session::where('id', $id)->with(['product', 'auction'])->first();
         return Responder::success($session, 'get session success');
     }
 
@@ -120,6 +120,5 @@ class SessionController extends Controller
         }
         $deleteSession = Session::where('id', $id)->delete();
         return Responder::success($deleteSession, 'delete success');
-
     }
 }
