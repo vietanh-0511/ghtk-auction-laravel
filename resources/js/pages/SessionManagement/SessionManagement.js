@@ -8,8 +8,6 @@ import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { MultiSelect } from "primereact/multiselect";
-
 import {
   createSession,
   getProduct,
@@ -86,55 +84,78 @@ const SessionManagement = ({ title = "Empty Page" }) => {
   };
 
   const delSection = () => {
-    deleteSession(idSection).then(() => {
+    deleteSession(idSection).then((res) => {
+      if (res.data.status !== true) {
+        toast.current.show({
+          severity: "error",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      } else {
+        getData();
+        toast.current.show({
+          severity: "success",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      }
       setDeleteSectionDialog(false);
       setSection(emptySection);
-      getData();
-    });
-
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Section Deleted",
-      life: 3000,
     });
   };
 
   const saveSection = () => {
     setSubmitted(true);
-
     const _Section = { ...Section };
     _Section.price_step = parseInt(_Section.price_step);
     _Section.start_price = parseInt(_Section.start_price);
-    console.log(_Section);
     if (_Section.id) {
-      updateSession(_Section.id, _Section).then(() => {
-        getData();
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Section Updated",
-          life: 3000,
-        });
+      updateSession(_Section.id, _Section).then((res) => {
+        if (res.data.status !== true) {
+          toast.current.show({
+            severity: "error",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        } else {
+          getData();
+          toast.current.show({
+            severity: "success",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        }
         hideDialog();
       });
     } else {
-      createSession(_Section).then(() => {
-        getData();
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Section Created",
-          life: 3000,
-        });
-        hideDialog();
+      createSession(_Section).then((res) => {
+        if (res.data.status !== true) {
+          toast.current.show({
+            severity: "error",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        } else {
+          getData();
+          toast.current.show({
+            severity: "success",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+          hideDialog();
+        }
       });
     }
   };
 
   const onInputChange = (e, name) => {
     let _Section = { ...Section };
-    console.log(e.value);
     var val;
     if (name === "start_price" || name === "price_step") val = e.value;
     val = (e.target && e.target.value) || "";
@@ -325,23 +346,41 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 optionValue="id"
                 value={Section.product_id}
                 options={products}
+                defaultValue={undefined}
                 onChange={(e) => onInputChange(e, "product_id")}
                 placeholder="Select a Product"
                 optionLabel="name"
                 virtualScrollerOptions={{ itemSize: 38 }}
+                required
+                showClear
+                className={classNames({
+                  "p-invalid": submitted && !Section.product_id,
+                })}
               />
+              {submitted && !Section.product_id && (
+                <small className="p-error">Product Name is required.</small>
+              )}
             </div>
             <div className="field">
               <label htmlFor="auction_id">Auction</label>
               <Dropdown
                 optionValue="id"
+                defaultValue={undefined}
                 value={Section.auction_id}
                 options={auctions}
                 onChange={(e) => onInputChange(e, "auction_id")}
                 optionLabel="title"
                 placeholder="Select a Auction"
                 virtualScrollerOptions={{ itemSize: 38 }}
+                required
+                showClear
+                className={classNames({
+                  "p-invalid": submitted && !Section.auction_id,
+                })}
               />
+              {submitted && !Section.auction_id && (
+                <small className="p-error">Auction Name is required.</small>
+              )}
             </div>
           </Dialog>
 
