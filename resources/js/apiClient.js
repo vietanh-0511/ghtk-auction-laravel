@@ -63,3 +63,20 @@ export function updateAuction(id, data) {
   return window.axiosApiInstance.put(`/admin/auction/${id}`, data);
 }
 
+// Sessions Management: Autions
+export function getSession() {
+  return window.axiosApiInstance.get(`/session`);
+}
+
+export function createSession(data) {
+  return window.axiosApiInstance.post("/admin/session", data);
+}
+
+export function deleteSession(id) {
+  return window.axiosApiInstance.delete(`/admin/session/${id}`);
+}
+
+export function updateSession(id, data) {
+  return window.axiosApiInstance.put(`/admin/session/${id}`, data);
+}
+

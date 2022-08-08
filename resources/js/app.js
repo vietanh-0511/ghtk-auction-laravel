@@ -20,6 +20,7 @@ import NoMatch from "./pages/NoMatch";
 import UserManagement from "./pages/UserManagement/UserManagement";
 import ProductManagement from "./pages/ProductManagement/ProductManagement";
 import AuctionManagement from "./pages/AuctionManagement/AuctionManagement";
+import SessionManagement from "./pages/SessionManagement/SessionManagement";
 
 export const App = () => {
   return (
@@ -51,6 +52,10 @@ export const App = () => {
         <Route
           path="auctions"
           element={<AuctionManagement title="Quản lý đấu giá" />}
+        />
+        <Route
+          path="sessions"
+          element={<SessionManagement title="Quản lý Sessions" />}
         />
       </Route>
     </Routes>

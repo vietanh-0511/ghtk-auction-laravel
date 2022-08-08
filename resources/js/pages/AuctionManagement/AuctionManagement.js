@@ -16,10 +16,17 @@ import {
 } from "../../apiClient";
 
 function jsToSqlDate(jsDate) {
+  var v = jsDate;
   return (
-    jsDate.toISOString().slice(0, 10) +
+    v.getFullYear() +
+    "-" +
+    (v.getMonth() + 1) +
+    "-" +
+    v.getDate() +
     " " +
-    new Date().toLocaleTimeString("en-GB").slice(0, 5)
+    (v.getHours() < 10 ? "0" + v.getHours() : v.getHours()) +
+    ":" +
+    (v.getMinutes() < 10 ? "0" + v.getMinutes() : v.getMinutes())
   );
 }
 
@@ -43,7 +50,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
-
+  console.log(dataAuctions);
   let idAuction = Auction.id;
 
   useEffect(() => {
@@ -105,10 +112,11 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
     const _Auction = { ...Auction };
     _Auction.start_time = jsToSqlDate(_Auction.start_time);
     _Auction.end_time = jsToSqlDate(_Auction.end_time);
+    console.log(_Auction);
 
     // if (validateAll()) {
     if (_Auction.id) {
-      updateAuction(_Auction.id, Auction).then(() => {
+      updateAuction(_Auction.id, _Auction).then(() => {
         getData();
         toast.current.show({
           severity: "success",
@@ -138,7 +146,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
     var val;
     if (name === "start_time" || name === "end_time") val = e.value;
     val = (e.target && e.target.value) || "";
-    _Auction[`${name}`] = val;
+    _Auction[name] = val;
     setAuction(_Auction);
   };
 
