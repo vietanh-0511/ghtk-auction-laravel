@@ -48,7 +48,7 @@ export function updateProduct(id, data) {
 
 // Auctions Management: Autions
 export function getAuction() {
-  return window.axiosApiInstance.get(`/auction`);
+  return window.axiosApiInstance.get(`/admin/auction`);
 }
 
 export function createAuction(data) {
@@ -65,7 +65,7 @@ export function updateAuction(id, data) {
 
 // Sessions Management: Autions
 export function getSession() {
-  return window.axiosApiInstance.get(`/session`);
+  return window.axiosApiInstance.get(`/admin/session`);
 }
 
 export function createSession(data) {

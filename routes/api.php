@@ -99,12 +99,9 @@ Route::group([
   });
 });
 
-Route::group(
-  [
-    'middleware' => 'api',
+Route::group([
     'prefix' => 'auth'
-  ],
-  function () {
+  ], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
