@@ -32,54 +32,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
   let idProduct = product.id;
 
-  // const validate = (value, type) => {
-  //   var check = false;
-  //   switch (type) {
-  //     case "email":
-  //       check = value
-  //         .toLowerCase()
-  //         .match(
-  //           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  //         );
-  //       break;
-  //     case "password":
-  //       check = value.match(
-  //         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
-  //       );
-  //       break;
-  //     case "confirmation":
-  //       check = pr.password === product.password_confirmation;
-  //       break;
-  //     case "phone":
-  //       check = product.phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/);
-  //       break;
-  //   }
-  //   return !check;
-  // };
-
-  // const validateAll = () => {
-  //   return product.id
-  //     ? product.full_name &&
-  //         product.email &&
-  //         product.address &&
-  //         product.phone &&
-  //         !(
-  //           validate(product.email, "email") && validate(product.phone, "phone")
-  //         )
-  //     : product.full_name &&
-  //         product.email &&
-  //         product.password &&
-  //         product.password_confirmation &&
-  //         product.address &&
-  //         product.phone &&
-  //         !(
-  //           validate(product.email, "email") &&
-  //           validate(product.password, "password") &&
-  //           validate(product.password_confirmation, "confirmation") &&
-  //           validate(product.phone, "phone")
-  //         );
-  // };
-
+  
   useEffect(() => {
     getProduct().then((res) => {
       setDataProducts(res.data.data);

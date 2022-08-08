@@ -7,6 +7,7 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { Calendar } from "primereact/calendar";
 import {
   createAuction,
   deleteAuction,
@@ -14,11 +15,21 @@ import {
   updateAuction,
 } from "../../apiClient";
 
+function jsToSqlDate(jsDate) {
+  return (
+    jsDate.toISOString().slice(0, 10) +
+    " " +
+    new Date().toLocaleTimeString("en-GB").slice(0, 5)
+  );
+}
+
+function sqlToJsDate(sqlDate) {
+  return new Date(Date.parse(sqlDate.replace(/-/g, "/")));
+}
+
 const AuctionManagement = ({ title = "Empty Page" }) => {
   let emptyAuction = {
-    id: null,
     title: "",
-    status: "",
     start_time: "",
     end_time: "",
   };
@@ -34,60 +45,6 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
 
   let idAuction = Auction.id;
-  const status = dataAuctions.forEach((item) => item.status);
-  console.log(status);
-  const statusAuction = () => {
-    const status = dataAuctions.map((item) => item.status);
-  };
-console.log()
-
-  // const validate = (value, type) => {
-  //   var check = false;
-  //   switch (type) {
-  //     case "email":
-  //       check = value
-  //         .toLowerCase()
-  //         .match(
-  //           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  //         );
-  //       break;
-  //     case "password":
-  //       check = value.match(
-  //         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
-  //       );
-  //       break;
-  //     case "confirmation":
-  //       check = Auction.password === Auction.password_confirmation;
-  //       break;
-  //     case "phone":
-  //       check = Auction.phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/);
-  //       break;
-  //   }
-  //   return !check;
-  // };
-
-  // const validateAll = () => {
-  //   return Auction.id
-  //     ? Auction.full_name &&
-  //         Auction.email &&
-  //         Auction.address &&
-  //         Auction.phone &&
-  //         !(
-  //           validate(Auction.email, "email") && validate(Auction.phone, "phone")
-  //         )
-  //     : Auction.full_name &&
-  //         Auction.email &&
-  //         Auction.password &&
-  //         Auction.password_confirmation &&
-  //         Auction.address &&
-  //         Auction.phone &&
-  //         !(
-  //           validate(Auction.email, "email") &&
-  //           validate(Auction.password, "password") &&
-  //           validate(Auction.password_confirmation, "confirmation") &&
-  //           validate(Auction.phone, "phone")
-  //         );
-  // };
 
   useEffect(() => {
     getAuction().then((res) => {
@@ -110,8 +67,11 @@ console.log()
     setDeleteAuctionDialog(false);
   };
 
-  const editAuction = (Auction) => {
-    setAuction({ ...Auction });
+  const editAuction = (row) => {
+    const _row = { ...row };
+    _row.start_time = sqlToJsDate(_row.start_time);
+    _row.end_time = sqlToJsDate(_row.end_time);
+    setAuction(_row);
     setAuctionDialog(true);
   };
 
@@ -141,9 +101,14 @@ console.log()
 
   const saveAuction = () => {
     setSubmitted(true);
+
+    const _Auction = { ...Auction };
+    _Auction.start_time = jsToSqlDate(_Auction.start_time);
+    _Auction.end_time = jsToSqlDate(_Auction.end_time);
+
     // if (validateAll()) {
-    if (Auction.id) {
-      updateAuction(Auction.id, Auction).then(() => {
+    if (_Auction.id) {
+      updateAuction(_Auction.id, Auction).then(() => {
         getData();
         toast.current.show({
           severity: "success",
@@ -154,7 +119,7 @@ console.log()
         hideDialog();
       });
     } else {
-      createAuction(Auction).then(() => {
+      createAuction(_Auction).then(() => {
         getData();
         toast.current.show({
           severity: "success",
@@ -169,8 +134,10 @@ console.log()
   };
 
   const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || "";
     let _Auction = { ...Auction };
+    var val;
+    if (name === "start_time" || name === "end_time") val = e.value;
+    val = (e.target && e.target.value) || "";
     _Auction[`${name}`] = val;
     setAuction(_Auction);
   };
@@ -278,9 +245,7 @@ console.log()
             >
               <Column field="id" header="ID" sortable></Column>
               <Column field="title" header="Title" sortable></Column>
-              <Column field="status" header="Status" sortable>
-                abc
-              </Column>
+              <Column field="status" header="Status" sortable></Column>
               <Column field="start_time" header="Start Time" sortable></Column>
               <Column field="end_time" header="End Time" sortable></Column>
               <Column field="created_at" header="Created At" sortable></Column>
@@ -316,6 +281,46 @@ console.log()
               />
               {submitted && !Auction.title && (
                 <small className="p-error">Title is required.</small>
+              )}
+            </div>
+
+            {/* start time */}
+            <div className="field">
+              <label htmlFor="start_time">Start Time</label>
+              <Calendar
+                id="start_time"
+                value={Auction.start_time}
+                autoFocus
+                showTime={true}
+                showButtonBar={true}
+                showIcon
+                onChange={(e) => onInputChange(e, "start_time")}
+                className={classNames({
+                  "p-invalid": submitted && !Auction.start_time,
+                })}
+              />
+              {submitted && !Auction.start_time && (
+                <small className="p-error">Start Time is required.</small>
+              )}
+            </div>
+
+            {/* end time */}
+            <div className="field">
+              <label htmlFor="end_time">End Time</label>
+              <Calendar
+                id="end_time"
+                value={Auction.end_time}
+                autoFocus
+                showTime
+                showButtonBar
+                showIcon
+                onChange={(e) => onInputChange(e, "end_time")}
+                className={classNames({
+                  "p-invalid": submitted && !Auction.end_time,
+                })}
+              />
+              {submitted && !Auction.end_time && (
+                <small className="p-error">End Time is required.</small>
               )}
             </div>
           </Dialog>
