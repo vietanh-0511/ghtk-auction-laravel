@@ -2,26 +2,28 @@
 
 namespace App\Services\Session;
 
+use App\Models\Auction;
+use App\Models\Product;
 use App\Models\Session;
 use Exception;
 
 class CreateSessionAction
 {
     private $checkPrice;
-    private $checkProduct;
 
     public function __construct(
-        CheckPrice $checkPrice,
-        CheckProrduct $checkProrduct
+        CheckPrice $checkPrice
     ) {
         $this->checkPrice = $checkPrice;
-        $this->checkProduct = $checkProrduct;
     }
 
     public function handle(array $validated)
     {
-        if (!$this->checkProduct->handle($validated)) {
+        if (!Product::query()->where('id', $validated['product_id'])->exists()) {
             throw new Exception('Product does not exist');
+        }
+        if (!Auction::query()->where('id', $validated['auction_id'])->exists()) {
+            throw new Exception('Auction does not exist');
         }
         $this->checkPrice->handle($validated);
         Session::create($validated);

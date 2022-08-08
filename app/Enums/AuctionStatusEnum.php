@@ -3,7 +3,6 @@
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
-// use Illuminate\Validation\Rules\Enum;
 
 /**
  * @method static static OptionOne()
