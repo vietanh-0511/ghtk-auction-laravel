@@ -15,9 +15,15 @@ class UpdateProductAction
 
     public function handle($request, $id)
     {
-        $store = Product::where('id', $id)->update($request->all());
+        Product::where('id', $id)
+            ->update([
+                'name' => $request->name,
+                'description' => $request->description
+            ]);
         if ($request->has('assets')) {
-            $this->assetFilesHandle->handle($request, $store);
+            $assetableType = Product::class;
+            $assetable = $id;
+            $this->assetFilesHandle->handle($request, $assetable, $assetableType);
         }
     }
 }

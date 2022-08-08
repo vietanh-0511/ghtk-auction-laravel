@@ -67,6 +67,9 @@ class SessionController extends Controller
      */
     public function show($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'session id must be a number');
+        }
         if (!Session::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
         }
@@ -86,6 +89,12 @@ class SessionController extends Controller
     {
         $validated = $request->validated();
         $session = '';
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'session id must be a number');
+        }
+        if (!Session::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
+        }
         try {
             $session = $this->updateSessionAction->handle($validated, $id);
         } catch (Exception $e) {
@@ -103,6 +112,9 @@ class SessionController extends Controller
      */
     public function destroy($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'session id must be a number');
+        }
         if (!Session::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
         }

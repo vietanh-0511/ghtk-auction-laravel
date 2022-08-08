@@ -24,6 +24,14 @@ const Layout = () => {
       label: "Người dùng",
       iconClass: "pi pi-cog",
       routePath: "#"
+    },
+    {
+      label: 'Log out',
+      iconClass: 'pi pi-sign-out',
+      routePath: "#",
+      command: () => {
+        logout();
+      }
     }
   ];
 
@@ -132,7 +140,6 @@ const Layout = () => {
         mobileTopbarMenuActive={mobileTopbarMenuActive}
         onMobileTopbarMenuClick={onMobileTopbarMenuClick}
         appMenu={appMenu}
-        items={items}
       />
 
       <div className="layout-main-container">

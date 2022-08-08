@@ -17,7 +17,9 @@ class CreateProductAction
     {
         $store = Product::create($request->all());
         if ($request->has('assets')) {
-            $this->assetFilesHandle->handle($request, $store);
+            $assetableType = Product::class;
+            $assetable = $store->id;
+            $this->assetFilesHandle->handle($request, $assetable, $assetableType);
         }
     }
 }

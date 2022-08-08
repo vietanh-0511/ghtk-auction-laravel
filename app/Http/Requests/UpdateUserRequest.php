@@ -38,7 +38,7 @@ class UpdateUserRequest extends FormRequest
                 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
             ],
             'address' => 'required|string|max:500',
-            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:16',
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|digits:10',
         ];
     }
 }
