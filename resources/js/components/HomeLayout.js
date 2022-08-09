@@ -24,7 +24,7 @@ const HomeLayout = () => {
       user.role === 'admin' ?
         navigate('/admin/dashboard', { replace: true })
         : user.role === 'user' ?
-          navigate('/auctions/live', { replace: true })
+          navigate('/user/auction', { replace: true })
           : null
     }
   }, [user])

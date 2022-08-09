@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       setUser(_user);
       setToken(res.data.access_token);
       if (_user.role === 'admin') navigate("/admin/dashboard", { replace: true });
-      if (_user.role === 'user') navigate("/auctions/live", { replace: true });
+      if (_user.role === 'user') navigate("/user/auction", { replace: true });
     })
   };
 

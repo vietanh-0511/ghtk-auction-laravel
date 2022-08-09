@@ -80,3 +80,7 @@ export function updateSession(id, data) {
   return window.axiosApiInstance.put(`/admin/session/${id}`, data);
 }
 
+// Auction : User
+export function getAuction() {
+  return window.axiosApiInstance.get("/auction");
+}
