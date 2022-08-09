@@ -14,8 +14,8 @@ class Asset extends Model
     protected $fillable = [
         'file_name',
         'mime_type',
-        'assetable',
-        'assetable_type'
+        'assettable',
+        'assettable_type'
     ];
 
     protected function serializeDate(DateTimeInterface $date)
