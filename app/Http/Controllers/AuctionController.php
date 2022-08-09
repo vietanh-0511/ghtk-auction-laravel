@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\AuctionStatusEnum;
 use App\Http\Requests\StoreAutionRequest;
+use App\Models\Asset;
 use App\Models\Auction;
+use App\Models\Product;
 use App\Models\Session;
 use App\Services\Auction\CreateAuctionAction;
 use App\Services\Auction\UpdateAuctionAction;
@@ -79,7 +81,10 @@ class AuctionController extends Controller
         }
         $auction = Auction::query()->where('id', $id)->first();
         $auction->status = AuctionStatusEnum::getKey($auction->status);
-        return Responder::success($auction, 'get auction success');
+        $product->id = Session::select('product_id')->where('auction_id', $id)->get();
+        $product = Product::query()->where('id', $product->id)->first();
+        $assets = Asset::query()->where('assetable', $product->id)->get();
+        return Responder::success([$auction, $product, 'assets' => $assets], 'get auction success');
     }
 
     /**
