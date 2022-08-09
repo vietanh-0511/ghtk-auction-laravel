@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
-import { getAuction } from "../../apiClient";
+import { getUserAuction } from "../../apiClient";
 import { DataScroller } from "primereact/datascroller";
 import "primeicons/primeicons.css";
 import "../../../css/DataScrollerDemo.css";
+import "../../../css/DataTableComponent.css";
 const footer = (
   <span>
     <Button
@@ -14,7 +15,6 @@ const footer = (
     />
   </span>
 );
-
 const ShowAuction = ({
   title = "Empty Page",
   subtitle = "This is empty page",
@@ -22,7 +22,7 @@ const ShowAuction = ({
   const [datas, setDatas] = useState([]);
   const ds = useRef(null);
   useEffect(() => {
-    getAuction().then((res) => {
+    getUserAuction().then((res) => {
       setDatas(res.data.data);
     });
   }, []);
