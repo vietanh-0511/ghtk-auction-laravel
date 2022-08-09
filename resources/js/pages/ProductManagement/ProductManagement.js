@@ -13,6 +13,8 @@ import {
   getProduct,
   updateProduct,
 } from "../../apiClient";
+import { Image } from "primereact/image";
+import "../../../css/app.css";
 
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
@@ -28,9 +30,30 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
+  const [image, setImage] = useState("");
+  const [url, setUrl] = useState([]);
   const toast = useRef(null);
   const dt = useRef(null);
   let idProduct = product.id;
+
+  const imgsss = dataProducts.map((item) => item.asset);
+
+  const uploadImage = () => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "ghtk-auction-laravel");
+    data.append("cloud_name", "ghtk-auction-laravel");
+    fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        const img = data.url;
+        setUrl(img);
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     getProduct().then((res) => {
@@ -93,8 +116,11 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const saveProduct = () => {
     setSubmitted(true);
 
-    if (product.id) {
-      updateProduct(product.id, product).then((res) => {
+    const _product = { ...product };
+    _product.asset.push(url);
+
+    if (_product.id) {
+      updateProduct(_product.id, _product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
@@ -114,7 +140,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         hideDialog();
       });
     } else {
-      createProduct(product).then((res) => {
+      createProduct(_product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
@@ -188,14 +214,16 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   );
 
   const imageBodyTemplate = (rowData) => {
+    console.log(rowData.file_name);
+
+
     return (
       <img
-        src={`images/product/${rowData.image}`}
+        src={`${rowData.file_name}`}
         onError={(e) =>
           (e.target.src =
             "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
         }
-        alt={rowData.image}
         className="product-image"
       />
     );
@@ -264,7 +292,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 field="asset"
                 body={imageBodyTemplate}
                 header="Images"
-                sortable
               ></Column>
               <Column
                 field="description"
@@ -308,22 +335,35 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             </div>
 
             {/* Asset */}
-            {/* <div className="field">
-              <label htmlFor="asset">Full Name</label>
-              <InputText
-                id="asset"
-                value={product.name}
-                onChange={(e) => onInputChange(e, "asset")}
-                required
-                autoFocus
-                className={classNames({
-                  "p-invalid": submitted && !product.asset,
-                })}
-              />
+            <div className="field">
+              <label htmlFor="asset">Images</label>
+              <div className="upload">
+                <div className="input-upload">
+                  <input
+                    id="asset"
+                    multiple
+                    value={imgsss.file_name}
+                    type="file"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+                  <button onClick={uploadImage}>Upload</button>
+                </div>
+                <div className="list-images">
+                  <div>
+                    <Image
+                      width="100"
+                      id="asset"
+                      src={imgsss.file_name}
+                      className="image-product"
+                      preview={true}
+                    />
+                  </div>
+                </div>
+              </div>
               {submitted && !product.asset && (
-                <small className="p-error">Product name is required.</small>
+                <small className="p-error">Image name is required.</small>
               )}
-            </div> */}
+            </div>
 
             {/* description */}
             <div className="field">
