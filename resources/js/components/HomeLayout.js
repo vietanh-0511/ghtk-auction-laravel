@@ -24,7 +24,7 @@ const HomeLayout = () => {
       user.role === 'admin' ?
         navigate('/admin/dashboard', { replace: true })
         : user.role === 'user' ?
-          navigate('/auctions/live', { replace: true })
+          navigate('/user/auction', { replace: true })
           : null
     }
   }, [user])
@@ -110,19 +110,45 @@ const HomeLayout = () => {
 
   const menu = [
     {
-      label: 'Home',
+      label: "Home",
       items: [
-        { label: 'Dashboard', icon: 'pi pi-fw pi-desktop', to: '/admin/dashboard' },
-        { label: 'Quản lý người dùng', icon: 'pi pi-fw pi-user', to: '/admin/users' },
-        { label: 'Cài đặt hệ thống', icon: 'pi pi-fw pi-cog', to: '/admin/settings' },
-      ]
+        {
+          label: "Dashboard",
+          icon: "pi pi-fw pi-desktop",
+          to: "/admin/dashboard",
+        },
+        {
+          label: "Quản lý người dùng",
+          icon: "pi pi-fw pi-user",
+          to: "/admin/users",
+        },
+        {
+          label: "Cài đặt hệ thống",
+          icon: "pi pi-fw pi-cog",
+          to: "/admin/settings",
+        },
+      ],
     },
     {
-      label: 'Auctions', icon: 'pi pi-fw pi-sitemap',
+      label: "Auctions",
+      icon: "pi pi-fw pi-sitemap",
       items: [
-        { label: 'Quản lý Sản phẩm', icon: 'pi pi-fw pi-box', to: '/admin/products' },
-        { label: 'Quản lý Auctions', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/auctions' },
-      ]
+        {
+          label: "Quản lý Sản phẩm",
+          icon: "pi pi-fw pi-box",
+          to: "/admin/products",
+        },
+        {
+          label: "Quản lý Auctions",
+          icon: "pi pi-fw pi-shopping-cart",
+          to: "/admin/auctions",
+        },
+        {
+          label: "Quản lý Sessions",
+          icon: "pi pi-fw pi-shopping-cart",
+          to: "/admin/sessions",
+        },
+      ],
     },
   ];
 

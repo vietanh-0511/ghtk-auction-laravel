@@ -7,7 +7,6 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import "../../../css/DataTableComponent.css";
 import { createUser, deleteUser, getUser, updateUser } from "../../apiClient";
 
 const UserManagement = ({ title = "Empty Page" }) => {
@@ -24,7 +23,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const [userDialog, setUserDialog] = useState(false);
   const [deleteUserDialog, setDeleteUserDialog] = useState(false);
   const [user, setUser] = useState(emptyUser);
-  const [selectedUsers, setSelectedUsers] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
@@ -113,17 +111,25 @@ const UserManagement = ({ title = "Empty Page" }) => {
   };
 
   const deleteuser = () => {
-    deleteUser(idUser).then(() => {
+    deleteUser(idUser).then((res) => {
+      if (res.data.status !== true) {
+        toast.current.show({
+          severity: "error",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      } else {
+        getData();
+        toast.current.show({
+          severity: "success",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      }
       setDeleteUserDialog(false);
       setUser(emptyUser);
-      getData();
-    });
-
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "user Deleted",
-      life: 3000,
     });
   };
 
@@ -131,25 +137,43 @@ const UserManagement = ({ title = "Empty Page" }) => {
     setSubmitted(true);
     if (validateAll()) {
       if (user.id) {
-        updateUser(user.id, user).then(() => {
-          getData();
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "User Updated",
-            life: 3000,
-          });
+        updateUser(user.id, user).then((res) => {
+          if (res.data.status !== true) {
+            toast.current.show({
+              severity: "error",
+              summary: "Notification",
+              detail: res.data.message,
+              life: 5000,
+            });
+          } else {
+            getData();
+            toast.current.show({
+              severity: "success",
+              summary: "Notification",
+              detail: res.data.message,
+              life: 5000,
+            });
+          }
           hideDialog();
         });
       } else {
-        createUser(user).then(() => {
-          getData();
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "User Created",
-            life: 3000,
-          });
+        createUser(user).then((res) => {
+          if (res.data.status !== true) {
+            toast.current.show({
+              severity: "error",
+              summary: "Notification",
+              detail: res.data.message,
+              life: 5000,
+            });
+          } else {
+            getData();
+            toast.current.show({
+              severity: "success",
+              summary: "Notification",
+              detail: res.data.message,
+              life: 5000,
+            });
+          }
           hideDialog();
         });
       }
@@ -252,8 +276,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
             <DataTable
               ref={dt}
               value={dataUsers}
-              selection={selectedUsers}
-              onSelectionChange={(e) => setSelectedUsers(e.value)}
               dataKey="id"
               paginator
               rows={10}
