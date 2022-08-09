@@ -46,6 +46,40 @@ export function updateProduct(id, data) {
   return window.axiosApiInstance.put(`/admin/product/${id}`, data);
 }
 
+// Auctions Management: Autions
+export function getAuction() {
+  return window.axiosApiInstance.get(`/auction`);
+}
+
+export function createAuction(data) {
+  return window.axiosApiInstance.post("/admin/auction", data);
+}
+
+export function deleteAuction(id) {
+  return window.axiosApiInstance.delete(`/admin/auction/${id}`);
+}
+
+export function updateAuction(id, data) {
+  return window.axiosApiInstance.put(`/admin/auction/${id}`, data);
+}
+
+// Sessions Management: Autions
+export function getSession() {
+  return window.axiosApiInstance.get(`/session`);
+}
+
+export function createSession(data) {
+  return window.axiosApiInstance.post("/admin/session", data);
+}
+
+export function deleteSession(id) {
+  return window.axiosApiInstance.delete(`/admin/session/${id}`);
+}
+
+export function updateSession(id, data) {
+  return window.axiosApiInstance.put(`/admin/session/${id}`, data);
+}
+
 // Auction : User
 export function getAuction() {
   return window.axiosApiInstance.get("/auction");
