@@ -45,3 +45,8 @@ export function deleteProduct(id) {
 export function updateProduct(id, data) {
   return window.axiosApiInstance.put(`/admin/product/${id}`, data);
 }
+
+// Auction : User
+export function getAuction() {
+  return window.axiosApiInstance.get("/auction");
+}

@@ -19,6 +19,7 @@ import Layout from "./components/Layout";
 import NoMatch from "./pages/NoMatch";
 import UserManagement from "./pages/UserManagement/UserManagement";
 import ProductManagement from "./pages/ProductManagement/ProductManagement";
+import ShowAuction from "./pages/User/ShowAuction";
 
 export const App = () => {
   return (
@@ -29,8 +30,8 @@ export const App = () => {
         <Route path="register" element={<RegisterPage title="Đăng ký" />} />
       </Route>
 
-      <Route path="/auctions" element={<Layout />}>
-        <Route path="live" element={<EmptyPage title="Đấu giá" />} />
+      <Route path="/user" element={<Layout />}>
+        <Route path="auction" element={<ShowAuction title="Đấu giá" />} />
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>
