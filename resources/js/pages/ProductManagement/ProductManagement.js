@@ -39,6 +39,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
 
   const handleUploadImage = (e) => {
+    console.log(e)
     const data = new FormData();
     data.append("file", e.files[0]);
     data.append("upload_preset", "ghtk-auction-laravel");
@@ -49,6 +50,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     })
       .then((resp) => resp.json())
       .then((data) => {
+        console.log(data)
         product.assets.push(data.url);
         setUrl(data.url);
         toast.current.show({
@@ -350,6 +352,11 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                     value={product.assets}
                     customUpload
                     uploadHandler={handleUploadImage}
+                    emptyTemplate={
+                      <p className="m-0">
+                        Drag and drop files to here to upload.
+                      </p>
+                    }
                   />
                   {submitted && !product.assets && (
                     <small className="p-error">Image name is required.</small>
