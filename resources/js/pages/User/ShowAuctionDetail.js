@@ -11,32 +11,29 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import "../../../../css/DataTableComponent.css";
-import { getUserAuction, getUserAuctionById } from "../../../apiClient";
+import "../../../css/DataScrollerDemo.css";
+import "../../../css/DataTableComponent.css";
+import { getUserAuction, getUserAuctionById } from "../../apiClient"
 
 function sqlToJsDate(sqlDate) {
     return new Date(Date.parse(sqlDate.replace(/-/g, "/")));
 }
 
-function secondsToTime(secs) {
-    let hours = Math.floor(secs / (60 * 60));
+function convertMsToTime(ms) {
+    var seconds = Math.floor((ms / 1000) % 60),
+        minutes = Math.floor((ms / (1000 * 60)) % 60),
+        hours = Math.floor(ms / (1000 * 60 * 60));
 
-    let divisor_for_minutes = secs % (60 * 60);
-    let minutes = Math.floor(divisor_for_minutes / 60);
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-    let divisor_for_seconds = divisor_for_minutes % 60;
-    let seconds = Math.ceil(divisor_for_seconds);
-
-    return {
-        "h": hours,
-        "m": minutes,
-        "s": seconds
-    };
+    return hours + ":" + minutes + ":" + seconds;
 }
 
-const UserAuctionDetail = ({ title = "Empty Page" }) => {
+const ShowAuctionDetail = ({ title = "Empty Page" }) => {
     const [data, setData] = useState([]);
-    const [value1, setValue1] = useState(0);
+    const [value2, setValue2] = useState(null);
     const interval = useRef(null);
     const navigate = useNavigate();
 
@@ -44,30 +41,24 @@ const UserAuctionDetail = ({ title = "Empty Page" }) => {
         getUserAuctionById(parseInt(window.location.pathname.split('/')[4])).then((res) => {
             const resData = res.data.data;
             setData(resData);
-            setValue1(sqlToJsDate(resData.end_time).getTime() - new Date().getTime()) // fix me
-            console.log(resData)
-        });
-    }, []);
 
-    useEffect(() => {
-        let val = parseInt(value1);
-        interval.current = setInterval(() => {
-            val = val - 1;
+            let val = sqlToJsDate(resData.end_time).getTime() - new Date().getTime();
+            interval.current = setInterval(() => {
+                val = val - 1000;
+                if (val <= 0) {
+                    val = 0;
+                    clearInterval(interval.current);
+                }
+                setValue2(convertMsToTime(val));
+            }, 1000);
 
-            // if (val <= 0) {
-            //     val = 0;
-            //     clearInterval(interval.current);
-            // }
-
-            setValue1(val);
-        }, 1000);
-
-        return () => {
-            if (interval.current) {
-                clearInterval(interval.current);
-                interval.current = null;
+            return () => {
+                if (interval.current) {
+                    clearInterval(interval.current);
+                    interval.current = null;
+                }
             }
-        }
+        });
     }, []);
 
     return (
@@ -79,9 +70,10 @@ const UserAuctionDetail = ({ title = "Empty Page" }) => {
                             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                                 <p>Start time: {data.start_time}</p>
                                 <p>End time: {data.end_time}</p>
-                                <p>Time left: {value1}</p>
+                                <p>Time left: {value2}</p>
                             </div>
                         </Card>
+                        
                     </div>
                 </div>
             </div>
@@ -89,4 +81,4 @@ const UserAuctionDetail = ({ title = "Empty Page" }) => {
     );
 };
 
-export default UserAuctionDetail;
+export default ShowAuctionDetail;

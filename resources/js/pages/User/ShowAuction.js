@@ -1,19 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
-import { getAuction } from "../../apiClient";
+import { getUserAuction } from "../../apiClient";
 import { DataScroller } from "primereact/datascroller";
 import "primeicons/primeicons.css";
 import "../../../css/DataScrollerDemo.css";
-const footer = (
-  <span>
-    <Button
-      label="Detail"
-      icon="pi pi-pencil"
-      className="p-button-rounded p-button-secondary"
-    />
-  </span>
-);
+import "../../../css/DataTableComponent.css";
+import { useNavigate } from "react-router-dom";
 
 const ShowAuction = ({
   title = "Empty Page",
@@ -21,19 +14,31 @@ const ShowAuction = ({
 }) => {
   const [datas, setDatas] = useState([]);
   const ds = useRef(null);
+  const navigate = useNavigate();
   useEffect(() => {
-    getAuction().then((res) => {
+    getUserAuction().then((res) => {
       setDatas(res.data.data);
     });
   }, []);
-  console.log(datas);
+
+  const footer = (id) =>
+    <span>
+      <Button
+        label="Detail"
+        icon="pi pi-pencil"
+        className="p-button-rounded p-button-secondary"
+        onClick={() => {
+          navigate(`${id}`);
+        }}
+      />
+    </span>
 
   const itemTemplate = (datas) => {
     return (
       <div style={{ textAlign: "center", color: "#3B82F6" }}>
         <div className="grid" style={{ textAlign: "-webkit-center" }}>
           <div className="col-3" key={datas.id}>
-            <Card style={{ width: "25em", display: "flex" }} footer={footer}>
+            <Card style={{ width: "25em", display: "flex" }} footer={() => footer(datas.id)}>
               <h4 style={{ color: "#3B82F6" }}>{datas.title}</h4>
               <p>Status : {datas.status}</p>
               <p>Start Time : {datas.start_time}</p>

@@ -81,6 +81,10 @@ export function updateSession(id, data) {
 }
 
 // Auction : User
-export function getAuction() {
+export function getUserAuction() {
   return window.axiosApiInstance.get("/auction");
+}
+
+export function getUserAuctionById(id) {
+  return window.axiosApiInstance.get(`/auction/${id}`);
 }
