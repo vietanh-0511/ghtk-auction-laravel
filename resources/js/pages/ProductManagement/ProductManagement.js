@@ -207,7 +207,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
   const header = (
     <div className="table-header">
-      <h5 className="mx-0 my-1">Manage Products</h5>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -223,7 +222,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     return (
       <Image
         preview={true}
-        width="150"
+        width="100"
         src={`${
           rowData.asset !== null
             ? rowData.asset.file_name
