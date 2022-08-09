@@ -28,8 +28,11 @@
         "sass-loader": "^11.0.1"
     },
     "dependencies": {
+        "@cloudinary/react": "^1.4.1",
+        "@cloudinary/url-gen": "^1.8.0",
         "chart.js": "^3.8.0",
         "classnames": "^2.3.1",
+        "cloudinary-react": "^1.8.1",
         "laravel-echo": "^1.12.1",
         "primeflex": "^3.2.1",
         "primeicons": "^5.0.0",

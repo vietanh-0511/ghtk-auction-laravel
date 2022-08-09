@@ -1,0 +1,10 @@
+.list-images {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.list-images div {
+    padding: 12px;
+}
