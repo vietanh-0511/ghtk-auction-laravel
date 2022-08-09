@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSessionRequest extends FormRequest
 {
@@ -26,7 +27,11 @@ class StoreSessionRequest extends FormRequest
         return [
             "start_price" => ['required', 'numeric', 'min:0'],
             "price_step" => ['required', 'numeric', 'min:0'],
-            "product_id" => ['required', 'numeric', 'unique:App\Models\Session,product_id'],
+            "product_id" => [
+                'required',
+                'numeric',
+                Rule::unique('App\Models\Session')->whereNull('deleted_at')
+            ],
             "auction_id" => ['required', 'numeric']
         ];
     }

@@ -30,7 +30,7 @@ class UpdateSessionRequest extends FormRequest
             "product_id" => [
                 'required',
                 'numeric',
-                Rule::unique('sessions', 'product_id')->ignore($this->id)
+                Rule::unique('App\Models\Session')->ignore($this->id)->whereNull('deleted_at')
             ],
             "auction_id" => ['required', 'numeric']
         ];
