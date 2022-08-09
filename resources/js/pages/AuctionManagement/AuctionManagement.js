@@ -92,17 +92,25 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
   };
 
   const delAuction = () => {
-    deleteAuction(idAuction).then(() => {
+    deleteAuction(idAuction).then((res) => {
+      if (res.data.status !== true) {
+        toast.current.show({
+          severity: "error",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      } else {
+        getData();
+        toast.current.show({
+          severity: "success",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      }
       setDeleteAuctionDialog(false);
       setAuction(emptyAuction);
-      getData();
-    });
-
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Auction Deleted",
-      life: 3000,
     });
   };
 
@@ -112,29 +120,47 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
     const _Auction = { ...Auction };
     _Auction.start_time = jsToSqlDate(_Auction.start_time);
     _Auction.end_time = jsToSqlDate(_Auction.end_time);
-    console.log(_Auction);
+
 
     // if (validateAll()) {
     if (_Auction.id) {
-      updateAuction(_Auction.id, _Auction).then(() => {
-        getData();
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Auction Updated",
-          life: 3000,
-        });
+      updateAuction(_Auction.id, _Auction).then((res) => {
+        if (res.data.status !== true) {
+          toast.current.show({
+            severity: "error",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        } else {
+          getData();
+          toast.current.show({
+            severity: "success",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        }
         hideDialog();
       });
     } else {
-      createAuction(_Auction).then(() => {
-        getData();
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Auction Created",
-          life: 3000,
-        });
+      createAuction(_Auction).then((res) => {
+        if (res.data.status !== true) {
+          toast.current.show({
+            severity: "error",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        } else {
+          getData();
+          toast.current.show({
+            severity: "success",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        }
         hideDialog();
       });
     }

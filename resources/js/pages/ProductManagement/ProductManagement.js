@@ -32,7 +32,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
   let idProduct = product.id;
 
-  
   useEffect(() => {
     getProduct().then((res) => {
       setDataProducts(res.data.data);
@@ -69,47 +68,72 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   };
 
   const deleteProductAuc = () => {
-    deleteProduct(idProduct).then(() => {
+    deleteProduct(idProduct).then((res) => {
+      if (res.data.status !== true) {
+        toast.current.show({
+          severity: "error",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      } else {
+        getData();
+        toast.current.show({
+          severity: "success",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      }
       setDeleteProductDialog(false);
       setProduct(emptyProduct);
-      getData();
-    });
-
-    toast.current.show({
-      severity: "success",
-      summary: "Successful",
-      detail: "Product Deleted",
-      life: 3000,
     });
   };
 
   const saveProduct = () => {
     setSubmitted(true);
-    // if (validateAll()) {
+
     if (product.id) {
-      updateProduct(product.id, product).then(() => {
-        getData();
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Updated",
-          life: 3000,
-        });
+      updateProduct(product.id, product).then((res) => {
+        if (res.data.status !== true) {
+          toast.current.show({
+            severity: "error",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        } else {
+          getData();
+          toast.current.show({
+            severity: "success",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        }
         hideDialog();
       });
     } else {
-      createProduct(product).then(() => {
-        getData();
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Product Created",
-          life: 3000,
-        });
+      createProduct(product).then((res) => {
+        if (res.data.status !== true) {
+          toast.current.show({
+            severity: "error",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        } else {
+          getData();
+          toast.current.show({
+            severity: "success",
+            summary: "Notification",
+            detail: res.data.message,
+            life: 5000,
+          });
+        }
         hideDialog();
       });
     }
-    // }
   };
 
   const onInputChange = (e, name) => {
