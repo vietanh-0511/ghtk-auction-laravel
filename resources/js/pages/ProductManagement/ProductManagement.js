@@ -19,7 +19,7 @@ import "../../../css/app.css";
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
     name: "",
-    asset: [],
+    assets: [],
     description: "",
   };
 
@@ -37,7 +37,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   let idProduct = product.id;
 
   const imgsss = dataProducts.map((item) => item.asset);
-
+  console.log(product);
   const uploadImage = () => {
     const data = new FormData();
     data.append("file", image);
@@ -50,6 +50,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       .then((resp) => resp.json())
       .then((data) => {
         const img = data.url;
+        product.assets.push(img);
         setUrl(img);
       })
       .catch((err) => console.log(err));
@@ -117,7 +118,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     setSubmitted(true);
 
     const _product = { ...product };
-    _product.asset.push(url);
+    // _product.asset.push(url);
 
     if (_product.id) {
       updateProduct(_product.id, _product).then((res) => {
@@ -214,12 +215,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   );
 
   const imageBodyTemplate = (rowData) => {
-    console.log(rowData.file_name);
-
+    console.log(rowData.asset.file_name);
 
     return (
-      <img
-        src={`${rowData.file_name}`}
+      <Image
+        preview={true}
+        width='150'
+        src={`${rowData.asset.file_name}`}
         onError={(e) =>
           (e.target.src =
             "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
@@ -289,7 +291,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               <Column field="id" header="ID" sortable></Column>
               <Column field="name" header="Product Name" sortable></Column>
               <Column
-                field="asset"
+                field="assets"
                 body={imageBodyTemplate}
                 header="Images"
               ></Column>
@@ -336,31 +338,28 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
             {/* Asset */}
             <div className="field">
-              <label htmlFor="asset">Images</label>
+              <label htmlFor="assets">Images</label>
               <div className="upload">
                 <div className="input-upload">
                   <input
-                    id="asset"
+                    id="assets"
                     multiple
-                    value={imgsss.file_name}
                     type="file"
                     onChange={(e) => setImage(e.target.files[0])}
                   />
                   <button onClick={uploadImage}>Upload</button>
                 </div>
-                <div className="list-images">
+                {/* <div className="list-images">
                   <div>
                     <Image
                       width="100"
-                      id="asset"
-                      src={imgsss.file_name}
                       className="image-product"
                       preview={true}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
-              {submitted && !product.asset && (
+              {submitted && !product.assets && (
                 <small className="p-error">Image name is required.</small>
               )}
             </div>
