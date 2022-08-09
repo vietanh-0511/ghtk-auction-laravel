@@ -1,5 +1,5 @@
 import LoginPage from "./pages/LoginPage";
-
+import '../css/app.css'
 require("./bootstrap");
 import { Routes, Route, BrowserRouter, HashRouter } from "react-router-dom";
 import AdminLayout from "./components/AdminLayout";
@@ -23,6 +23,7 @@ import ShowAuction from "./pages/User/ShowAuction";
 import AuctionManagement from "./pages/AuctionManagement/AuctionManagement";
 import SessionManagement from "./pages/SessionManagement/SessionManagement";
 import ShowAuctionDetail from "./pages/User/ShowAuctionDetail";
+import ShowProduct from "./pages/User/ShowProduct";
 
 export const App = () => {
   return (
@@ -38,7 +39,9 @@ export const App = () => {
       </Route>
 
       <Route path="/user/auction" element={<Layout />}>
-        <Route path=":id" element={<ShowAuctionDetail title="Đấu giá" />} />
+        <Route path=":id" element={<ShowAuctionDetail title="Đấu giá" />}>
+          <Route path="product/:pid" element={<ShowProduct />} />
+        </Route>
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>

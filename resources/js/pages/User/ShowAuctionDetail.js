@@ -1,19 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutlet } from 'react-router-dom';
 import { Card } from 'primereact/card';
-import { ProgressBar } from 'primereact/progressbar';
+import { DataScroller } from 'primereact/datascroller';
+import { Image } from 'primereact/image';
+import { Button } from 'primereact/button';
+import { getUserAuctionById } from "../../apiClient"
 
-import { classNames } from "primereact/utils";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Toast } from "primereact/toast";
-import { Button } from "primereact/button";
-import { Toolbar } from "primereact/toolbar";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import "../../../css/DataScrollerDemo.css";
-import "../../../css/DataTableComponent.css";
-import { getUserAuction, getUserAuctionById } from "../../apiClient"
+export const AuctionDetailContext = React.createContext({});
 
 function sqlToJsDate(sqlDate) {
     return new Date(Date.parse(sqlDate.replace(/-/g, "/")));
@@ -32,17 +25,41 @@ function convertMsToTime(ms) {
 }
 
 const ShowAuctionDetail = ({ title = "Empty Page" }) => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
     const [value2, setValue2] = useState(null);
     const interval = useRef(null);
     const navigate = useNavigate();
+    const outlet = useOutlet();
+    const [currentSession, setCurrentSession] = useState(null);
 
+    const itemTemplate = (product) => {
+        return (
+            <div className="product-item">
+                <Image
+                    src={product.assets ? product.assets : "https://cataas.com/cat"}
+                    alt={product.name + '-img'}
+                    style={{ objectFit: 'cover' }} />
+                <div className="product-detail">
+                    <div className="product-name">{product.name}</div>
+                    <div className="product-description">{product.description}</div>
+                </div>
+                <div className="product-action">
+                    <Button icon="pi pi-shopping-cart" label="Detail" className="p-button-link" onClick={() => {
+                        setCurrentSession(product.id);
+                        navigate(`product/${product.id}`);
+                    }} />
+                </div>
+            </div>
+        );
+    }
+
+    // countdown
     useEffect(() => {
         getUserAuctionById(parseInt(window.location.pathname.split('/')[4])).then((res) => {
             const resData = res.data.data;
             setData(resData);
 
-            let val = sqlToJsDate(resData.end_time).getTime() - new Date().getTime();
+            let val = sqlToJsDate(resData.auction.end_time).getTime() - new Date().getTime();
             interval.current = setInterval(() => {
                 val = val - 1000;
                 if (val <= 0) {
@@ -62,22 +79,35 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
     }, []);
 
     return (
-        <div className="grid">
-            <div className="col-12">
-                <div className="datatable-crud-demo">
-                    <div className="card">
-                        <Card title={data.title}>
-                            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                <p>Start time: {data.start_time}</p>
-                                <p>End time: {data.end_time}</p>
-                                <p>Time left: {value2}</p>
+        <AuctionDetailContext.Provider value={{
+            data: data,
+            currentSession: currentSession,
+            // setCurrentSession: setCurrentSession,
+        }}>
+            <div>
+                <div className="datascroller-demo">
+                    {data && <Card title={data.auction.title} className="card-cover">
+                        <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                            <p>Start time: {data.auction.start_time}</p>
+                            <p>End time: {data.auction.end_time}</p>
+                            <p>Time left: {value2}</p>
+                        </div>
+                    </Card>}
+                    <br />
+                    {data &&
+                        <div style={{ display: 'flex' }}>
+                            <div className="card" id="custom-p-datascroller">
+                                <DataScroller value={data.session.map(i => i.product)} itemTemplate={itemTemplate} rows={5} inline scrollHeight="700px"
+                                />
                             </div>
-                        </Card>
-                        
-                    </div>
+                            <div className="card" style={{ flex: 1, marginLeft: '1rem' }}>
+                                {outlet}
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
-        </div>
+        </AuctionDetailContext.Provider>
     );
 };
 

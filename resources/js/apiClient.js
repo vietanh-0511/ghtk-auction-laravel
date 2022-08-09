@@ -17,7 +17,6 @@ export function getUser() {
 }
 
 export function createUser(data) {
-  console.log(data);
   return window.axiosApiInstance.post("/admin/user", data);
 }
 
@@ -87,4 +86,9 @@ export function getUserAuction() {
 
 export function getUserAuctionById(id) {
   return window.axiosApiInstance.get(`/auction/${id}`);
+}
+
+// Session : User
+export function getUserSessionById(id) {
+  return window.axiosApiInstance.get(`/session/${id}`);
 }

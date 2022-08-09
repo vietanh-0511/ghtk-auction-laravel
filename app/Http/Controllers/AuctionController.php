@@ -81,10 +81,12 @@ class AuctionController extends Controller
         }
         $auction = Auction::query()->where('id', $id)->first();
         $auction->status = AuctionStatusEnum::getKey($auction->status);
-        $productid = Session::select('product_id')->where('auction_id', $id)->get();
-        $product = Product::query()->where('id', $productid)->first();
-        $assets = Asset::query()->where('assetable', $productid)->get();
-        return Responder::success([$auction, $product, 'assets' => $assets], 'get auction success');
+
+        $session = Session::with('product')->where('auction_id',$id)->get();
+        // $product = Product::query()->where('id', $session)->first();
+        // dd($session);
+        $assets = Asset::query()->where('assetable', $session)->get();
+        return Responder::success(['auction'=> $auction, 'session' => $session], 'get auction success');
     }
 
     /**
