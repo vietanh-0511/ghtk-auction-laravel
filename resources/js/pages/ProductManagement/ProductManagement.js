@@ -13,6 +13,7 @@ import {
   getProduct,
   updateProduct,
 } from "../../apiClient";
+import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
 import "../../../css/app.css";
 
@@ -30,16 +31,16 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [image, setImage] = useState("");
   const [url, setUrl] = useState([]);
   const toast = useRef(null);
   const dt = useRef(null);
   let idProduct = product.id;
 
-  console.log(product);
-  const uploadImage = () => {
+
+
+  const handleUploadImage = (e) => {
     const data = new FormData();
-    data.append("file", image);
+    data.append("file", e.files[0]);
     data.append("upload_preset", "ghtk-auction-laravel");
     data.append("cloud_name", "ghtk-auction-laravel");
     fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
@@ -48,9 +49,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        const img = data.url;
-        product.assets.push(img);
-        setUrl(img);
+        product.assets.push(data.url);
+        setUrl(data.url);
+        toast.current.show({
+          severity: "info",
+          summary: "Success",
+          detail: "File Uploaded",
+        });
       })
       .catch((err) => console.log(err));
   };
@@ -213,17 +218,15 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   );
 
   const imageBodyTemplate = (rowData) => {
-    console.log(rowData.asset.file_name);
-
     return (
       <Image
         preview={true}
         width="150"
-        src={`${rowData.asset.file_name}`}
-        onError={(e) =>
-          (e.target.src =
-            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-        }
+        src={`${
+          rowData.asset !== null
+            ? rowData.asset.file_name
+            : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
+        }`}
         className="product-image"
       />
     );
@@ -339,28 +342,18 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               <label htmlFor="assets">Images</label>
               <div className="upload">
                 <div className="input-upload">
-                  <input
+                  <FileUpload
                     id="assets"
                     multiple={true}
-                    type="file"
-                    required={true}
+                    url="https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload"
                     accept="image/*"
                     value={product.assets}
-                    onChange={(e) => setImage(e.target.files[0])}
+                    customUpload
+                    uploadHandler={handleUploadImage}
                   />
                   {submitted && !product.assets && (
                     <small className="p-error">Image name is required.</small>
                   )}
-                  <button onClick={uploadImage}>Upload</button>
-                </div>
-                <div className="list-images">
-                  <div>
-                    <Image
-                      width="100"
-                      className="image-product"
-                      preview={true}
-                    />
-                  </div>
                 </div>
               </div>
             </div>
