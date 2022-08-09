@@ -13,7 +13,7 @@ const LoginPage = ({ title }) => {
 
   const { login } = useAuth();
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
     login(credential);
   };
 
