@@ -36,7 +36,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
   let idProduct = product.id;
 
-  const imgsss = dataProducts.map((item) => item.asset);
   console.log(product);
   const uploadImage = () => {
     const data = new FormData();
@@ -97,7 +96,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         toast.current.show({
           severity: "error",
           summary: "Notification",
-          detail: res.data.message,
+          detail: res.data.message || "Error Delete",
           life: 5000,
         });
       } else {
@@ -118,7 +117,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     setSubmitted(true);
 
     const _product = { ...product };
-    // _product.asset.push(url);
 
     if (_product.id) {
       updateProduct(_product.id, _product).then((res) => {
@@ -126,7 +124,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Update",
             life: 5000,
           });
         } else {
@@ -146,7 +144,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Create",
             life: 5000,
           });
         } else {
@@ -157,8 +155,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     }
   };
@@ -220,7 +218,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     return (
       <Image
         preview={true}
-        width='150'
+        width="150"
         src={`${rowData.asset.file_name}`}
         onError={(e) =>
           (e.target.src =
@@ -343,13 +341,19 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 <div className="input-upload">
                   <input
                     id="assets"
-                    multiple
+                    multiple={true}
                     type="file"
+                    required={true}
+                    accept="image/*"
+                    value={product.assets}
                     onChange={(e) => setImage(e.target.files[0])}
                   />
+                  {submitted && !product.assets && (
+                    <small className="p-error">Image name is required.</small>
+                  )}
                   <button onClick={uploadImage}>Upload</button>
                 </div>
-                {/* <div className="list-images">
+                <div className="list-images">
                   <div>
                     <Image
                       width="100"
@@ -357,11 +361,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                       preview={true}
                     />
                   </div>
-                </div> */}
+                </div>
               </div>
-              {submitted && !product.assets && (
-                <small className="p-error">Image name is required.</small>
-              )}
             </div>
 
             {/* description */}

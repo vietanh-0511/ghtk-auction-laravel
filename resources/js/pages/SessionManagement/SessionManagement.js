@@ -89,7 +89,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
         toast.current.show({
           severity: "error",
           summary: "Notification",
-          detail: res.data.message,
+          detail: res.data.message || "Error Delete",
           life: 5000,
         });
       } else {
@@ -117,7 +117,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Update",
             life: 5000,
           });
         } else {
@@ -137,7 +137,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Create",
             life: 5000,
           });
         } else {
