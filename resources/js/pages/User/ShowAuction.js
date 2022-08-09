@@ -8,9 +8,10 @@ import "../../../css/DataScrollerDemo.css";
 const footer = (
   <span>
     <Button
+    style={{background:'#069255'}}
       label="Detail"
       icon="pi pi-pencil"
-      className="p-button-rounded p-button-secondary"
+      className="p-button-rounded "
     />
   </span>
 );
@@ -30,11 +31,11 @@ const ShowAuction = ({
 
   const itemTemplate = (datas) => {
     return (
-      <div style={{ textAlign: "center", color: "#3B82F6" }}>
+      <div style={{ textAlign: "center", color: "#069255" }}>
         <div className="grid" style={{ textAlign: "-webkit-center" }}>
           <div className="col-3" key={datas.id}>
             <Card style={{ width: "25em", display: "flex" }} footer={footer}>
-              <h4 style={{ color: "#3B82F6" }}>{datas.title}</h4>
+              <h4 style={{ color: "initial" }}>{datas.title}</h4>
               <p>Status : {datas.status}</p>
               <p>Start Time : {datas.start_time}</p>
               <p>End Time : {datas.end_time}</p>
@@ -47,6 +48,7 @@ const ShowAuction = ({
 
   const loader = (
     <Button
+    style={{background:'#069255'}}
       type="text"
       icon="pi pi-plus"
       label="Load"
@@ -58,6 +60,7 @@ const ShowAuction = ({
     <div className="datascroller-demo">
       <div className="card">
         <DataScroller
+        style={{color:'#069255'}}
           ref={ds}
           value={datas}
           itemTemplate={itemTemplate}
