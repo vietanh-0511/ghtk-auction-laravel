@@ -19,6 +19,9 @@ import Layout from "./components/Layout";
 import NoMatch from "./pages/NoMatch";
 import UserManagement from "./pages/UserManagement/UserManagement";
 import ProductManagement from "./pages/ProductManagement/ProductManagement";
+import ShowAuction from "./pages/User/ShowAuction";
+import AuctionManagement from "./pages/AuctionManagement/AuctionManagement";
+import SessionManagement from "./pages/SessionManagement/SessionManagement";
 
 export const App = () => {
   return (
@@ -29,8 +32,8 @@ export const App = () => {
         <Route path="register" element={<RegisterPage title="Đăng ký" />} />
       </Route>
 
-      <Route path="/auctions" element={<Layout />}>
-        <Route path="live" element={<EmptyPage title="Đấu giá" />} />
+      <Route path="/user" element={<Layout />}>
+        <Route path="auction" element={<ShowAuction title="Đấu giá" />} />
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>
@@ -49,7 +52,11 @@ export const App = () => {
         />
         <Route
           path="auctions"
-          element={<EmptyPage title="Quản lý đấu giá" />}
+          element={<AuctionManagement title="Quản lý đấu giá" />}
+        />
+        <Route
+          path="sessions"
+          element={<SessionManagement title="Quản lý Sessions" />}
         />
       </Route>
     </Routes>

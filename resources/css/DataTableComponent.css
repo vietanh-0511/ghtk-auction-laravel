@@ -1,7 +1,32 @@
-.datatable-crud-demo .table-header {
+.col-3 .p-card{
+    justify-content: space-around;
+}
+
+
+
+.card ul{
     display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.card ul li{
+    width: 25%;
+    margin-bottom: 15px;
+}
+.card .p-datascroller-header{
+    background: none;
+    border: none;
+    font-size: 22px;
+}
+
+
+.datatable-crud-demo .table-header {
+    /* display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; */
 }
 
 @media screen and (max-width: 960px) {

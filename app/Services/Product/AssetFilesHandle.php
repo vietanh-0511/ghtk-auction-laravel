@@ -3,33 +3,18 @@
 namespace App\Services\Product;
 
 use App\Models\Asset;
-use App\Supports\Responder;
-use Exception;
 
 class AssetFilesHandle
 {
-    public function handle($request, $store)
+    public function handle($request, $assetable, $assetableType)
     {
-        $files = $request->file('assets');
-        $allowedfileExtension = ['jpg', 'png', 'jpeg'];
-        // kiểm tra đuôi mở rộng các files
-        foreach ($files as $file) {
-            $fileName = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-            $check = in_array($extension, $allowedfileExtension);
-
-            if ($check == false) {
-                throw new Exception('invalid file format');
-            }
-        }
-        // duyệt từng ảnh và thực hiện lưu
         foreach ($request->assets as $asset) {
-            $fileName = $asset->store('assets');
+            $mimeType = explode('.', $asset);
             Asset::create([
-                'file_name' => $fileName,
-                'mime_type' => $asset->getMimeType(),
-                'assetable' => $store->id,
-                'assetable_type' => $store->name
+                'file_name' => $asset,
+                'mime_type' => end($mimeType),
+                'assetable' => $assetable,
+                'assetable_type' => $assetableType
             ]);
         }
     }

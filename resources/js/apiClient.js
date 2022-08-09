@@ -22,27 +22,65 @@ export function createUser(data) {
 }
 
 export function deleteUser(id) {
-  return window.axiosApiInstance.delete(`/admin/user/${id}`)
+  return window.axiosApiInstance.delete(`/admin/user/${id}`);
 }
 
 export function updateUser(id, data) {
-  return window.axiosApiInstance.put(`/admin/user/${id}`, data)
+  return window.axiosApiInstance.put(`/admin/user/${id}`, data);
 }
 
 // Product Management: Autions
 export function getProduct() {
-  return window.axiosApiInstance.get(`/product`);
+  return window.axiosApiInstance.get(`/admin/product`);
 }
 
 export function createProduct(data) {
-  return window.axiosApiInstance.post("/product", data);
+  return window.axiosApiInstance.post("/admin/product", data);
 }
 
 export function deleteProduct(id) {
-  return window.axiosApiInstance.delete(`/product/${id}`)
+  return window.axiosApiInstance.delete(`/admin/product/${id}`);
 }
 
-export function updateProduct(id) {
-  return window.axiosApiInstance.put(`/product/${id}`)
+export function updateProduct(id, data) {
+  return window.axiosApiInstance.put(`/admin/product/${id}`, data);
 }
 
+// Auctions Management: Autions
+export function getAuction() {
+  return window.axiosApiInstance.get(`/admin/auction`);
+}
+
+export function createAuction(data) {
+  return window.axiosApiInstance.post("/admin/auction", data);
+}
+
+export function deleteAuction(id) {
+  return window.axiosApiInstance.delete(`/admin/auction/${id}`);
+}
+
+export function updateAuction(id, data) {
+  return window.axiosApiInstance.put(`/admin/auction/${id}`, data);
+}
+
+// Sessions Management: Autions
+export function getSession() {
+  return window.axiosApiInstance.get(`/admin/session`);
+}
+
+export function createSession(data) {
+  return window.axiosApiInstance.post("/admin/session", data);
+}
+
+export function deleteSession(id) {
+  return window.axiosApiInstance.delete(`/admin/session/${id}`);
+}
+
+export function updateSession(id, data) {
+  return window.axiosApiInstance.put(`/admin/session/${id}`, data);
+}
+
+// Auction : User
+export function getAuction() {
+  return window.axiosApiInstance.get("/auction");
+}

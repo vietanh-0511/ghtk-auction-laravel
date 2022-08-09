@@ -72,6 +72,9 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the product id must be a number');
+        }
         if (!Product::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }
@@ -94,6 +97,12 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, $id)
     {
         $product = '';
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the product id must be a number');
+        }
+        if (!Product::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
+        }
         try {
             $product = $this->updateProductAction->handle($request, $id);
         } catch (Exception $e) {
@@ -111,6 +120,9 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the product id must be a number');
+        }
         if (!Product::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
         }

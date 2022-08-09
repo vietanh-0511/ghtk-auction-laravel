@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AuctionStatusEnum;
 use App\Http\Requests\StoreAutionRequest;
 use App\Models\Auction;
+use App\Models\Session;
 use App\Services\Auction\CreateAuctionAction;
 use App\Services\Auction\UpdateAuctionAction;
 use App\Supports\Responder;
@@ -34,6 +36,10 @@ class AuctionController extends Controller
         //     return Responder::fail($limit, 'limit invalid');
         // }
         $auctions = Auction::query()->orderByDesc('id')->get();
+        foreach ($auctions as $auction) {
+            $status = $auction->status;
+            $auction->status = AuctionStatusEnum::getKey($status);
+        }
         return Responder::success($auctions, 'get auctions success');
     }
 
@@ -65,10 +71,14 @@ class AuctionController extends Controller
      */
     public function show($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'auction id must be a number');
+        }
         if (!Auction::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
         }
-        $auction = Auction::where('id', $id)->first();
+        $auction = Auction::query()->where('id', $id)->first();
+        $auction->status = AuctionStatusEnum::getKey($auction->status);
         return Responder::success($auction, 'get auction success');
     }
 
@@ -84,6 +94,9 @@ class AuctionController extends Controller
     {
         $validated = $request->validated();
         $auction = '';
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'auction id must be a number');
+        }
         try {
             $auction = $this->updateAuctionAction->handle($validated, $id);
         } catch (Exception $e) {
@@ -101,10 +114,14 @@ class AuctionController extends Controller
      */
     public function destroy($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'auction id must be a number');
+        }
         if (!Auction::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
         }
-        $deleteAuction = Auction::where('id', $id)->delete();
+        $deleteAuction = Auction::query()->where('id', $id)->delete();
+        Session::query()->where('auction_id', $id)->delete();
         return Responder::success($deleteAuction, 'delete success');
     }
 }

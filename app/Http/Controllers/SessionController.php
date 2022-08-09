@@ -35,7 +35,7 @@ class SessionController extends Controller
         // if ($limit <= 0 || !is_int($limit)) {
         //     return Responder::fail($limit, 'limit invalid');
         // }
-        $sessions = Session::query()->orderByDesc('id')->get();
+        $sessions = Session::query()->with(['product', 'auction'])->orderByDesc('id')->get();
         return Responder::success($sessions, 'get sessions success');
     }
 
@@ -67,10 +67,13 @@ class SessionController extends Controller
      */
     public function show($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'session id must be a number');
+        }
         if (!Session::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
         }
-        $session = Session::where('id', $id)->first();
+        $session = Session::where('id', $id)->with(['product', 'auction'])->first();
         return Responder::success($session, 'get session success');
     }
 
@@ -86,6 +89,12 @@ class SessionController extends Controller
     {
         $validated = $request->validated();
         $session = '';
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'session id must be a number');
+        }
+        if (!Session::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
+        }
         try {
             $session = $this->updateSessionAction->handle($validated, $id);
         } catch (Exception $e) {
@@ -103,11 +112,13 @@ class SessionController extends Controller
      */
     public function destroy($id)
     {
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'session id must be a number');
+        }
         if (!Session::query()->where('id', $id)->exists()) {
             return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
         }
         $deleteSession = Session::where('id', $id)->delete();
         return Responder::success($deleteSession, 'delete success');
-
     }
 }

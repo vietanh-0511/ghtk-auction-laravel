@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Services\Product\AssetFilesHandle;
 use App\Supports\Responder;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class AssetController extends Controller
      */
     public function index()
     {
-        $products = Asset::all();
+        $products = Asset::query()->orderByDesc('id')->get();
         return Responder::success($products, 'get assets success');
     }
 
@@ -37,6 +38,7 @@ class AssetController extends Controller
      */
     public function store(Request $request)
     {
+        // 
     }
 
     /**
@@ -47,7 +49,14 @@ class AssetController extends Controller
      */
     public function show($id)
     {
-        //
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the asset id must be a number');
+        }
+        if (!Asset::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the asset with the id ' . $id . ' does not exist.');
+        }
+        $asset = Asset::where('id', $id)->first();
+        return Responder::success($asset, 'get asset success');
     }
 
     /**
@@ -81,6 +90,13 @@ class AssetController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (preg_match('/[^0-9]/', $id)) {
+            return Responder::fail($id, 'the asset id must be a number');
+        }
+        if (!Asset::query()->where('id', $id)->exists()) {
+            return Responder::fail($id, 'the asset with the id ' . $id . ' does not exist.');
+        }
+        $deleteAsset = Asset::where('id', $id)->delete();
+        return Responder::success($deleteAsset, 'delete success');
     }
 }
