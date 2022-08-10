@@ -97,7 +97,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
         toast.current.show({
           severity: "error",
           summary: "Notification",
-          detail: res.data.message,
+          detail: res.data.message || "Error Delete",
           life: 5000,
         });
       } else {
@@ -121,15 +121,13 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
     _Auction.start_time = jsToSqlDate(_Auction.start_time);
     _Auction.end_time = jsToSqlDate(_Auction.end_time);
 
-
-    // if (validateAll()) {
     if (_Auction.id) {
       updateAuction(_Auction.id, _Auction).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Update",
             life: 5000,
           });
         } else {
@@ -149,7 +147,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Create",
             life: 5000,
           });
         } else {
@@ -164,7 +162,6 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
         hideDialog();
       });
     }
-    // }
   };
 
   const onInputChange = (e, name) => {
@@ -208,7 +205,6 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
 
   const header = (
     <div className="table-header">
-      <h5 className="mx-0 my-1">Manage Auctions</h5>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText

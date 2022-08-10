@@ -13,11 +13,14 @@ import {
   getProduct,
   updateProduct,
 } from "../../apiClient";
+import { FileUpload } from "primereact/fileupload";
+import { Image } from "primereact/image";
+import "../../../css/app.css";
 
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
     name: "",
-    asset: [],
+    assets: [],
     description: "",
   };
 
@@ -28,9 +31,34 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
+  const [url, setUrl] = useState([]);
   const toast = useRef(null);
   const dt = useRef(null);
   let idProduct = product.id;
+
+
+
+  const handleUploadImage = (e) => {
+    const data = new FormData();
+    data.append("file", e.files[0]);
+    data.append("upload_preset", "ghtk-auction-laravel");
+    data.append("cloud_name", "ghtk-auction-laravel");
+    fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        product.assets.push(data.url);
+        setUrl(data.url);
+        toast.current.show({
+          severity: "info",
+          summary: "Success",
+          detail: "File Uploaded",
+        });
+      })
+      .catch((err) => { });
+  };
 
   useEffect(() => {
     getProduct().then((res) => {
@@ -73,7 +101,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         toast.current.show({
           severity: "error",
           summary: "Notification",
-          detail: res.data.message,
+          detail: res.data.message || "Error Delete",
           life: 5000,
         });
       } else {
@@ -93,13 +121,15 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const saveProduct = () => {
     setSubmitted(true);
 
-    if (product.id) {
-      updateProduct(product.id, product).then((res) => {
+    const _product = { ...product };
+
+    if (_product.id) {
+      updateProduct(_product.id, _product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Update",
             life: 5000,
           });
         } else {
@@ -114,12 +144,12 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         hideDialog();
       });
     } else {
-      createProduct(product).then((res) => {
+      createProduct(_product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
             summary: "Notification",
-            detail: res.data.message,
+            detail: res.data.message || "Error Create",
             life: 5000,
           });
         } else {
@@ -130,8 +160,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     }
   };
@@ -175,7 +205,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
   const header = (
     <div className="table-header">
-      <h5 className="mx-0 my-1">Manage Products</h5>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -189,13 +218,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
   const imageBodyTemplate = (rowData) => {
     return (
-      <img
-        src={`images/product/${rowData.image}`}
-        onError={(e) =>
-          (e.target.src =
-            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-        }
-        alt={rowData.image}
+      <Image
+        preview={true}
+        width="100"
+        src={`${rowData.asset !== null
+            ? rowData.asset.file_name
+            : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
+          }`}
         className="product-image"
       />
     );
@@ -261,10 +290,9 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               <Column field="id" header="ID" sortable></Column>
               <Column field="name" header="Product Name" sortable></Column>
               <Column
-                field="asset"
+                field="assets"
                 body={imageBodyTemplate}
                 header="Images"
-                sortable
               ></Column>
               <Column
                 field="description"
@@ -308,22 +336,30 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             </div>
 
             {/* Asset */}
-            {/* <div className="field">
-              <label htmlFor="asset">Full Name</label>
-              <InputText
-                id="asset"
-                value={product.name}
-                onChange={(e) => onInputChange(e, "asset")}
-                required
-                autoFocus
-                className={classNames({
-                  "p-invalid": submitted && !product.asset,
-                })}
-              />
-              {submitted && !product.asset && (
-                <small className="p-error">Product name is required.</small>
-              )}
-            </div> */}
+            <div className="field">
+              <label htmlFor="assets">Images</label>
+              <div className="upload">
+                <div className="input-upload">
+                  <FileUpload
+                    id="assets"
+                    multiple={true}
+                    url="https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload"
+                    accept="image/*"
+                    value={product.assets}
+                    customUpload
+                    uploadHandler={handleUploadImage}
+                    emptyTemplate={
+                      <p className="m-0">
+                        Drag and drop files to here to upload.
+                      </p>
+                    }
+                  />
+                  {submitted && !product.assets && (
+                    <small className="p-error">Image name is required.</small>
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* description */}
             <div className="field">

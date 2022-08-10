@@ -116,7 +116,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
         toast.current.show({
           severity: "error",
           summary: "Notification",
-          detail: res.data.message,
+          detail: res.data.message || "Error Delete",
           life: 5000,
         });
       } else {
@@ -142,7 +142,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
             toast.current.show({
               severity: "error",
               summary: "Notification",
-              detail: res.data.message,
+              detail: res.data.message || "Error Update",
               life: 5000,
             });
           } else {
@@ -162,7 +162,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
             toast.current.show({
               severity: "error",
               summary: "Notification",
-              detail: res.data.message,
+              detail: res.data.message || "Error Create",
               life: 5000,
             });
           } else {
@@ -219,7 +219,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
 
   const header = (
     <div className="table-header">
-      <h5 className="mx-0 my-1">Manage users</h5>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText

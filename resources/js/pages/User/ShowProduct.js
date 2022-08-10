@@ -64,8 +64,6 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                 });
                 setValue2(range[0])
             }
-
-            console.log(res.data)
         })
     }
 
