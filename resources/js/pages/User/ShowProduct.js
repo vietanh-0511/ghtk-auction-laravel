@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Slider } from 'primereact/slider';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
 import { createBidBySessionId, getUserSessionById } from "../../apiClient";
 import { AuctionDetailContext } from "./ShowAuctionDetail";
 import { Toast } from "primereact/toast";
+import { Image } from 'primereact/image';
+import { useNavigate } from 'react-router-dom';
+import { Galleria } from 'primereact/galleria';
 
 const ShowProduct = ({ title = "Empty Page" }) => {
     const props = React.useContext(AuctionDetailContext);
@@ -15,6 +17,35 @@ const ShowProduct = ({ title = "Empty Page" }) => {
     const [renew, setRenew] = useState(false);
     const [value2, setValue2] = useState(50);
     const [range, setRange] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const galleria3 = useRef(null);
+
+    const responsiveOptions = [
+        {
+            breakpoint: '1024px',
+            numVisible: 5
+        },
+        {
+            breakpoint: '768px',
+            numVisible: 3
+        },
+        {
+            breakpoint: '560px',
+            numVisible: 1
+        }
+    ];
+
+    const itemTemplate = (item) => {
+        return <img src={item.file_name}
+            onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
+            alt={item.id + '-asset'} style={{ width: '100%', display: 'block' }} />;
+    }
+
+    const thumbnailTemplate = (item) => {
+        return <img src={item.file_name}
+            onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
+            alt={item.id + '-asset-thumbnail'} style={{ display: 'block' }} />;
+    }
 
     useEffect(() => {
         setData(props.data.session.find(x => x.id === props.currentSession));
@@ -31,14 +62,15 @@ const ShowProduct = ({ title = "Empty Page" }) => {
     }, [renew])
 
     useEffect(() => {
-        if (!data) return;
-        if (data.highest_bid) {
-            setValue2(data.highest_bid + data.price_step);
-            setRange([data.highest_bid + data.price_step, data.highest_bid + 5 * data.price_step]);
-        } else {
-            setValue2(data.start_price);
-            setRange([data.start_price + data.price_step, data.start_price + 5 * data.price_step]);
-        }
+        console.log(data)
+        if (data)
+            if (data.highest_bid) {
+                setValue2(data.highest_bid + data.price_step);
+                setRange([data.highest_bid + data.price_step, data.highest_bid + 5 * data.price_step]);
+            } else {
+                setValue2(data.start_price);
+                setRange([data.start_price + data.price_step, data.start_price + 5 * data.price_step]);
+            }
     }, [data])
 
     const postBid = () => {
@@ -83,6 +115,23 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                             <div><span className="left-span">Current highest Bid:</span><span className="right-span">{data.highest_bid ? data.highest_bid + '$' : 'Missing'}</span></div>
                             <div><span className="left-span">Current winner:</span><span className="right-span">{data.user ? data.user.full_name : 'Missing'}</span></div>
                         </span>
+                    </div>
+                    <div>
+                        <div className="space-between">Assets:</div>
+                        {
+                            data.assets.length > 0 &&
+                            <div className="assets-display">
+                                {data.assets.map(item =>
+                                    <Image src={item.file_name}
+                                        key={item.id + '-asset'}
+                                        alt={item.id + '-asset'}
+                                        width="150" preview />
+                                )}
+                            </div>
+                        }
+                        {
+                            data.assets.length <= 0 && <div>No assets</div>
+                        }
                     </div>
                     <div>
                         <div className="space-center">

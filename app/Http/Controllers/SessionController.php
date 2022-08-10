@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSessionRequest;
 use App\Http\Requests\UpdateSessionRequest;
+use App\Models\Asset;
 use App\Models\Session;
 use App\Models\User;
 use App\Services\Session\CreateSessionAction;
@@ -79,6 +80,7 @@ class SessionController extends Controller
         }
         $session = Session::where('id', $id)->with(['product', 'auction'])->first();
         $session['user'] = User::query()->where('id', $session->winner_id)->first(['full_name']);
+        $session['assets'] = Asset::query()->where('assetable', $session->product_id)->get();
         return Responder::success($session, 'get session success');
     }
 

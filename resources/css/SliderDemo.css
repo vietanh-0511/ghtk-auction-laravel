@@ -35,9 +35,24 @@
     display: flex;
 }
 
-.space-center input{
+.space-center input {
     margin-top: 0.5rem;
 }
+
 .space-center span button {
     margin-left: 1rem;
+}
+
+.assets-display {
+    display: flex;
+    width: 100%;
+    overflow: auto;
+}
+
+.assets-display>span {
+    margin-left: 1rem;
+}
+
+.assets-display span:first-child {
+    margin-left: 0;
 }
