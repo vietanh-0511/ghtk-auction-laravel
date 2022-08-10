@@ -26,7 +26,8 @@ class UpdateProductRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['required'],
-            'assets' => ['max:2048']
+            'assets' => ['max:2048', 'array'],
+            'assets.*' => ['url', 'regex:~^(https?)://res\.cloudinary\.com/[a-zA-Z-_\d]+/image/upload/v\d+(/[a-zA-Z-_\d]+)+\.(jpg|png|jpeg)$~']
         ];
     }
 }
