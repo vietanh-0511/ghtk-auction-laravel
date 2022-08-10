@@ -32,21 +32,21 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
     const outlet = useOutlet();
     const [currentSession, setCurrentSession] = useState(null);
 
-    const itemTemplate = (product) => {
+    const itemTemplate = (item) => {
         return (
             <div className="product-item">
                 <Image
-                    src={product.assets ? product.assets : "https://cataas.com/cat"}
-                    alt={product.name + '-img'}
+                    src={item.assets && item.assets.length > 0 ? item.assets[0].file_name : "https://cataas.com/cat"}
+                    alt={item.product.name + '-img'}
                     imageStyle={{ objectFit: 'cover' }} />
                 <div className="product-detail">
-                    <div className="product-name">{product.name}</div>
-                    <div className="product-description">{product.description}</div>
+                    <div className="product-name">{item.product.name}</div>
+                    <div className="product-description">{item.product.description}</div>
                 </div>
                 <div className="product-action">
                     <Button icon="pi pi-shopping-cart" label="Detail" className="p-button-link" onClick={() => {
-                        setCurrentSession(product.id);
-                        navigate(`product/${product.id}`);
+                        setCurrentSession(item.product.id);
+                        navigate(`product/${item.product.id}`);
                     }} />
                 </div>
             </div>
@@ -69,20 +69,19 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
                 setValue2(convertMsToTime(val));
             }, 1000);
 
-            return () => {
-                if (interval.current) {
-                    clearInterval(interval.current);
-                    interval.current = null;
-                }
-            }
         });
+        return () => {
+            if (interval.current) {
+                clearInterval(interval.current);
+                interval.current = null;
+            }
+        }
     }, []);
 
     return (
         <AuctionDetailContext.Provider value={{
             data: data,
-            currentSession: currentSession,
-            // setCurrentSession: setCurrentSession,
+            currentSession: currentSession
         }}>
             <div>
                 <div className="datascroller-demo">
@@ -97,7 +96,7 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
                     {data &&
                         <div style={{ display: 'flex' }}>
                             <div className="card" id="custom-p-datascroller">
-                                <DataScroller value={data.session.map(i => i.product)} itemTemplate={itemTemplate} rows={5} inline scrollHeight="700px"
+                                <DataScroller value={data.session} itemTemplate={itemTemplate} rows={data.session.length} inline scrollHeight="700px"
                                 />
                             </div>
                             <div className="card" style={{ flex: 1, marginLeft: '1rem' }}>
