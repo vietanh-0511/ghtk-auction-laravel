@@ -205,7 +205,6 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
 
   const header = (
     <div className="table-header">
-      <h5 className="mx-0 my-1">Manage Auctions</h5>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
