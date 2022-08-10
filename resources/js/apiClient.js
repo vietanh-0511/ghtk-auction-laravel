@@ -92,3 +92,7 @@ export function getUserAuctionById(id) {
 export function getUserSessionById(id) {
   return window.axiosApiInstance.get(`/session/${id}`);
 }
+
+export function createBidBySessionId(data) {
+  return window.axiosApiInstance.post(`/bid`, data);
+}

@@ -1,0 +1,43 @@
+/* SliderDemo.css */
+
+.slider-demo .p-slider-horizontal,
+.slider-demo .p-inputtext {
+    width: 14rem;
+}
+
+.slider-demo .p-slider-vertical {
+    height: 14rem;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+}
+
+.space-between span div {
+    padding-bottom: 1rem;
+}
+
+.space-between .right-span {
+    width: 400px;
+    word-wrap: break-word;
+    font-weight: 400;
+    font-size: 1.2rem;
+    padding-left: 1rem;
+}
+
+.space-center {
+    align-items: flex-end;
+    justify-content: center;
+    display: flex;
+}
+
+.space-center input{
+    margin-top: 0.5rem;
+}
+.space-center span button {
+    margin-left: 1rem;
+}

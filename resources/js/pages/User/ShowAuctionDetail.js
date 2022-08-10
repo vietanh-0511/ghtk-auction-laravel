@@ -38,7 +38,7 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
                 <Image
                     src={product.assets ? product.assets : "https://cataas.com/cat"}
                     alt={product.name + '-img'}
-                    style={{ objectFit: 'cover' }} />
+                    imageStyle={{ objectFit: 'cover' }} />
                 <div className="product-detail">
                     <div className="product-name">{product.name}</div>
                     <div className="product-description">{product.description}</div>
