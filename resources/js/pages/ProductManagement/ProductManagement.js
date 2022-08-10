@@ -39,7 +39,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
 
   const handleUploadImage = (e) => {
-    console.log(e)
     const data = new FormData();
     data.append("file", e.files[0]);
     data.append("upload_preset", "ghtk-auction-laravel");
@@ -50,7 +49,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        console.log(data)
         product.assets.push(data.url);
         setUrl(data.url);
         toast.current.show({
@@ -59,7 +57,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           detail: "File Uploaded",
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => { });
   };
 
   useEffect(() => {
@@ -223,11 +221,10 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       <Image
         preview={true}
         width="100"
-        src={`${
-          rowData.asset !== null
+        src={`${rowData.asset !== null
             ? rowData.asset.file_name
             : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
-        }`}
+          }`}
         className="product-image"
       />
     );

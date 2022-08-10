@@ -45,8 +45,6 @@ export const AuthProvider = ({ children }) => {
 
   const register = (data) => {
     window.axiosApiInstance.post("/auth/register", data).then((res) => {
-      console.log(res);
-
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",

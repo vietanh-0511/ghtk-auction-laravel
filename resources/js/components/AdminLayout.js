@@ -141,7 +141,7 @@ const AdminLayout = () => {
         },
         {
           label: "Quản lý Sessions",
-          icon: "pi pi-fw pi-shopping-cart",
+          icon: "pi pi-fw pi-star",
           to: "/admin/sessions",
         },
       ],

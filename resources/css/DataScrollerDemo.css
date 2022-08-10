@@ -1,6 +1,4 @@
-
-/* DataScrollerDemo.css */
-
+/* DataScrollerDemo.css  */
 .datascroller-demo .product-name {
     font-size: 1.5rem;
     font-weight: 700;
@@ -25,12 +23,16 @@
     align-items: center;
     padding: 1rem;
     width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
 .datascroller-demo .product-item img {
     width: 150px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    height: 150px;
+    /* box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); */
     margin-right: 2rem;
+    
 }
 
 .datascroller-demo .product-item .product-detail {
@@ -55,6 +57,19 @@
 
 .datascroller-demo .product-item .p-button {
     margin-bottom: .5rem;
+}
+
+#custom-p-datascroller {
+    max-width: 500px;
+}
+
+#custom-p-datascroller ul li {
+    width: 100%;
+}
+
+#custom-p-datascroller .p-datascroller-list {
+    display: flex;
+    flex-direction: column;
 }
 
 @media screen and (max-width: 576px) {
@@ -89,4 +104,3 @@
         width: 100%;
     }
 }
-                 

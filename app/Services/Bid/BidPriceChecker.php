@@ -16,7 +16,7 @@ class BidPriceChecker
         $priceStep = $sessionInfo->price_step;
 
         //calculate next bid price
-        $nextBib = $highestBid + $priceStep;
+        $nextBid = $highestBid + $priceStep;
 
         if ($winnerId == '') {
             if ($validated['amount'] < $sessionInfo->start_price) {
@@ -24,8 +24,8 @@ class BidPriceChecker
             }
         }
         if ($winnerId != '') {
-            if ($validated['amount'] < $nextBib) {
-                throw new Exception("Bid amount cannot less than " . $nextBib);
+            if ($validated['amount'] < $nextBid) {
+                throw new Exception("Bid amount cannot less than " . $nextBid);
             }
         }
     }
