@@ -14,9 +14,9 @@ try {
 window.axios = require('axios');
 
 window.axiosApiInstance = window.axios.create({
-  baseURL: `http://localhost:8000/api`,
+  baseURL: `http://localhost:8002/api`,
   headers: {
-    Accept: "application/json",
+    "Accept": "application/json",
     "Content-Type": "application/json",
   },
 });
@@ -24,9 +24,9 @@ window.axiosApiInstance = window.axios.create({
 window.axiosApiInstance.interceptors.request.use((config) => {
   const token = window.localStorage.getItem("token").slice(1, -1);
   config.headers = {
-    Accept: "application/json",
+    "Accept": "application/json",
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
+    "Authorization": `Bearer ${token}`,
   };
   return config;
 });
