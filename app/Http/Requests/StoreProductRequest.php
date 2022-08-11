@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Unique;
 
 class StoreProductRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class StoreProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required'],
+            'name' => ['required','unique:App\Models\Product'],
             'description' => ['required'],
             'assets' => ['required', 'max:2048', 'array'],
             'assets.*' => ['url', 'regex:~^(https?)://res\.cloudinary\.com/[a-zA-Z-_\d]+/image/upload/v\d+(/[a-zA-Z-_\d]+)+\.(jpg|png|jpeg)$~']

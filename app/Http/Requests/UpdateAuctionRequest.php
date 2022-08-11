@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends FormRequest
+class UpdateAuctionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,9 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required','unique:App\Models\Product'],
-            'description' => ['required'],
-            'assets' => ['max:2048', 'array'],
-            'assets.*' => ['url', 'regex:~^(https?)://res\.cloudinary\.com/[a-zA-Z-_\d]+/image/upload/v\d+(/[a-zA-Z-_\d]+)+\.(jpg|png|jpeg)$~']
+            'title' => ['required','unique:App\Models\Auction'],
+            'start_time' => ['required'],
+            'end_time' => ['required'],
         ];
     }
 }
