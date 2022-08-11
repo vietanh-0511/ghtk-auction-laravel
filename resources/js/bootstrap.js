@@ -14,19 +14,21 @@ try {
 window.axios = require('axios');
 
 window.axiosApiInstance = window.axios.create({
-  baseURL: `http://localhost:8002/api`,
+  baseURL: `http://localhost:8000/api`,
   headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  }
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
 });
 
 window.axiosApiInstance.interceptors.request.use((config) => {
-  const token = window.localStorage.getItem('token').slice(1,-1);
+  const token = window.localStorage.getItem("token").slice(1, -1);
   config.headers = {
-    'Authorization': `Bearer ${token}`
-  }
-  return config
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+  return config;
 });
 
 window.axiosApiInstance.interceptors.response.use(
