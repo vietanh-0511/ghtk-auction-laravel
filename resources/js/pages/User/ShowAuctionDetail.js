@@ -45,8 +45,8 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
                 </div>
                 <div className="product-action">
                     <Button icon="pi pi-shopping-cart" label="Detail" className="p-button-link" onClick={() => {
-                        setCurrentSession(item.product.id);
-                        navigate(`product/${item.product.id}`);
+                        setCurrentSession(item.id);
+                        navigate(`session/${item.id}`);
                     }} />
                 </div>
             </div>

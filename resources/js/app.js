@@ -40,7 +40,7 @@ export const App = () => {
 
       <Route path="/user/auction" element={<Layout />}>
         <Route path=":id" element={<ShowAuctionDetail title="Đấu giá" />}>
-          <Route path="product/:pid" element={<ShowProduct />} />
+          <Route path="session/:pid" element={<ShowProduct />} />
         </Route>
       </Route>
 
