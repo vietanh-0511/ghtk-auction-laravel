@@ -87,9 +87,9 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
                 <div className="datascroller-demo">
                     {data && <Card title={data.auction.title} className="card-cover">
                         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                            <p>Start time: {data.auction.start_time}</p>
-                            <p>End time: {data.auction.end_time}</p>
-                            <p>Time left: {value2}</p>
+                            <p>Thời gian bắt đầu: {data.auction.start_time}</p>
+                            <p>Thời gian kết thúc : {data.auction.end_time}</p>
+                            <p>Thời gian còn lại: {value2}</p>
                         </div>
                     </Card>}
                     <br />

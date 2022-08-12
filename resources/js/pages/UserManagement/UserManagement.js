@@ -191,7 +191,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
     return (
       <React.Fragment>
         <Button
-          label="New"
+          label="Thêm mới"
           icon="pi pi-plus"
           className="p-button-success mr-2"
           onClick={openNew}
@@ -224,7 +224,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -233,13 +233,13 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const userDialogFooter = (
     <React.Fragment>
       <Button
-        label="Cancel"
+        label="Hủy bỏ"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDialog}
       />
       <Button
-        label="Save"
+        label="Lưu"
         icon="pi pi-check"
         className="p-button-text"
         onClick={saveUser}
@@ -250,13 +250,13 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const deleteUserDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
+        label="Không"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDeleteUserDialog}
       />
       <Button
-        label="Yes"
+        label="Có"
         icon="pi pi-check"
         className="p-button-text"
         onClick={deleteuser}
@@ -286,10 +286,10 @@ const UserManagement = ({ title = "Empty Page" }) => {
               responsiveLayout="scroll"
             >
               <Column field="id" header="ID" sortable></Column>
-              <Column field="full_name" header="Full Name" sortable></Column>
+              <Column field="full_name" header="Họ tên" sortable></Column>
               <Column field="email" header="Email" sortable></Column>
-              <Column field="address" header="Address" sortable></Column>
-              <Column field="phone" header="Phone" sortable></Column>
+              <Column field="address" header="Địa chỉ" sortable></Column>
+              <Column field="phone" header="Số điện thoại" sortable></Column>
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
@@ -301,7 +301,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={userDialog}
             style={{ width: "450px" }}
-            header={user.id ? "Update User" : "Create User"}
+            header={user.id ? "Cập nhật người dùng" : "Thêm mới người dùng"}
             modal
             className="p-fluid"
             footer={userDialogFooter}
@@ -309,7 +309,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
           >
             {/* name */}
             <div className="field">
-              <label htmlFor="full_name">Full Name</label>
+              <label htmlFor="full_name">Họ tên</label>
               <InputText
                 id="full_name"
                 value={user.full_name}
@@ -321,7 +321,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !user.full_name && (
-                <small className="p-error">Full name is required.</small>
+                <small className="p-error">Họ tên không được để trống.</small>
               )}
             </div>
 
@@ -343,7 +343,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 {submitted &&
                   (!user.email || validate(user.email, "email")) && (
                     <small className="p-error">
-                      Email is {!user.email ? "required" : "wrong"}.
+                      Email  {!user.email ? " không được để trống" : "sai"}.
                     </small>
                   )}
               </div>
@@ -352,7 +352,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
             {/* pass */}
             {!user.id && (
               <div className="field">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Mật khẩu</label>
                 <InputText
                   id="password"
                   value={user.password}
@@ -367,7 +367,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 {submitted &&
                   (!user.password || validate(user.password, "password")) && (
                     <small className="p-error">
-                      Password is {!user.password ? "required" : "wrong"}.
+                      Mật khẩu {!user.password ? " không được để trống" : "sai"}.
                     </small>
                   )}
               </div>
@@ -377,7 +377,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
             {!user.id && (
               <div className="field">
                 <label htmlFor="password_confirmation">
-                  Password confirmation
+                Xác nhận mật khẩu
                 </label>
                 <InputText
                   id="password_confirmation"
@@ -395,8 +395,8 @@ const UserManagement = ({ title = "Empty Page" }) => {
                   (!user.password_confirmation ||
                     validate(user.password_confirmation, "confirmation")) && (
                     <small className="p-error">
-                      Password confirmation is{" "}
-                      {!user.password_confirmation ? "required" : "wrong"}.
+                      Xác nhận mật khẩu {" "}
+                      {!user.password_confirmation ? " không được để trống" : "sai"}.
                     </small>
                   )}
               </div>
@@ -404,7 +404,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
 
             {/* address */}
             <div className="field">
-              <label htmlFor="address">Address</label>
+              <label htmlFor="address">Địa chỉ</label>
               <InputText
                 id="address"
                 value={user.address}
@@ -415,13 +415,13 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !user.address && (
-                <small className="p-error">Address is required.</small>
+                <small className="p-error">Địa chỉ không được để trống.</small>
               )}
             </div>
 
             {/* phone */}
             <div className="field">
-              <label htmlFor="phone">Phone</label>
+              <label htmlFor="phone">Số điện thoại</label>
               <InputText
                 id="phone"
                 value={user.phone}
@@ -434,7 +434,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
               />
               {submitted && (!user.phone || validate(user.phone, "phone")) && (
                 <small className="p-error">
-                  Phone is {!user.phone ? "required" : "wrong"}.
+                  Số điện thoại {!user.phone ? " không được để trống." : "sai"}.
                 </small>
               )}
             </div>
@@ -443,7 +443,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={deleteUserDialog}
             style={{ width: "450px" }}
-            header="Confirm"
+            header="Xác nhận"
             modal
             footer={deleteUserDialogFooter}
             onHide={hideDeleteUserDialog}
@@ -455,8 +455,8 @@ const UserManagement = ({ title = "Empty Page" }) => {
               />
               {user && (
                 <span>
-                  Are you sure you want to{" "}
-                  <b style={{ color: "red" }}>delete</b> <b>{user.full_name}</b>
+                  Bạn có chắc là bạn muốn{" "}
+                  <b style={{ color: "red" }}>xóa</b> <b>{user.full_name}</b>
                   ?
                 </span>
               )}

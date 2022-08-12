@@ -167,7 +167,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
     return (
       <React.Fragment>
         <Button
-          label="New"
+          label="Thêm mới"
           icon="pi pi-plus"
           className="p-button-success mr-2"
           onClick={openNew}
@@ -200,7 +200,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -209,13 +209,13 @@ const SessionManagement = ({ title = "Empty Page" }) => {
   const SectionDialogFooter = (
     <React.Fragment>
       <Button
-        label="Cancel"
+        label="Hủy bỏ"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDialog}
       />
       <Button
-        label="Save"
+        label="Lưu"
         icon="pi pi-check"
         className="p-button-text"
         onClick={saveSection}
@@ -226,13 +226,13 @@ const SessionManagement = ({ title = "Empty Page" }) => {
   const deleteSectionDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
+        label="Không"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDeleteSectionDialog}
       />
       <Button
-        label="Yes"
+        label="Có"
         icon="pi pi-check"
         className="p-button-text"
         onClick={delSection}
@@ -258,7 +258,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
               rows={10}
               rowsPerPageOptions={[5, 10, 25]}
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Sections"
+              currentPageReportTemplate="Hiển thị {first} đến {last} của {totalRecords} Sessions"
               globalFilter={globalFilter}
               header={header}
               responsiveLayout="scroll"
@@ -266,26 +266,26 @@ const SessionManagement = ({ title = "Empty Page" }) => {
               <Column field="id" header="ID" sortable></Column>
               <Column
                 field="product.name"
-                header="Product Name"
+                header="Tên sản phẩm"
                 sortable
               ></Column>
               <Column
                 field="auction.title"
-                header="Auction Name"
+                header="Tên phiên đấu giá"
                 sortable
               ></Column>
               <Column
                 field="start_price"
-                header="Start price"
+                header="Giá khởi điểm"
                 sortable
               ></Column>
-              <Column field="price_step" header="Price step" sortable></Column>
+              <Column field="price_step" header="Bước giá" sortable></Column>
               <Column
                 field="highest_bid"
-                header="Highest bid"
+                header="Giá cao nhất"
                 sortable
               ></Column>
-              <Column field="winner_id" header="Winner id" sortable></Column>
+              <Column field="winner_id" header="Id thắng cuộc" sortable></Column>
               <Column
                 body={sessionBodyTemplate}
                 exportable={false}
@@ -297,7 +297,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={SectionDialog}
             style={{ width: "450px" }}
-            header={Section.id ? "Update Section" : "Create Section"}
+            header={Section.id ? "Cập nhật Session" : "Thêm mới Session"}
             modal
             className="p-fluid"
             footer={SectionDialogFooter}
@@ -305,7 +305,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           >
             {/* start price */}
             <div className="field">
-              <label htmlFor="start_price">Start Price</label>
+              <label htmlFor="start_price">Giá khởi điểm</label>
               <InputText
                 id="start_price"
                 value={Section.start_price}
@@ -317,13 +317,13 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Section.title && (
-                <small className="p-error">Start Price is required.</small>
+                <small className="p-error">Giá khởi điểm không được để trống.</small>
               )}
             </div>
 
             {/* price step */}
             <div className="field">
-              <label htmlFor="price_step">Price Step</label>
+              <label htmlFor="price_step">Bước giá</label>
               <InputText
                 id="price_step"
                 value={Section.price_step}
@@ -334,13 +334,13 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Section.title && (
-                <small className="p-error">Price Step is required.</small>
+                <small className="p-error">Bước giá không được để trống.</small>
               )}
             </div>
 
             {/* Mutil Select */}
             <div className="field">
-              <label htmlFor="product_id">Product</label>
+              <label htmlFor="product_id">Tên sản phẩm</label>
               <Dropdown
                 optionValue="id"
                 value={Section.product_id}
@@ -357,11 +357,11 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Section.product_id && (
-                <small className="p-error">Product Name is required.</small>
+                <small className="p-error">Tên sản phẩm không được để trống.</small>
               )}
             </div>
             <div className="field">
-              <label htmlFor="auction_id">Auction</label>
+              <label htmlFor="auction_id">Phiên đấu giá</label>
               <Dropdown
                 optionValue="id"
                 defaultValue={undefined}
@@ -378,7 +378,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Section.auction_id && (
-                <small className="p-error">Auction Name is required.</small>
+                <small className="p-error">Tên phiên đấu giá không được để trống.</small>
               )}
             </div>
           </Dialog>
@@ -386,7 +386,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={deleteSectionDialog}
             style={{ width: "450px" }}
-            header="Confirm"
+            header="Xác nhận"
             modal
             footer={deleteSectionDialogFooter}
             onHide={hideDeleteSectionDialog}
@@ -398,8 +398,8 @@ const SessionManagement = ({ title = "Empty Page" }) => {
               />
               {Section && (
                 <span>
-                  Are you sure you want to{" "}
-                  <b style={{ color: "red" }}>delete</b> <b>{}</b>?
+                  Bạn có chắc là bạn muốn{" "}
+                  <b style={{ color: "red" }}>xóa</b> <b>{}</b>?
                 </span>
               )}
             </div>

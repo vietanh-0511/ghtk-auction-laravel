@@ -24,7 +24,7 @@ const ShowAuction = ({
   const footer = (id) =>
     <span>
       <Button
-        label="Detail"
+        label="Chi tiết"
         icon="pi pi-pencil"
         className="p-button-rounded p-button-secondary"
         onClick={() => {
@@ -40,9 +40,9 @@ const ShowAuction = ({
           <div className="col-3" key={datas.id}>
             <Card style={{ width: "25em", display: "flex" }} footer={() => footer(datas.id)}>
               <h4 style={{ color: "#3B82F6" }}>{datas.title}</h4>
-              <p>Status : {datas.status}</p>
-              <p>Start Time : {datas.start_time}</p>
-              <p>End Time : {datas.end_time}</p>
+              <p>Trạng thái : {datas.status}</p>
+              <p>Thời gian bắt đầu : {datas.start_time}</p>
+              <p>Thời gian kết thúc : {datas.end_time}</p>
             </Card>
           </div>
         </div>
@@ -54,7 +54,7 @@ const ShowAuction = ({
     <Button
       type="text"
       icon="pi pi-plus"
-      label="Load"
+      label="Tải thêm"
       onClick={() => ds.current.load()}
     />
   );

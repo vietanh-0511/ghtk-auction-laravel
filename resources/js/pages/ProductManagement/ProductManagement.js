@@ -177,7 +177,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     return (
       <React.Fragment>
         <Button
-          label="New"
+          label="Thêm mới"
           icon="pi pi-plus"
           className="p-button-success mr-2"
           onClick={openNew}
@@ -233,13 +233,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const productDialogFooter = (
     <React.Fragment>
       <Button
-        label="Cancel"
+        label="Hủy bỏ"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDialog}
       />
       <Button
-        label="Save"
+        label="Lưu"
         icon="pi pi-check"
         className="p-button-text"
         onClick={saveProduct}
@@ -250,13 +250,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
+        label="Không"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDeleteProductDialog}
       />
       <Button
-        label="Yes"
+        label="Có"
         icon="pi pi-check"
         className="p-button-text"
         onClick={deleteProductAuc}
@@ -282,21 +282,21 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               rows={10}
               rowsPerPageOptions={[5, 10, 25]}
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Products"
+              currentPageReportTemplate="Hiển thị {first} đến {last} của {totalRecords} sản phẩm"
               globalFilter={globalFilter}
               header={header}
               responsiveLayout="scroll"
             >
               <Column field="id" header="ID" sortable></Column>
-              <Column field="name" header="Product Name" sortable></Column>
+              <Column field="name" header="Tên sản phẩm" sortable></Column>
               <Column
                 field="assets"
                 body={imageBodyTemplate}
-                header="Images"
+                header="Ảnh"
               ></Column>
               <Column
                 field="description"
-                header="Description"
+                header="Mô tả"
                 sortable
               ></Column>
               <Column field="created_at" header="Created At" sortable></Column>
@@ -311,7 +311,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={productDialog}
             style={{ width: "450px" }}
-            header={product.id ? "Update Product" : "Create Product"}
+            header={product.id ? "Cập nhật sản phẩm" : "Thêm mới sản phẩm"}
             modal
             className="p-fluid"
             footer={productDialogFooter}
@@ -319,7 +319,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           >
             {/* name */}
             <div className="field">
-              <label htmlFor="name">Full Name</label>
+              <label htmlFor="name">Tên sản pẩm</label>
               <InputText
                 id="name"
                 value={product.name}
@@ -331,13 +331,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !product.name && (
-                <small className="p-error">Product name is required.</small>
+                <small className="p-error">Tên sản phẩm không được để trống.</small>
               )}
             </div>
 
             {/* Asset */}
             <div className="field">
-              <label htmlFor="assets">Images</label>
+              <label htmlFor="assets">Ảnh</label>
               <div className="upload">
                 <div className="input-upload">
                   <FileUpload
@@ -350,12 +350,12 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                     uploadHandler={handleUploadImage}
                     emptyTemplate={
                       <p className="m-0">
-                        Drag and drop files to here to upload.
+                        Kéo và thả tệp vào đây để tải lên.
                       </p>
                     }
                   />
                   {submitted && !product.assets && (
-                    <small className="p-error">Image name is required.</small>
+                    <small className="p-error">Ảnh không được để trống.</small>
                   )}
                 </div>
               </div>
@@ -363,7 +363,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
             {/* description */}
             <div className="field">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">Mô tả</label>
               <InputText
                 id="description"
                 value={product.description}
@@ -374,7 +374,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !product.description && (
-                <small className="p-error">Description is required.</small>
+                <small className="p-error">Mô tả không được để trống.</small>
               )}
             </div>
           </Dialog>
@@ -382,7 +382,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={deleteProductDialog}
             style={{ width: "450px" }}
-            header="Confirm"
+            header="Xác nhận"
             modal
             footer={deleteProductDialogFooter}
             onHide={hideDeleteProductDialog}
@@ -394,8 +394,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               />
               {product && (
                 <span>
-                  Are you sure you want to{" "}
-                  <b style={{ color: "red" }}>delete</b> <b>{product.name}</b>?
+                  Bạn có chắc là bạn muốn{" "}
+                  <b style={{ color: "red" }}>xóa</b> <b>{product.name}</b>?
                 </span>
               )}
             </div>

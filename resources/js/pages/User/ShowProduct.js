@@ -106,14 +106,14 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                 <div>
                     <div className="space-between">
                         <span>
-                            <div><span className="left-span">Name:</span><span className="right-span">{data.product.name}</span></div>
-                            <div><span className="left-span">Description:</span><span className="right-span">{data.product.description}</span></div>
+                            <div><span className="left-span">Tên Product:</span><span className="right-span">{data.product.name}</span></div>
+                            <div><span className="left-span">Mô tả:</span><span className="right-span">{data.product.description}</span></div>
                         </span>
                         <span>
-                            <div><span className="left-span">Start price:</span><span className="right-span">{data.start_price}$</span></div>
-                            <div><span className="left-span">Price step:</span><span className="right-span">{data.price_step}$</span></div>
-                            <div><span className="left-span">Current highest Bid:</span><span className="right-span">{data.highest_bid ? data.highest_bid + '$' : 'Missing'}</span></div>
-                            <div><span className="left-span">Current winner:</span><span className="right-span">{data.user ? data.user.full_name : 'Missing'}</span></div>
+                            <div><span className="left-span">Giá khởi điểm:</span><span className="right-span">{data.start_price}$</span></div>
+                            <div><span className="left-span">Bước giá:</span><span className="right-span">{data.price_step}$</span></div>
+                            <div><span className="left-span">Giá thầu cao nhất hiện tại:</span><span className="right-span">{data.highest_bid ? data.highest_bid + '$' : 'Missing'}</span></div>
+                            <div><span className="left-span">Người chiến thắng hiện tại:</span><span className="right-span">{data.user ? data.user.full_name : 'Missing'}</span></div>
                         </span>
                     </div>
                     <div>

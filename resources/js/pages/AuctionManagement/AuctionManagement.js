@@ -177,7 +177,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
     return (
       <React.Fragment>
         <Button
-          label="New"
+          label="Thêm mới"
           icon="pi pi-plus"
           className="p-button-success mr-2"
           onClick={openNew}
@@ -219,13 +219,13 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
   const AuctionDialogFooter = (
     <React.Fragment>
       <Button
-        label="Cancel"
+        label="Hủy bỏ"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDialog}
       />
       <Button
-        label="Save"
+        label="Lưu"
         icon="pi pi-check"
         className="p-button-text"
         onClick={saveAuction}
@@ -236,13 +236,13 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
   const deleteAuctionDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
+        label="Không"
         icon="pi pi-times"
         className="p-button-text"
         onClick={hideDeleteAuctionDialog}
       />
       <Button
-        label="Yes"
+        label="Có"
         icon="pi pi-check"
         className="p-button-text"
         onClick={delAuction}
@@ -268,17 +268,29 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
               rows={10}
               rowsPerPageOptions={[5, 10, 25]}
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Auctions"
+              currentPageReportTemplate="Hiển thị {first} đến {last} của {totalRecords} phiên đấu giá"
               globalFilter={globalFilter}
               header={header}
               responsiveLayout="scroll"
             >
               <Column field="id" header="ID" sortable></Column>
-              <Column field="title" header="Title" sortable></Column>
-              <Column field="status" header="Status" sortable></Column>
-              <Column field="start_time" header="Start Time" sortable></Column>
-              <Column field="end_time" header="End Time" sortable></Column>
-              <Column field="created_at" header="Created At" sortable></Column>
+              <Column field="title" header="Tên Auction" sortable></Column>
+              <Column field="status" header="Trạng thái" sortable></Column>
+              <Column
+                field="start_time"
+                header="Thời gian bắt đầu"
+                sortable
+              ></Column>
+              <Column
+                field="end_time"
+                header="Thời gian kết thúc"
+                sortable
+              ></Column>
+              <Column
+                field="created_at"
+                header="Thời gian tạo"
+                sortable
+              ></Column>
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
@@ -290,7 +302,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={AuctionDialog}
             style={{ width: "450px" }}
-            header={Auction.id ? "Update Auction" : "Create Auction"}
+            header={Auction.id ? "Cập nhật phiên đấu giá" : "Tạo phiên đấu giá"}
             modal
             className="p-fluid"
             footer={AuctionDialogFooter}
@@ -298,7 +310,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           >
             {/* title */}
             <div className="field">
-              <label htmlFor="title">Title</label>
+              <label htmlFor="title">Tên Auction</label>
               <InputText
                 id="title"
                 value={Auction.title}
@@ -310,13 +322,13 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Auction.title && (
-                <small className="p-error">Title is required.</small>
+                <small className="p-error" errors>Tên Auction không được để trống.</small>
               )}
             </div>
 
             {/* start time */}
             <div className="field">
-              <label htmlFor="start_time">Start Time</label>
+              <label htmlFor="start_time">Thời gian bắt đầu</label>
               <Calendar
                 id="start_time"
                 value={Auction.start_time}
@@ -330,13 +342,14 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Auction.start_time && (
-                <small className="p-error">Start Time is required.</small>
+                <small className="p-error">
+                Thời gian bắt đầu không được để trống.</small>
               )}
             </div>
 
             {/* end time */}
             <div className="field">
-              <label htmlFor="end_time">End Time</label>
+              <label htmlFor="end_time">Thời gian kết thúc</label>
               <Calendar
                 id="end_time"
                 value={Auction.end_time}
@@ -350,7 +363,8 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Auction.end_time && (
-                <small className="p-error">End Time is required.</small>
+                <small className="p-error">
+                Thời gian kết thúc không được để trống.</small>
               )}
             </div>
           </Dialog>
@@ -358,7 +372,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           <Dialog
             visible={deleteAuctionDialog}
             style={{ width: "450px" }}
-            header="Confirm"
+            header="Xác nhận"
             modal
             footer={deleteAuctionDialogFooter}
             onHide={hideDeleteAuctionDialog}
@@ -370,8 +384,8 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
               />
               {Auction && (
                 <span>
-                  Are you sure you want to{" "}
-                  <b style={{ color: "red" }}>delete</b> <b>{Auction.title}</b>?
+                  Bạn có chắc là bạn muốn <b style={{ color: "red" }}>xóa</b>{" "}
+                  <b>{Auction.title}</b>?
                 </span>
               )}
             </div>
