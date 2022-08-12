@@ -25,7 +25,7 @@ class StoreAutionRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required','regex:/^[a-zA-ZÑñ\s]+$/'],
+            'title' => ['required'],
             'start_time' => ['required'],
             'end_time' => ['required'],
         ];
