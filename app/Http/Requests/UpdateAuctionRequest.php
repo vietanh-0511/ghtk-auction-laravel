@@ -24,7 +24,7 @@ class UpdateAuctionRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required','unique:App\Models\Auction'],
+            'title' => ['required'],
             'start_time' => ['required'],
             'end_time' => ['required'],
         ];
