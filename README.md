@@ -22,3 +22,7 @@ composer install
  ```bash
  php artisan key:generate
 ```
+Run cron
+```bash
+./vendor/bin/sail php artisan schedule:work
+```
