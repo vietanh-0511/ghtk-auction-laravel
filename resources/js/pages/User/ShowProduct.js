@@ -62,16 +62,21 @@ const ShowProduct = ({ title = "Empty Page" }) => {
     }, [renew])
 
     useEffect(() => {
-        console.log(data)
-        if (data)
-            if (data.highest_bid) {
-                setValue2(data.highest_bid + data.price_step);
-                setRange([data.highest_bid + data.price_step, data.highest_bid + 5 * data.price_step]);
-            } else {
-                setValue2(data.start_price);
-                setRange([data.start_price + data.price_step, data.start_price + 5 * data.price_step]);
-            }
-    }, [data])
+      if (data)
+        if (data.highest_bid) {
+          setValue2(data.highest_bid + data.price_step);
+          setRange([
+            data.highest_bid + data.price_step,
+            data.highest_bid + 5 * data.price_step,
+          ]);
+        } else {
+          setValue2(data.start_price);
+          setRange([
+            data.start_price + data.price_step,
+            data.start_price + 5 * data.price_step,
+          ]);
+        }
+    }, [data]);
 
     const postBid = () => {
         createBidBySessionId({
