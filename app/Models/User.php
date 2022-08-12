@@ -64,6 +64,11 @@
       return $this->hasMany(Bid::class);
     }
 
+    public function verifyEmail()
+    {
+      return $this->hasOne(VerifyEmail::class);
+    }
+
     public function setPasswordAttribute($value)
     {
       $this->attributes['password'] = bcrypt($value);
