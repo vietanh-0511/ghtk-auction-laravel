@@ -2,6 +2,7 @@
 
 namespace App\Services\Bid;
 
+use App\Enums\AuctionStatusEnum;
 use App\Models\Auction;
 use App\Models\Bid;
 use App\Models\Session;
@@ -29,15 +30,13 @@ class CreateBidAction
         }
         $auctionId = Session::query()->where('id', $validated['session_id'])->first('auction_id');
         $auction = Auction::query()->where('id', $auctionId->auction_id)->first();
-        $currentTime = Carbon::now();
-        if ($currentTime < $auction->start_time) {
+        if ($auction->status == AuctionStatusEnum::Preview) {
             throw new Exception("Phiên đấu giá chưa mở");
         }
-        if ($currentTime > $auction->end_time) {
+        if ($auction->status == AuctionStatusEnum::End) {
             throw new Exception("Phiên đấu giá đã kết thúc");
         }
-        if (Auction::query()->where('id', $auctionId))
-            $this->bidPriceChecker->handle($validated);
+        $this->bidPriceChecker->handle($validated);
         $validated['user_id'] = $userId;
         $bid = Bid::create($validated);
         $this->updateWinner->handle($bid);
