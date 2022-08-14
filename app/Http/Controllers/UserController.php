@@ -23,7 +23,7 @@ class UserController extends Controller
         //     return Responder::fail($limit, 'limit invalid');
         // }
         $users = User::query()->orderByDesc('id')->get();
-        return Responder::success($users, 'get users success');
+        return Responder::success($users, 'Lấy thành công');
     }
 
     /**
@@ -42,7 +42,7 @@ class UserController extends Controller
             return Responder::fail($validated, $e->getMessage());
         }
         $user->assignRole('user');
-        return Responder::success($user, 'store success');
+        return Responder::success($user, 'Lưu thành công');
     }
 
     /**
@@ -55,13 +55,13 @@ class UserController extends Controller
     public function show($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'user id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!User::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Người dùng không tồn tại');
         }
         $user = User::where('id', $id)->first();
-        return Responder::success($user, 'get users success');
+        return Responder::success($user, 'Lấy thành công');
     }
 
 
@@ -77,17 +77,17 @@ class UserController extends Controller
     {
         $validated = $request->validated();
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'user id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!User::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Người dùng không tồn tại');
         }
         try {
             $userUpdated = User::where('id', $id)->update($validated);
         } catch (Exception $e) {
             return Responder::fail($validated, $e->getMessage());
         }
-        return Responder::success($userUpdated, 'update success');
+        return Responder::success($userUpdated, 'Sửa thành công');
     }
 
     /**
@@ -100,17 +100,17 @@ class UserController extends Controller
     public function destroy($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'user id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!User::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the user with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Người dùng không tồn tại');
         }
         $user = User::find($id);
         if ($user->hasRole('admin')) {
             return Responder::fail($id, 'you cannot delete admin account');
         }
         $deleteUser = User::where('id', $id)->delete();
-        return Responder::success($deleteUser, 'delete success');
+        return Responder::success($deleteUser, 'Xóa thành công');
     }
 
 }

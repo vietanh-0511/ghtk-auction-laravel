@@ -32,7 +32,7 @@ class BidController extends Controller
         //     return Responder::fail($limit, 'limit invalid');
         // }
         $bid = Bid::query()->orderByDesc('id')->get();
-        return Responder::success($bid, 'get bids success');
+        return Responder::success($bid, 'Thành công');
     }
 
     /**
@@ -61,8 +61,8 @@ class BidController extends Controller
         } catch (Exception $e) {
             return Responder::fail($bid, $e->getMessage());
         }
-        
-        return Responder::success($bid, 'success bid');
+
+        return Responder::success($bid, 'Đấu giá thành công');
     }
 
     /**
@@ -75,13 +75,13 @@ class BidController extends Controller
     {
         $bid = '';
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'id must be a number');
+            return Responder::fail($id, 'id phải là số');
         }
         if (!Bid::query()->where('id', $id)->exists()) {
-            return Responder::fail($bid, 'the bid with the id ' . $id . ' does not exist.');
+            return Responder::fail($bid, 'Bid không tồn tại');
         }
         $bid = Bid::where('id', $id)->first();
-        return Responder::success($bid, 'get bid success');
+        return Responder::success($bid, 'Lấy thành công');
     }
 
     /**
@@ -116,13 +116,13 @@ class BidController extends Controller
     public function destroy($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'id must be a number');
+            return Responder::fail($id, 'id phải là số');
         }
         if (!Bid::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the bid with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Bid không tồn tại');
         }
         $deleteBid = Bid::where('id', $id)->delete();
-        return Responder::success($deleteBid, 'delete success');
+        return Responder::success($deleteBid, 'xóa thành công');
     }
     
     public function updateBidMessage()

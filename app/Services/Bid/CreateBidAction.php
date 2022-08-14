@@ -2,9 +2,10 @@
 
 namespace App\Services\Bid;
 
-use App\Exceptions\BidPriceException;
+use App\Models\Auction;
 use App\Models\Bid;
 use App\Models\Session;
+use Carbon\Carbon;
 use Exception;
 
 class CreateBidAction
@@ -24,9 +25,19 @@ class CreateBidAction
     public function handle(array $validated, $userId)
     {
         if (!Session::query()->where('id', $validated['session_id'])->exists()) {
-            throw new Exception("Session does not exist");
+            throw new Exception("Phiên không tồn tại");
         }
-        $this->bidPriceChecker->handle($validated);
+        $auctionId = Session::query()->where('id', $validated['session_id'])->first('auction_id');
+        $auction = Auction::query()->where('id', $auctionId->auction_id)->first();
+        $currentTime = Carbon::now();
+        if ($currentTime < $auction->start_time) {
+            throw new Exception("Phiên đấu giá chưa mở");
+        }
+        if ($currentTime > $auction->end_time) {
+            throw new Exception("Phiên đấu giá đã kết thúc");
+        }
+        if (Auction::query()->where('id', $auctionId))
+            $this->bidPriceChecker->handle($validated);
         $validated['user_id'] = $userId;
         $bid = Bid::create($validated);
         $this->updateWinner->handle($bid);

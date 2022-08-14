@@ -50,13 +50,13 @@ class AssetController extends Controller
     public function show($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'the asset id must be a number');
+            return Responder::fail($id, 'id của ảnh phải là 1 số');
         }
         if (!Asset::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the asset with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Ảnh số ' . $id . ' không tồn tại');
         }
         $asset = Asset::where('id', $id)->first();
-        return Responder::success($asset, 'get asset success');
+        return Responder::success($asset, 'Lấy ảnh thành công');
     }
 
     /**
@@ -91,12 +91,12 @@ class AssetController extends Controller
     public function destroy($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'the asset id must be a number');
+            return Responder::fail($id, 'id của ảnh phải là 1 số');
         }
         if (!Asset::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the asset with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Ảnh số ' . $id . ' không tồn tại');
         }
         $deleteAsset = Asset::where('id', $id)->delete();
-        return Responder::success($deleteAsset, 'delete success');
+        return Responder::success($deleteAsset, 'Xóa thành công');
     }
 }
