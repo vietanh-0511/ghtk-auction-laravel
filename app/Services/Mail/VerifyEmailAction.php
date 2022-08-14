@@ -3,15 +3,15 @@
   namespace App\Services\Mail;
 
   use App\Models\User;
-  use App\Models\VerifyEmail;
+  use App\Models\VerifyEmailToken;
   use Carbon\Carbon;
   use Illuminate\Support\Facades\DB;
 
-  class VerifyMailAction {
+  class VerifyEmailAction {
 
     public function handle(string $token)
     {
-      $verification = VerifyEmail::where('token', $token)->first();
+      $verification = VerifyEmailToken::where('token', $token)->first();
       if (is_null($verification) || date_diff($verification->created_at, Carbon::now())->i > 30) {
         return ['message' => 'Token not valid.', 'isValid' => false];
       }
@@ -20,7 +20,7 @@
         : ['message' => 'Verify fail', 'isValid' => false];
     }
 
-    private function updateEmailVerifiedAt(VerifyEmail $verification)
+    private function updateEmailVerifiedAt(VerifyEmailToken $verification)
     {
       try {
         DB::beginTransaction();

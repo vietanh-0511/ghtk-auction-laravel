@@ -66,7 +66,7 @@
 
     public function verifyEmail()
     {
-      return $this->hasOne(VerifyEmail::class);
+      return $this->hasOne(VerifyEmailToken::class);
     }
 
     public function setPasswordAttribute($value)

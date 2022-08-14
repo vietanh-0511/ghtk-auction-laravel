@@ -2,10 +2,9 @@
 
 namespace App\Services\Mail;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
-class SendVerifyMail {
+class SendVerifyEmail {
   private $from = 'noreply.auction.ghtk@gmail.com';
   private $fromName = 'Auction GHTK';
   private $subject = 'Verify Email';
