@@ -38,8 +38,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setUser(null);
-    setToken(null);
+    window.axiosApiInstance.post("auth/logout").then((res) => {
+      toast.current.show({
+        severity: "success",
+        summary: "Notification",
+        detail: res.data.message || "Sign out successful",
+        life: 2000,
+      })
+      setUser(null);
+      setToken(null);
+    })
     navigate("/", { replace: true });
   };
 
