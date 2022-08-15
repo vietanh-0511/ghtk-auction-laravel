@@ -64,7 +64,7 @@ export const App = () => {
         />
         <Route
           path="sessions"
-          element={<SessionManagement title="Quản lý Sessions" />}
+          element={<SessionManagement title="Quản lý Các phiên" />}
         />
       </Route>
     </Routes>

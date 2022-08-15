@@ -210,7 +210,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -299,7 +299,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 header="Mô tả"
                 sortable
               ></Column>
-              <Column field="created_at" header="Created At" sortable></Column>
+              <Column field="created_at" header="Thời gian tạo" sortable></Column>
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
@@ -319,7 +319,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           >
             {/* name */}
             <div className="field">
-              <label htmlFor="name">Tên sản pẩm</label>
+              <label htmlFor="name">Tên sản phẩm</label>
               <InputText
                 id="name"
                 value={product.name}

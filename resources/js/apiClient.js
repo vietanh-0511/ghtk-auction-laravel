@@ -44,6 +44,9 @@ export function deleteProduct(id) {
 export function updateProduct(id, data) {
   return window.axiosApiInstance.put(`/admin/product/${id}`, data);
 }
+export function getProductnotinss(id, data) {
+  return window.axiosApiInstance.get(`/admin/product-not-in-ss`, data);
+}
 
 // Auctions Management: Autions
 export function getAuction() {
