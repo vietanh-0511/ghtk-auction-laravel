@@ -109,7 +109,7 @@ const AdminLayout = () => {
       label: "Home",
       items: [
         {
-          label: "Dashboard",
+          label: "Trang chủ",
           icon: "pi pi-fw pi-desktop",
           to: "/admin/dashboard",
         },
@@ -135,12 +135,12 @@ const AdminLayout = () => {
           to: "/admin/products",
         },
         {
-          label: "Quản lý Auctions",
+          label: "Quản lý Đấu giá",
           icon: "pi pi-fw pi-shopping-cart",
           to: "/admin/auctions",
         },
         {
-          label: "Quản lý Sessions",
+          label: "Quản lý Các phiên",
           icon: "pi pi-fw pi-star",
           to: "/admin/sessions",
         },
@@ -180,7 +180,7 @@ const AdminLayout = () => {
       routePath: "#"
     },
     {
-      label: 'Log out',
+      label: 'Đăng xuất',
       iconClass: 'pi pi-sign-out',
       routePath: "#",
       command: () => {

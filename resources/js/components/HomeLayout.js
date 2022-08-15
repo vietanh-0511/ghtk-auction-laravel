@@ -113,7 +113,7 @@ const HomeLayout = () => {
       label: "Home",
       items: [
         {
-          label: "Dashboard",
+          label: "Trang chủ",
           icon: "pi pi-fw pi-desktop",
           to: "/admin/dashboard",
         },
@@ -139,12 +139,12 @@ const HomeLayout = () => {
           to: "/admin/products",
         },
         {
-          label: "Quản lý Auctions",
+          label: "Quản lý Đấu giá",
           icon: "pi pi-fw pi-shopping-cart",
           to: "/admin/auctions",
         },
         {
-          label: "Quản lý Sessions",
+          label: "Quản lý Các phiên",
           icon: "pi pi-fw pi-star",
           to: "/admin/sessions",
         },

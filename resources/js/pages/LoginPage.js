@@ -48,7 +48,7 @@ const LoginPage = ({ title }) => {
             />
           </div>
           <div className="field">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Mật khẩu</label>
             <InputText
               id="password"
               type="password"

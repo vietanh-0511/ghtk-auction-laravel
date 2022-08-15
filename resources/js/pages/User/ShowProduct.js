@@ -111,8 +111,8 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                 <div>
                     <div className="space-between">
                         <span>
-                            <div><span className="left-span">Tên Product:</span><span className="right-span">{data.product.name}</span></div>
-                            <div><span className="left-span">Mô tả:</span><span className="right-span">{data.product.description}</span></div>
+                            <div><span className="left-span"></span><span className="right-span" style={{fontSize:'20px',fontWeight:'800', color:'tomato'}}>{data.product.name}</span></div>
+                            <div><span className="left-span"></span><span className="right-span">{data.product.description}</span></div>
                         </span>
                         <span>
                             <div><span className="left-span">Giá khởi điểm:</span><span className="right-span">{data.start_price}$</span></div>
@@ -122,7 +122,7 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                         </span>
                     </div>
                     <div>
-                        <div className="space-between">Assets:</div>
+                        <div className="space-between">Ảnh:</div>
                         {
                             data.assets.length > 0 &&
                             <div className="assets-display">
@@ -140,16 +140,16 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                     </div>
                     <div>
                         <div className="space-center">
-                            <h5>Amount: {value2}</h5>
+                            <h5>Trả giá: {value2}</h5>
                         </div>
                         <div className="space-center">
                             <span>
-                                <Slider min={range ? range[0] : 0} max={range ? range[1] : 100}
-                                    step={range ? data.price_step : 1} value={value2} onChange={(e) => setValue2(e.value)} />
+                                {/* <Slider min={range ? range[0] : 0} max={range ? range[1] : 100}
+                                    step={range ? data.price_step : 1} value={value2} onChange={(e) => setValue2(e.value)} /> */}
                                 <InputText value={value2} onChange={(e) => setValue2(e.target.value)} />
                             </span>
                             <span>
-                                <Button label="Place bid" icon="pi pi-check" onClick={postBid} />
+                                <Button label="Đấu giá" icon="pi pi-check" onClick={postBid} />
                             </span>
                         </div>
                     </div>
