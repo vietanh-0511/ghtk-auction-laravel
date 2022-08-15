@@ -45,10 +45,6 @@ export function updateProduct(id, data) {
   return window.axiosApiInstance.put(`/admin/product/${id}`, data);
 }
 
-export function getImageProduct(id) {
-  return window.axiosApiInstance.get(`/admin/product/${id}`);
-}
-
 // Auctions Management: Autions
 export function getAuction() {
   return window.axiosApiInstance.get(`/admin/auction`);
