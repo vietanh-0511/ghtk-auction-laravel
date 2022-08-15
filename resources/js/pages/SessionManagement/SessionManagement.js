@@ -88,7 +88,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Error Delete",
           life: 5000,
         });
@@ -96,7 +96,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
         getData();
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
@@ -113,10 +113,11 @@ const SessionManagement = ({ title = "Empty Page" }) => {
     _Section.start_price = parseInt(_Section.start_price);
     if (_Section.id) {
       updateSession(_Section.id, _Section).then((res) => {
+        console.log(res)
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Update",
             life: 5000,
           });
@@ -124,19 +125,19 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     } else {
       createSession(_Section).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Create",
             life: 5000,
           });
@@ -144,7 +145,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
@@ -285,7 +286,11 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 header="Giá cao nhất"
                 sortable
               ></Column>
-              <Column field="winner_id" header="Id thắng cuộc" sortable></Column>
+              <Column
+                field="winner_id"
+                header="Id thắng cuộc"
+                sortable
+              ></Column>
               <Column
                 body={sessionBodyTemplate}
                 exportable={false}
@@ -316,8 +321,10 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                   "p-invalid": submitted && !Section.start_price,
                 })}
               />
-              {submitted && !Section.title && (
-                <small className="p-error">Giá khởi điểm không được để trống.</small>
+              {submitted && !Section.start_price && (
+                <small className="p-error">
+                  Giá khởi điểm không được để trống.
+                </small>
               )}
             </div>
 
@@ -333,7 +340,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                   "p-invalid": submitted && !Section.price_step,
                 })}
               />
-              {submitted && !Section.title && (
+              {submitted && !Section.price_step && (
                 <small className="p-error">Bước giá không được để trống.</small>
               )}
             </div>
@@ -357,7 +364,9 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Section.product_id && (
-                <small className="p-error">Tên sản phẩm không được để trống.</small>
+                <small className="p-error">
+                  Tên sản phẩm không được để trống.
+                </small>
               )}
             </div>
             <div className="field">
@@ -378,7 +387,9 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Section.auction_id && (
-                <small className="p-error">Tên phiên đấu giá không được để trống.</small>
+                <small className="p-error">
+                  Tên phiên đấu giá không được để trống.
+                </small>
               )}
             </div>
           </Dialog>
@@ -398,8 +409,8 @@ const SessionManagement = ({ title = "Empty Page" }) => {
               />
               {Section && (
                 <span>
-                  Bạn có chắc là bạn muốn{" "}
-                  <b style={{ color: "red" }}>xóa</b> <b>{}</b>?
+                  Bạn có chắc là bạn muốn <b style={{ color: "red" }}>xóa</b>{" "}
+                  <b>{}</b>?
                 </span>
               )}
             </div>

@@ -3,11 +3,13 @@ import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
+import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { createUser, deleteUser, getUser, updateUser } from "../../apiClient";
+import { validate, validateAll } from "../../utils";
 
 const UserManagement = ({ title = "Empty Page" }) => {
   let emptyUser = {
@@ -28,52 +30,6 @@ const UserManagement = ({ title = "Empty Page" }) => {
   const toast = useRef(null);
   const dt = useRef(null);
   let idUser = user.id;
-
-  const validate = (value, type) => {
-    var check = false;
-    switch (type) {
-      case "email":
-        check = value
-          .toLowerCase()
-          .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          );
-        break;
-      case "password":
-        check = value.match(
-          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
-        );
-        break;
-      case "confirmation":
-        check = user.password === user.password_confirmation;
-        break;
-      case "phone":
-        check = user.phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/);
-        break;
-    }
-    return !check;
-  };
-
-  const validateAll = () => {
-    return user.id
-      ? user.full_name &&
-          user.email &&
-          user.address &&
-          user.phone &&
-          !(validate(user.email, "email") && validate(user.phone, "phone"))
-      : user.full_name &&
-          user.email &&
-          user.password &&
-          user.password_confirmation &&
-          user.address &&
-          user.phone &&
-          !(
-            validate(user.email, "email") &&
-            validate(user.password, "password") &&
-            validate(user.password_confirmation, "confirmation") &&
-            validate(user.phone, "phone")
-          );
-  };
 
   useEffect(() => {
     getUser().then((res) => {
@@ -115,7 +71,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Error Delete",
           life: 5000,
         });
@@ -123,7 +79,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
         getData();
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
@@ -141,7 +97,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
           if (res.data.status !== true) {
             toast.current.show({
               severity: "error",
-              summary: "Notification",
+              summary: "Thông báo",
               detail: res.data.message || "Error Update",
               life: 5000,
             });
@@ -149,7 +105,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
             getData();
             toast.current.show({
               severity: "success",
-              summary: "Notification",
+              summary: "Thông báo",
               detail: res.data.message,
               life: 5000,
             });
@@ -161,7 +117,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
           if (res.data.status !== true) {
             toast.current.show({
               severity: "error",
-              summary: "Notification",
+              summary: "Thông báo",
               detail: res.data.message || "Error Create",
               life: 5000,
             });
@@ -169,7 +125,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
             getData();
             toast.current.show({
               severity: "success",
-              summary: "Notification",
+              summary: "Thông báo",
               detail: res.data.message,
               life: 5000,
             });
@@ -316,13 +272,23 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 onChange={(e) => onInputChange(e, "full_name")}
                 required
                 autoFocus
+                minLength="6"
                 className={classNames({
-                  "p-invalid": submitted && !user.full_name,
+                  "p-invalid":
+                    submitted &&
+                    (!user.full_name || validate(user.full_name, "full_name")),
                 })}
               />
-              {submitted && !user.full_name && (
-                <small className="p-error">Họ tên không được để trống.</small>
-              )}
+              {submitted &&
+                (!user.full_name || validate(user.full_name, "full_name")) && (
+                  <small className="p-error">
+                    Full name{" "}
+                    {!user.full_name
+                      ? " không được để trống"
+                      : "phải trên 6 ký tựÏ"}
+                    .
+                  </small>
+                )}
             </div>
 
             {/* email */}
@@ -343,7 +309,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 {submitted &&
                   (!user.email || validate(user.email, "email")) && (
                     <small className="p-error">
-                      Email  {!user.email ? " không được để trống" : "sai"}.
+                      Email {!user.email ? " không được để trống" : "sai"}.
                     </small>
                   )}
               </div>
@@ -353,7 +319,8 @@ const UserManagement = ({ title = "Empty Page" }) => {
             {!user.id && (
               <div className="field">
                 <label htmlFor="password">Mật khẩu</label>
-                <InputText
+                <Password
+                  toggleMask
                   id="password"
                   value={user.password}
                   onChange={(e) => onInputChange(e, "password")}
@@ -367,7 +334,8 @@ const UserManagement = ({ title = "Empty Page" }) => {
                 {submitted &&
                   (!user.password || validate(user.password, "password")) && (
                     <small className="p-error">
-                      Mật khẩu {!user.password ? " không được để trống" : "sai"}.
+                      Mật khẩu {!user.password ? " không được để trống" : "sai"}
+                      .
                     </small>
                   )}
               </div>
@@ -376,10 +344,9 @@ const UserManagement = ({ title = "Empty Page" }) => {
             {/* conf */}
             {!user.id && (
               <div className="field">
-                <label htmlFor="password_confirmation">
-                Xác nhận mật khẩu
-                </label>
-                <InputText
+                <label htmlFor="password_confirmation">Xác nhận mật khẩu</label>
+                <Password
+                  toggleMask
                   id="password_confirmation"
                   value={user.password_confirmation}
                   onChange={(e) => onInputChange(e, "password_confirmation")}
@@ -395,8 +362,11 @@ const UserManagement = ({ title = "Empty Page" }) => {
                   (!user.password_confirmation ||
                     validate(user.password_confirmation, "confirmation")) && (
                     <small className="p-error">
-                      Xác nhận mật khẩu {" "}
-                      {!user.password_confirmation ? " không được để trống" : "sai"}.
+                      Xác nhận mật khẩu{" "}
+                      {!user.password_confirmation
+                        ? " không được để trống"
+                        : "sai"}
+                      .
                     </small>
                   )}
               </div>
@@ -455,9 +425,8 @@ const UserManagement = ({ title = "Empty Page" }) => {
               />
               {user && (
                 <span>
-                  Bạn có chắc là bạn muốn{" "}
-                  <b style={{ color: "red" }}>xóa</b> <b>{user.full_name}</b>
-                  ?
+                  Bạn có chắc là bạn muốn <b style={{ color: "red" }}>xóa</b>{" "}
+                  <b>{user.full_name}</b>?
                 </span>
               )}
             </div>
