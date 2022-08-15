@@ -10,7 +10,6 @@ import { InputText } from "primereact/inputtext";
 import {
   createProduct,
   deleteProduct,
-  getImageProduct,
   getProduct,
   updateProduct,
 } from "../../apiClient";
@@ -21,7 +20,7 @@ import "../../../css/app.css";
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
     name: "",
-    asset: [],
+    assets: [],
     description: "",
   };
 
@@ -32,14 +31,12 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [images, setImages] = useState([]);
+  const [url, setUrl] = useState([]);
   const toast = useRef(null);
   const dt = useRef(null);
-
-images.map(item => item.file_name)
-
-
   let idProduct = product.id;
+
+
 
   const handleUploadImage = (e) => {
     const data = new FormData();
@@ -52,16 +49,15 @@ images.map(item => item.file_name)
     })
       .then((resp) => resp.json())
       .then((data) => {
-        product.asset.push(data.url);
+        product.assets.push(data.url);
+        setUrl(data.url);
         toast.current.show({
           severity: "info",
           summary: "Success",
           detail: "File Uploaded",
         });
       })
-      .catch((err) => {
-        console.log(err.message);
-      });
+      .catch((err) => { });
   };
 
   useEffect(() => {
@@ -86,9 +82,6 @@ images.map(item => item.file_name)
   };
 
   const editProduct = (product) => {
-    getImageProduct(product.id).then((res) => {
-      setImages(res.data.data.assets);
-    });
     setProduct({ ...product });
     setProductDialog(true);
   };
@@ -228,11 +221,10 @@ images.map(item => item.file_name)
       <Image
         preview={true}
         width="100"
-        src={`${
-          rowData.asset !== null
+        src={`${rowData.asset !== null
             ? rowData.asset.file_name
             : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
-        }`}
+          }`}
         className="product-image"
       />
     );
@@ -298,11 +290,15 @@ images.map(item => item.file_name)
               <Column field="id" header="ID" sortable></Column>
               <Column field="name" header="Tên sản phẩm" sortable></Column>
               <Column
-                field="asset"
+                field="assets"
                 body={imageBodyTemplate}
                 header="Ảnh"
               ></Column>
-              <Column field="description" header="Mô tả" sortable></Column>
+              <Column
+                field="description"
+                header="Mô tả"
+                sortable
+              ></Column>
               <Column field="created_at" header="Created At" sortable></Column>
               <Column
                 body={actionBodyTemplate}
@@ -335,39 +331,30 @@ images.map(item => item.file_name)
                 })}
               />
               {submitted && !product.name && (
-                <small className="p-error">
-                  Tên sản phẩm không được để trống.
-                </small>
+                <small className="p-error">Tên sản phẩm không được để trống.</small>
               )}
             </div>
 
             {/* Asset */}
             <div className="field">
-              <label htmlFor="asset">Ảnh</label>
-              {/*  */}
-              <ul className="list-image">
-                {images.map((item) => (
-                  <li key={item.id} className='item-image'>
-                    <Image width="100" src={item.file_name} className='image'/>
-                  </li>
-                ))}
-              </ul>
-              {/*  */}
+              <label htmlFor="assets">Ảnh</label>
               <div className="upload">
                 <div className="input-upload">
                   <FileUpload
-                    id="asset"
+                    id="assets"
                     multiple={true}
                     url="https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload"
                     accept="image/*"
-                    value={product.asset}
+                    value={product.assets}
                     customUpload
                     uploadHandler={handleUploadImage}
                     emptyTemplate={
-                      <p className="m-0">Kéo và thả tệp vào đây để tải lên.</p>
+                      <p className="m-0">
+                        Kéo và thả tệp vào đây để tải lên.
+                      </p>
                     }
                   />
-                  {submitted && !product.asset && (
+                  {submitted && !product.assets && (
                     <small className="p-error">Ảnh không được để trống.</small>
                   )}
                 </div>
@@ -407,8 +394,8 @@ images.map(item => item.file_name)
               />
               {product && (
                 <span>
-                  Bạn có chắc là bạn muốn <b style={{ color: "red" }}>xóa</b>{" "}
-                  <b>{product.name}</b>?
+                  Bạn có chắc là bạn muốn{" "}
+                  <b style={{ color: "red" }}>xóa</b> <b>{product.name}</b>?
                 </span>
               )}
             </div>
