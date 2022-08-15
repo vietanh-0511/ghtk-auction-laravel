@@ -129,7 +129,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
             life: 5000,
           });
         }
-        hideDialog();
+       // hideDialog();
       });
     } else {
       createSession(_Section).then((res) => {
@@ -148,7 +148,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
             detail: res.data.message,
             life: 5000,
           });
-          hideDialog();
+         // hideDialog();
         }
       });
     }

@@ -83,6 +83,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
   const editProduct = (product) => {
     setProduct({ ...product });
+    // console.log(product)
     setProductDialog(true);
   };
 
