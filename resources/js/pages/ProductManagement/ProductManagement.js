@@ -255,7 +255,14 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         className="p-button-text"
         onClick={hideDialog}
       />
-      <Button
+      {product.id && <Button
+        label="Lưu"
+        icon={"pi pi-check"}
+        className="p-button-text"
+        onClick={saveProduct}
+      >
+      </Button >}
+      {!product.id && <Button
         label="Lưu"
         icon={(product.assets.length === temporaryAssets) ? "pi pi-check" : null}
         className="p-button-text"
@@ -263,7 +270,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         disabled={temporaryAssets < 1 || (product.assets.length !== temporaryAssets)}
       >
         {(temporaryAssets > 0 && product.assets.length !== temporaryAssets) && <ProgressSpinner style={{ width: '20px', height: '20px' }} />}
-      </Button >
+      </Button >}
     </React.Fragment>
   );
 
@@ -356,7 +363,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             </div>
 
             {/* Asset */}
-            <div className="field">
+            {!product.id && <div className="field">
               <label htmlFor="assets">Ảnh</label>
               <div className="upload">
                 <div className="input-upload">
@@ -386,7 +393,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                   )}
                 </div>
               </div>
-            </div>
+            </div>}
 
             {/* description */}
             <div className="field">
