@@ -7,6 +7,7 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   createProduct,
   deleteProduct,
@@ -31,7 +32,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
-  const [confirmAssets, setConfirmAssets] = useState([]);
+  const [temporaryAssets, setTemporaryAssets] = useState(0); // length
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -40,8 +41,32 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
   let idProduct = product.id;
 
-  const customUploadHandle = async (e) => {
-    setConfirmAssets(e.files);
+  const customUploadHandle = (e) => {
+    if (e.files.length < 1) return;
+    Promise.all(e.files.map(u =>
+      fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
+        method: "post",
+        body: newFormData(u),
+      })
+    )).then(responses =>
+      Promise.all(responses.map(res => res.json()))
+    ).then(texts => {
+      setProduct({
+        ...product,
+        assets: texts.map(i => i.url),
+      });
+      toast.current.show({
+        severity: "info",
+        summary: "Success",
+        detail: "File Uploaded",
+      })
+    }).catch((err) => {
+      console.log(err);
+      toast.current.show({
+        severity: "info",
+        summary: "Failed",
+      })
+    });
   }
 
   const newFormData = (v) => {
@@ -51,35 +76,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     data.append("cloud_name", "ghtk-auction-laravel");
     return data;
   }
-
-  const handleUploadImage = async () => {
-    if (confirmAssets.length > 0) {
-      Promise.all(confirmAssets.map(u =>
-        fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
-          method: "post",
-          body: newFormData(u),
-        })
-      )).then(responses =>
-        Promise.all(responses.map(res => res.json()))
-      ).then(texts => {
-        setProduct({
-          ...product,
-          assets: texts.map(i => i.url),
-        });
-        toast.current.show({
-          severity: "info",
-          summary: "Success",
-          detail: "File Uploaded",
-        })
-      }).catch((err) => {
-        console.log(err);
-        toast.current.show({
-          severity: "info",
-          summary: "Failed",
-        })
-      });
-    }
-  };
 
   useEffect(() => {
     getProduct().then((res) => {
@@ -142,10 +138,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const saveProduct = async () => {
     setSubmitted(true);
     const _product = { ...product };
-    // fix me run before post please thanks
-    if (!_product.id) await handleUploadImage();
 
-    if (_product.assets.length < 1 && _product.description.trim() === '' && _product.name.trim() === '') return;
+    if (_product.assets.length < 1 || _product.description.trim() === '' || _product.name.trim() === '') return;
 
     if (_product.id) {
       updateProduct(_product.id, _product).then((res) => {
@@ -204,8 +198,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           label="Thêm mới"
           icon="pi pi-plus"
           className="p-button-success mr-2"
-          onClick={openNew}
-        />
+          onClick={openNew} />
       </React.Fragment>
     );
   };
@@ -264,10 +257,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       />
       <Button
         label="Lưu"
-        icon="pi pi-check"
+        icon={(product.assets.length === temporaryAssets) ? "pi pi-check" : null}
         className="p-button-text"
         onClick={saveProduct}
-      />
+        disabled={temporaryAssets < 1 || (product.assets.length !== temporaryAssets)}
+      >
+        {(temporaryAssets > 0 && product.assets.length !== temporaryAssets) && <ProgressSpinner style={{ width: '20px', height: '20px' }} />}
+      </Button >
     </React.Fragment>
   );
 
@@ -371,6 +367,14 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                     value={product.assets}
                     customUpload
                     uploadHandler={customUploadHandle}
+                    onSelect={(e) => setTemporaryAssets(e.files.length)}
+                    onClear={(e) => {
+                      setTemporaryAssets(0);
+                      setProduct({
+                        ...product,
+                        assets: []
+                      })
+                    }}
                     emptyTemplate={
                       <p className="m-0">
                         Kéo và thả tệp vào đây để tải lên.
@@ -378,7 +382,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                     }
                   />
                   {submitted && product.assets.length < 1 && (
-                    <small className="p-error">Ảnh không được để trống.</small>
+                    temporaryAssets < 1 ? <small className="p-error">Ảnh không được để trống.</small> : <small className="p-error">Bấm Upload ảnh trước khi Lưu.</small>
                   )}
                 </div>
               </div>
