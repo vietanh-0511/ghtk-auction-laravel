@@ -322,7 +322,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Auction.title && (
-                <small className="p-error" errors>
+                <small className="p-error">
                   Tên Auction không được để trống.
                 </small>
               )}

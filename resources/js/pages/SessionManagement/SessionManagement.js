@@ -113,7 +113,6 @@ const SessionManagement = ({ title = "Empty Page" }) => {
     _Section.start_price = parseInt(_Section.start_price);
     if (_Section.id) {
       updateSession(_Section.id, _Section).then((res) => {
-        console.log(res)
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",

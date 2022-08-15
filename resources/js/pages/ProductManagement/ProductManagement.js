@@ -36,8 +36,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  console.log("url", url);
-
   let idProduct = product.id;
 
   const handleUploadImage = (file) => {
@@ -59,6 +57,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           summary: "Success",
           detail: "File Uploaded",
         });
+        setUrl("");
       })
       .catch((err) => {
         console.log(err.message);
@@ -357,7 +356,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                   )}
                 </div>
               </div>
-              {product.assets.length > 0 && (
+              {url.length > 0 && (
                 <ul className="list-image card">
                   {url.map((item, index) => (
                     <li key={index} className="item-image">
