@@ -28,18 +28,18 @@ class AuthController extends Controller
     if (!$token = auth()->attempt($credentials)) {
       return response()->json([
         'status' => false,
-        'message' => 'Wrong email or password.',
+        'message' => 'Sai tài khoản hoặc mật khẩu!',
         'data' => null,
       ], Response::HTTP_UNAUTHORIZED);
     }
     if (!User::where('email', $credentials['email'])->where('email_verified_at','!=', null)->exists()) {
       return response()->json([
         'status' => false,
-        'message' => 'Email not verified.',
+        'message' => 'Email chưa được xác minh!',
         'data' => null,
       ], Response::HTTP_UNAUTHORIZED);
     }
-    return $this->createNewToken($token, 'Signin successful');
+    return $this->createNewToken($token, 'Đăng nhập thành công!');
   }
 
   public function register(RegisterRequest $request)
@@ -53,7 +53,7 @@ class AuthController extends Controller
     ]));
     return response()->json([
       'status' => true,
-      'message' => 'Signup successful, Please check your email!',
+      'message' => 'Đăng ký thành công, vui lòng kiểm tra email của bạn!',
       'data' => $user,
     ], Response::HTTP_CREATED);
   }

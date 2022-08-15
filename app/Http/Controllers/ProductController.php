@@ -60,7 +60,7 @@ class ProductController extends Controller
         } catch (Exception $e) {
             return Responder::fail($product, $e->getMessage());
         }
-        return Responder::success($product, 'store success');
+        return Responder::success($product, 'Thêm thành công');
     }
 
     /**
@@ -73,16 +73,16 @@ class ProductController extends Controller
     public function show($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'the product id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!Product::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Sản phẩm không tồn tại');
         }
         $product = Product::query()
             ->where('id', $id)
             ->first();
         $assets = Asset::query()->where('assetable', $id)->get();
-        return Responder::success([$product, 'assets' => $assets], 'get product success');
+        return Responder::success([$product, 'assets' => $assets], 'Lấy thành công');
     }
 
 
@@ -98,17 +98,17 @@ class ProductController extends Controller
     {
         $product = '';
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'the product id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!Product::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Sản phẩm không tồn tại');
         }
         try {
             $product = $this->updateProductAction->handle($request, $id);
         } catch (Exception $e) {
             return Responder::fail($product, $e->getMessage());
         }
-        return Responder::success($product, 'update success');
+        return Responder::success($product, 'Sửa thành công');
     }
 
     /**
@@ -121,14 +121,24 @@ class ProductController extends Controller
     public function destroy($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'the product id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!Product::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the product with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Sản phẩm không tồn tại');
         }
         Asset::where('assetable', $id)->delete();
         Session::where('product_id', $id)->delete();
         $deleteProduct = Product::where('id', $id)->delete();
-        return Responder::success($deleteProduct, 'delete success');
+        return Responder::success($deleteProduct, 'Xóa thành công');
+    }
+
+    public function showProductsNotInSession()
+    {
+        $productInSessions = Session::get('product_id')->toArray();
+        $products = Product::query()->whereNotIn('id', $productInSessions)->get();
+        foreach ($products as $product) {
+            $product['asset'] = Asset::query()->where('assetable', '=', $product->id)->first();
+        }
+        return Responder::success($products, 'Lấy thành công');
     }
 }
