@@ -12,6 +12,7 @@ import {
   deleteProduct,
   getProduct,
   updateProduct,
+  getImageProduct,
 } from "../../apiClient";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
