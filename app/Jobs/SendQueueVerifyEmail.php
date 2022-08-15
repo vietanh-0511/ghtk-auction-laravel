@@ -16,7 +16,7 @@ class SendQueueVerifyEmail implements ShouldQueue
 
     private $from = 'noreply.auction.ghtk@gmail.com';
     private $fromName = 'Auction GHTK';
-    private $subject = 'Verify Email';
+    private $subject = 'Xác minh Email';
     protected $data;
     /**
      * Create a new job instance.

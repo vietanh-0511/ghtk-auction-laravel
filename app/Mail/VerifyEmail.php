@@ -28,7 +28,7 @@ class VerifyEmail extends Mailable
      */
     public function build()
     {
-      return $this->subject('[Auction - GHTK] Verify Mail')
+      return $this->subject('[Auction - GHTK] Xác minh Email')
         ->view('mail', [
           'full_name' => $this->data['full_name'],
           'email' => $this->data['email'],

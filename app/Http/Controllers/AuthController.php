@@ -83,14 +83,14 @@ class AuthController extends Controller
     if (is_null($user)) {
       return response()->json([
         'status' => false,
-        'message' => 'Email does not exist',
+        'message' => 'Email không tồn tại!',
         'data' => null,
       ], Response::HTTP_NOT_ACCEPTABLE);
     }
     if(!is_null($user->email_verified_at)) {
       return response()->json([
         'status' => false,
-        'message' => 'Email verified',
+        'message' => 'Email đã được xác minh!',
         'data' => null,
       ], Response::HTTP_NOT_ACCEPTABLE);
     };
@@ -130,7 +130,7 @@ class AuthController extends Controller
     ], Response::HTTP_OK);
   }
 
-  protected function createNewToken($token, $message='Refresh token successful')
+  protected function createNewToken($token, $message='Làm mới token thành công!')
   {
     $data = auth()->user()->toArray();
     $data['role'] = auth()->user()->getRoleNames()->first();
@@ -151,7 +151,7 @@ class AuthController extends Controller
     );
     return response()->json([
       'status' => true,
-      'message' => 'User successfully changed password',
+      'message' => 'Đổi mật khẩu thành công!',
       'data' => [
         'id' => $userId
         ],

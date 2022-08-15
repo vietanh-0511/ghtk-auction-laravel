@@ -13,11 +13,11 @@
     {
       $verification = VerifyEmailToken::where('token', $token)->first();
       if (is_null($verification) || date_diff($verification->created_at, Carbon::now())->i > 30) {
-        return ['message' => 'Token not valid.', 'isValid' => false];
+        return ['message' => 'Token không hợp lệ!', 'isValid' => false];
       }
       return $this->updateEmailVerifiedAt($verification)
-        ? ['message' => 'Verify success', 'isValid' => true]
-        : ['message' => 'Verify fail', 'isValid' => false];
+        ? ['message' => 'Xác minh thành công!', 'isValid' => true]
+        : ['message' => 'Xác minh thất bại', 'isValid' => false];
     }
 
     private function updateEmailVerifiedAt(VerifyEmailToken $verification)
