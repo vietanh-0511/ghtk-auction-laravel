@@ -8,7 +8,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Jobs\SendQueueVerifyEmail;
 use App\Models\User;
 use App\Models\VerifyEmailToken;
-use App\Services\Mail\SendVerifyEmail;
 use App\Services\Mail\VerifyEmailAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -16,12 +15,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
-  private $sendVerifyEmail;
   private $verifyEmailAction;
-  public function __construct(SendVerifyEmail $sendVerifyEmail, VerifyEmailAction $verifyEmailAction)
+  public function __construct(VerifyEmailAction $verifyEmailAction)
   {
     $this->middleware('auth:api', ['except' => ['login', 'register', 'verifyEmail', 'resendVerifyEmail']]);
-    $this->sendVerifyEmail = $sendVerifyEmail;
     $this->verifyEmailAction = $verifyEmailAction;
   }
 
@@ -66,8 +63,8 @@ class AuthController extends Controller
     $token = $request->query('token');
     $verifyMail = $this->verifyEmailAction->handle($token);
     return $verifyMail['isValid']
-      ? redirect(env('APP_URL').':8002/app/login')
-      : redirect(env('APP_URL').':8002/app');
+      ? redirect(env('APP_URL').'/app/login')
+      : redirect(env('APP_URL').'/app');
   }
 
   private function genVerifyEmailToken(int $user_id)
@@ -103,12 +100,6 @@ class AuthController extends Controller
       'email' => $user->email,
       'token' => $this->genVerifyEmailToken($user->id),
     ]));
-    // send mail bình thường có nhận route
-//    $this->sendVerifyEmail->handle([
-//      'full_name' => $user->full_name,
-//      'email' => $user->email,
-//      'token' => $this->genVerifyEmailToken($user->id)
-//    ]);
     return response()->json([
       'status' => true,
       'message' => 'Sent verify email',
