@@ -26,7 +26,7 @@ const Layout = () => {
       routePath: "#"
     },
     {
-      label: 'Log out',
+      label: 'Đăng xuất',
       iconClass: 'pi pi-sign-out',
       routePath: "#",
       command: () => {
@@ -48,7 +48,7 @@ const Layout = () => {
       }
     },
     {
-      label: 'Log out',
+      label: 'Đăng xuất',
       icon: 'pi pi-sign-out',
       command: () => {
         logout();

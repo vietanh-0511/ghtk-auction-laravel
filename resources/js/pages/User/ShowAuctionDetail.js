@@ -40,11 +40,11 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
                     alt={item.product.name + '-img'}
                     imageStyle={{ objectFit: 'cover' }} />
                 <div className="product-detail">
-                    <div className="product-name">{item.product.name}</div>
+                    <div className="product-name" style={{color:'tomato'}}>{item.product.name}</div>
                     <div className="product-description">{item.product.description}</div>
                 </div>
                 <div className="product-action">
-                    <Button icon="pi pi-shopping-cart" label="Detail" className="p-button-link" onClick={() => {
+                    <Button icon="pi pi-shopping-cart" label="Chi tiết" className="p-button-link" onClick={() => {
                         setCurrentSession(item.id);
                         navigate(`session/${item.id}`);
                     }} />
@@ -85,7 +85,7 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
         }}>
             <div>
                 <div className="datascroller-demo">
-                    {data && <Card title={data.auction.title} className="card-cover">
+                    {data && <Card  title={data.auction.title} className="card-cover">
                         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <p>Thời gian bắt đầu: {data.auction.start_time}</p>
                             <p>Thời gian kết thúc : {data.auction.end_time}</p>

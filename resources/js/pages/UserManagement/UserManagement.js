@@ -289,7 +289,7 @@ const UserManagement = ({ title = "Empty Page" }) => {
               rows={10}
               rowsPerPageOptions={[5, 10, 25]}
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+              currentPageReportTemplate="Hiển thị {first} đến  {last} của {totalRecords} người dùng"
               globalFilter={globalFilter}
               header={header}
               responsiveLayout="scroll"

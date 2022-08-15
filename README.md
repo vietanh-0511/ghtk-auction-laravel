@@ -13,10 +13,19 @@
 ### File `.env` 
 
 DB_DATABASE=`<your_database>` (ex: `ghtk_auction`)
-
-DB_USERNAME=`<your_username>`
-
+DB_USERNAME=`<your_username>` <br>
 DB_PASSWORD=`<your_password>`
+
+QUEUE_CONNECTION=`database`
+
+MAIL_MAILER=`smtp` <br>
+MAIL_HOST=`smtp.gmail.com` <br>
+MAIL_PORT=`587`
+MAIL_USERNAME=`noreply.auction.ghtk@gmail.com`
+MAIL_PASSWORD=`cucpoxcwcbelruhx` <br>
+MAIL_ENCRYPTION=`tls` <br>
+MAIL_FROM_ADDRESS=`${MAIL_USERNAME}`
+MAIL_FROM_NAME=`"${APP_NAME} Team"`
 
 Generate App Key
 
@@ -52,7 +61,6 @@ Cài đặt 2 thư viện javascript Laravel Echo và Pusher
 ```bash
 npm install --save laravel-echo pusher-js
 ```
-Cấu hình .env
 
 
 ### Create user via command line

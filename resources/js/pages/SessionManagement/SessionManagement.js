@@ -9,6 +9,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import {
+  getProductnotinss,
   createSession,
   getProduct,
   getSession,
@@ -25,7 +26,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
     product_id: [],
     auction_id: [],
   };
-
+  const [productnotss, setProductnotinss] = useState([]);
   const [dataSections, setDataSections] = useState([]);
   const [SectionDialog, setSectionDialog] = useState(false);
   const [deleteSectionDialog, setDeleteSectionDialog] = useState(false);
@@ -47,6 +48,9 @@ const SessionManagement = ({ title = "Empty Page" }) => {
 
     getProduct().then((res) => {
       setProducts(res.data.data);
+    });
+    getProductnotinss().then((res) => {
+      setProductnotinss(res.data.data);
     });
 
     getAuction().then((res) => {
@@ -350,7 +354,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
               <Dropdown
                 optionValue="id"
                 value={Section.product_id}
-                options={products}
+                options={productnotss}
                 defaultValue={undefined}
                 onChange={(e) => onInputChange(e, "product_id")}
                 placeholder="Select a Product"
@@ -359,10 +363,10 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 required
                 showClear
                 className={classNames({
-                  "p-invalid": submitted && !Section.product_id,
+                  "p-invalid": submitted && Section.product_id.length <= 0,
                 })}
               />
-              {submitted && !Section.product_id && (
+              {submitted && Section.product_id.length <= 0 && (
                 <small className="p-error">
                   Tên sản phẩm không được để trống.
                 </small>
@@ -382,10 +386,10 @@ const SessionManagement = ({ title = "Empty Page" }) => {
                 required
                 showClear
                 className={classNames({
-                  "p-invalid": submitted && !Section.auction_id,
+                  "p-invalid": submitted && Section.auction_id.length <= 0,
                 })}
               />
-              {submitted && !Section.auction_id && (
+              {submitted && Section.auction_id.length <= 0 && (
                 <small className="p-error">
                   Tên phiên đấu giá không được để trống.
                 </small>

@@ -45,6 +45,7 @@ Route::group([
   Route::controller(ProductController::class)->group(function () {
     Route::get('/product', 'index');
     Route::get('/product/{id}', 'show');
+    Route::get('/product-not-in-ss', 'showProductsNotInSession');
     Route::post('/product', 'store');
     Route::put('/product/{id}', 'update');
     Route::delete('/product/{id}', 'destroy');
@@ -108,5 +109,6 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);
     Route::post('/change-pass', [AuthController::class, 'changePassword']);
+    Route::post('/verify-email', [AuthController::class, 'resendVerifyEmail']);
   }
 );
