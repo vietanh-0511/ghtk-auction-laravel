@@ -60,7 +60,7 @@ class SessionController extends Controller
         } catch (Exception $e) {
             return Responder::fail($session, $e->getMessage());
         }
-        return Responder::success($session, 'store success');
+        return Responder::success($session, 'Lưu thành công');
     }
 
     /**
@@ -73,15 +73,15 @@ class SessionController extends Controller
     public function show($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'session id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!Session::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Phiên đấu giá không tồn tại');
         }
         $session = Session::where('id', $id)->with(['product', 'auction'])->first();
         $session['user'] = User::query()->where('id', $session->winner_id)->first(['full_name']);
         $session['assets'] = Asset::query()->where('assetable', $session->product_id)->get();
-        return Responder::success($session, 'get session success');
+        return Responder::success($session, 'Lấy thành công');
     }
 
     /**
@@ -97,17 +97,17 @@ class SessionController extends Controller
         $validated = $request->validated();
         $session = '';
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'session id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!Session::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Phiên đấu giá không tồn tại');
         }
         try {
             $session = $this->updateSessionAction->handle($validated, $id);
         } catch (Exception $e) {
             return Responder::fail($session, $e->getMessage());
         }
-        return Responder::success($session, 'update success');
+        return Responder::success($session, 'Sửa thành công');
     }
 
     /**
@@ -120,12 +120,12 @@ class SessionController extends Controller
     public function destroy($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'session id must be a number');
+            return Responder::fail($id, 'id phải là 1 số');
         }
         if (!Session::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the session with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Phiên đấu giá không tồn tại');
         }
         $deleteSession = Session::where('id', $id)->delete();
-        return Responder::success($deleteSession, 'delete success');
+        return Responder::success($deleteSession, 'Xóa thành công');
     }
 }

@@ -4,11 +4,9 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 
 const LoginPage = ({ title }) => {
-  // @TODO: remove role here
   const [credential, setCredential] = useState({
     email: "",
-    password: "",
-    role: "admin",
+    password: ""
   });
 
   const { login } = useAuth();
@@ -48,7 +46,7 @@ const LoginPage = ({ title }) => {
             />
           </div>
           <div className="field">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Mật khẩu</label>
             <InputText
               id="password"
               type="password"

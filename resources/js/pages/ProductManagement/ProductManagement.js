@@ -10,7 +10,6 @@ import { InputText } from "primereact/inputtext";
 import {
   createProduct,
   deleteProduct,
-  getImageProduct,
   getProduct,
   updateProduct,
 } from "../../apiClient";
@@ -216,7 +215,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -227,11 +226,10 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       <Image
         preview={true}
         width="100"
-        src={`${
-          rowData.asset !== null
+        src={`${rowData.asset !== null
             ? rowData.asset.file_name
             : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
-        }`}
+          }`}
         className="product-image"
       />
     );
@@ -299,8 +297,12 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 body={imageBodyTemplate}
                 header="Ảnh"
               ></Column>
-              <Column field="description" header="Mô tả" sortable></Column>
-              <Column field="created_at" header="Created At" sortable></Column>
+              <Column
+                field="description"
+                header="Mô tả"
+                sortable
+              ></Column>
+              <Column field="created_at" header="Thời gian tạo" sortable></Column>
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
@@ -320,7 +322,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           >
             {/* name */}
             <div className="field">
-              <label htmlFor="name">Tên sản pẩm</label>
+              <label htmlFor="name">Tên sản phẩm</label>
               <InputText
                 id="name"
                 value={product.name}
@@ -332,9 +334,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !product.name && (
-                <small className="p-error">
-                  Tên sản phẩm không được để trống.
-                </small>
+                <small className="p-error">Tên sản phẩm không được để trống.</small>
               )}
             </div>
 
@@ -416,8 +416,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               />
               {product && (
                 <span>
-                  Bạn có chắc là bạn muốn <b style={{ color: "red" }}>xóa</b>{" "}
-                  <b>{product.name}</b>?
+                  Bạn có chắc là bạn muốn{" "}
+                  <b style={{ color: "red" }}>xóa</b> <b>{product.name}</b>?
                 </span>
               )}
             </div>

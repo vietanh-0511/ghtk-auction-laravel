@@ -210,7 +210,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -274,7 +274,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
               responsiveLayout="scroll"
             >
               <Column field="id" header="ID" sortable></Column>
-              <Column field="title" header="Tên Auction" sortable></Column>
+              <Column field="title" header="Tên Đấu giá" sortable></Column>
               <Column field="status" header="Trạng thái" sortable></Column>
               <Column
                 field="start_time"
@@ -310,7 +310,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           >
             {/* title */}
             <div className="field">
-              <label htmlFor="title">Tên Auction</label>
+              <label htmlFor="title">Tên Đấu giá</label>
               <InputText
                 id="title"
                 value={Auction.title}
@@ -322,9 +322,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Auction.title && (
-                <small className="p-error">
-                  Tên Auction không được để trống.
-                </small>
+                <small className="p-error" errors>Tên Đấu giá không được để trống.</small>
               )}
             </div>
 

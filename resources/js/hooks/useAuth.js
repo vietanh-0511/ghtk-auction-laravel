@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         toast.current.show({
           severity: "error",
           summary: "Notification",
-          detail: res.data.message || "Login Fail",
+          detail: res.data.message || "Đăng nhập thất bại!",
           life: 5000,
         });
       } else {
@@ -38,6 +38,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    window.axiosApiInstance.post("auth/logout").then((res) => {
+      toast.current.show({
+        severity: "success",
+        summary: "Notification",
+        detail: res.data.message || "Đăng xuất thành công!",
+        life: 2000,
+      })
+    })
     setUser(null);
     setToken(null);
     navigate("/", { replace: true });
@@ -49,7 +57,7 @@ export const AuthProvider = ({ children }) => {
         toast.current.show({
           severity: "error",
           summary: "Notification",
-          detail: res.data.message || "Register Fail",
+          detail: res.data.message || "Đăng ký thất bại!",
           life: 5000,
         });
       } else {

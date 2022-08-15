@@ -2,9 +2,11 @@
 
 namespace App\Services\Bid;
 
-use App\Exceptions\BidPriceException;
+use App\Enums\AuctionStatusEnum;
+use App\Models\Auction;
 use App\Models\Bid;
 use App\Models\Session;
+use Carbon\Carbon;
 use Exception;
 
 class CreateBidAction
@@ -24,7 +26,15 @@ class CreateBidAction
     public function handle(array $validated, $userId)
     {
         if (!Session::query()->where('id', $validated['session_id'])->exists()) {
-            throw new Exception("Session does not exist");
+            throw new Exception("Phiên không tồn tại");
+        }
+        $auctionId = Session::query()->where('id', $validated['session_id'])->first('auction_id');
+        $auction = Auction::query()->where('id', $auctionId->auction_id)->first();
+        if ($auction->status == AuctionStatusEnum::Preview) {
+            throw new Exception("Phiên đấu giá chưa mở");
+        }
+        if ($auction->status == AuctionStatusEnum::End) {
+            throw new Exception("Phiên đấu giá đã kết thúc");
         }
         $this->bidPriceChecker->handle($validated);
         $validated['user_id'] = $userId;
