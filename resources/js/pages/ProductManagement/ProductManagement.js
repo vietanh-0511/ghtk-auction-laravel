@@ -57,7 +57,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           summary: "Success",
           detail: "File Uploaded",
         });
-        setUrl("");
       })
       .catch((err) => {
         console.log(err.message);
@@ -90,6 +89,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     getImageProduct(product.id).then((res) => setImages(res.data.data.assets));
     setProduct({ ...product });
     setProductDialog(true);
+    setUrl("");
   };
 
   const confirmDeleteProduct = (product) => {
@@ -350,6 +350,9 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                     accept="image/*"
                     customUpload
                     uploadHandler={handleUploadImage}
+                    emptyTemplate={
+                      <p className="m-0">Kéo và thả tệp vào đây để tải lên.</p>
+                    }
                   />
                   {submitted && !product.assets && (
                     <small className="p-error">Ảnh không được để trống.</small>
