@@ -45,6 +45,7 @@ Route::group([
   Route::controller(ProductController::class)->group(function () {
     Route::get('/product', 'index');
     Route::get('/product/{id}', 'show');
+    Route::get('/product-not-in-ss', 'showProductsNotInSession');
     Route::post('/product', 'store');
     Route::put('/product/{id}', 'update');
     Route::delete('/product/{id}', 'destroy');

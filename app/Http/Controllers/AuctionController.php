@@ -8,6 +8,7 @@ use App\Models\Asset;
 use App\Models\Auction;
 use App\Models\Product;
 use App\Models\Session;
+use App\Services\Auction\CheckAuctionStatus;
 use App\Services\Auction\CreateAuctionAction;
 use App\Services\Auction\UpdateAuctionAction;
 use App\Supports\Responder;
@@ -18,13 +19,16 @@ class AuctionController extends Controller
 {
     private $createAuctionAction;
     private $updateAuctionAction;
+    private $checkAuctionStatus;
 
     public function __construct(
         CreateAuctionAction $createAuctionAction,
-        UpdateAuctionAction $updateAuctionAction
+        UpdateAuctionAction $updateAuctionAction,
+        CheckAuctionStatus $checkAuctionStatus
     ) {
         $this->createAuctionAction = $createAuctionAction;
         $this->updateAuctionAction = $updateAuctionAction;
+        $this->checkAuctionStatus = $checkAuctionStatus;
     }
     /**
      * Display a listing of the resource.
@@ -39,10 +43,10 @@ class AuctionController extends Controller
         // }
         $auctions = Auction::query()->orderByDesc('id')->get();
         foreach ($auctions as $auction) {
-            $status = $auction->status;
-            $auction->status = AuctionStatusEnum::getKey($status);
+            $auction->status = AuctionStatusEnum::getKey($auction->status);
+            $this->checkAuctionStatus->handle($auction);
         }
-        return Responder::success($auctions, 'get auctions success');
+        return Responder::success($auctions, 'Danh sách phiên đấu giá');
     }
 
     /**
@@ -61,7 +65,7 @@ class AuctionController extends Controller
         } catch (Exception $e) {
             return Responder::fail($auction, $e->getMessage());
         }
-        return Responder::success($auction, 'store success');
+        return Responder::success($auction, 'Lưu thành công');
     }
 
     /**
@@ -74,19 +78,20 @@ class AuctionController extends Controller
     public function show($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'auction id must be a number');
+            return Responder::fail($id, 'id phiên đấu giá phải là 1 số');
         }
         if (!Auction::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Phiên đấu giá này không tồn tại');
         }
         $auction = Auction::query()->where('id', $id)->first();
         $auction->status = AuctionStatusEnum::getKey($auction->status);
         $session = Session::with('product')->where('auction_id',$id)->get();
+        $this->checkAuctionStatus->handle($auction);
         foreach ($session as $each) {
             $each->product = Product::query()->where('id', $each->product_id)->first();
             $each->assets = Asset::query()->where('assetable', $each->product_id)->get();
         }
-        return Responder::success(['auction'=> $auction, 'session' => $session], 'get auction success');
+        return Responder::success(['auction' => $auction, 'session' => $session], 'Lấy phiên đấu giá thành công');
     }
 
     /**
@@ -102,14 +107,14 @@ class AuctionController extends Controller
         $validated = $request->validated();
         $auction = '';
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'auction id must be a number');
+            return Responder::fail($id, 'id phiên đấu giá phải là 1 số');
         }
         try {
             $auction = $this->updateAuctionAction->handle($validated, $id);
         } catch (Exception $e) {
             return Responder::fail($auction, $e->getMessage());
         }
-        return Responder::success($auction, 'update success');
+        return Responder::success($auction, 'Sửa thành công');
     }
 
     /**
@@ -122,13 +127,13 @@ class AuctionController extends Controller
     public function destroy($id)
     {
         if (preg_match('/[^0-9]/', $id)) {
-            return Responder::fail($id, 'auction id must be a number');
+            return Responder::fail($id, 'id phiên đấu giá phải là 1 số');
         }
         if (!Auction::query()->where('id', $id)->exists()) {
-            return Responder::fail($id, 'the auction with the id ' . $id . ' does not exist.');
+            return Responder::fail($id, 'Phiên đấu giá không tồn tại');
         }
         $deleteAuction = Auction::query()->where('id', $id)->delete();
         Session::query()->where('auction_id', $id)->delete();
-        return Responder::success($deleteAuction, 'delete success');
+        return Responder::success($deleteAuction, 'Xóa thành công');
     }
 }

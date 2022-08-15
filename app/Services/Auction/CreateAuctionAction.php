@@ -17,7 +17,7 @@ class CreateAuctionAction
     public function handle(array $validated)
     {
         if ($this->checkAuctionTime->handle($validated)) {
-            throw new TimeCheckException("this auction has already exists");
+            throw new TimeCheckException("Phiên đấu giá đã tổn tại");
         }
         Auction::create($validated);
     }
