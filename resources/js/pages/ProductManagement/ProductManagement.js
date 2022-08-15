@@ -17,6 +17,9 @@ import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
 import "../../../css/app.css";
 
+const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
+
+
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
     name: "",
@@ -28,6 +31,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
+  const [confirmAssets, setConfirmAssets] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -36,28 +40,45 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const dt = useRef(null);
   let idProduct = product.id;
 
+  const customUploadHandle = async (e) => {
+    setConfirmAssets(e.files);
+  }
 
-
-  const handleUploadImage = (e) => {
+  const newFormData = (v) => {
     const data = new FormData();
-    data.append("file", e.files[0]);
+    data.append("file", v);
     data.append("upload_preset", "ghtk-auction-laravel");
     data.append("cloud_name", "ghtk-auction-laravel");
-    fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
-      method: "post",
-      body: data,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        product.assets.push(data.url);
-        setUrl(data.url);
+    return data;
+  }
+
+  const handleUploadImage = async () => {
+    if (confirmAssets.length > 0) {
+      Promise.all(confirmAssets.map(u =>
+        fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
+          method: "post",
+          body: newFormData(u),
+        })
+      )).then(responses =>
+        Promise.all(responses.map(res => res.json()))
+      ).then(texts => {
+        setProduct({
+          ...product,
+          assets: texts.map(i => i.url),
+        });
         toast.current.show({
           severity: "info",
           summary: "Success",
           detail: "File Uploaded",
-        });
-      })
-      .catch((err) => { });
+        })
+      }).catch((err) => {
+        console.log(err);
+        toast.current.show({
+          severity: "info",
+          summary: "Failed",
+        })
+      });
+    }
   };
 
   useEffect(() => {
@@ -118,10 +139,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     });
   };
 
-  const saveProduct = () => {
+  const saveProduct = async () => {
     setSubmitted(true);
-
     const _product = { ...product };
+    // fix me run before post please thanks
+    if (!_product.id) await handleUploadImage();
+
+    if (_product.assets.length < 1 && _product.description.trim() === '' && _product.name.trim() === '') return;
 
     if (_product.id) {
       updateProduct(_product.id, _product).then((res) => {
@@ -222,8 +246,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         preview={true}
         width="100"
         src={`${rowData.asset !== null
-            ? rowData.asset.file_name
-            : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
+          ? rowData.asset.file_name
+          : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
           }`}
         className="product-image"
       />
@@ -343,18 +367,17 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                   <FileUpload
                     id="assets"
                     multiple={true}
-                    url="https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload"
                     accept="image/*"
                     value={product.assets}
                     customUpload
-                    uploadHandler={handleUploadImage}
+                    uploadHandler={customUploadHandle}
                     emptyTemplate={
                       <p className="m-0">
                         Kéo và thả tệp vào đây để tải lên.
                       </p>
                     }
                   />
-                  {submitted && !product.assets && (
+                  {submitted && product.assets.length < 1 && (
                     <small className="p-error">Ảnh không được để trống.</small>
                   )}
                 </div>
