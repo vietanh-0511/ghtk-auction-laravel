@@ -10,8 +10,10 @@ import { InputText } from "primereact/inputtext";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   createProduct,
+  deleteAsset,
   deleteProduct,
   getProduct,
+  getProductById,
   updateProduct,
 } from "../../apiClient";
 import { FileUpload } from "primereact/fileupload";
@@ -28,6 +30,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     description: "",
   };
 
+  let emptyAssetDialog = { open: false, item: null };
+
   const [dataProducts, setDataProducts] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -36,11 +40,25 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [url, setUrl] = useState([]);
+  const [deleteAssetDialog, setDeleteAssetDialog] = useState(emptyAssetDialog);
   const toast = useRef(null);
   const dt = useRef(null);
   let idProduct = product.id;
 
+  // useEffect(() => { console.log(product.savedAssets) }, [product.savedAssets])
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  // upload new assets
+  const newFormData = (v) => {
+    const data = new FormData();
+    data.append("file", v);
+    data.append("upload_preset", "ghtk-auction-laravel");
+    data.append("cloud_name", "ghtk-auction-laravel");
+    return data;
+  }
   const customUploadHandle = (e) => {
     if (e.files.length < 1) return;
     Promise.all(e.files.map(u =>
@@ -61,7 +79,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         detail: "File Uploaded",
       })
     }).catch((err) => {
-      console.log(err);
       toast.current.show({
         severity: "info",
         summary: "Failed",
@@ -69,38 +86,44 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     });
   }
 
-  const newFormData = (v) => {
-    const data = new FormData();
-    data.append("file", v);
-    data.append("upload_preset", "ghtk-auction-laravel");
-    data.append("cloud_name", "ghtk-auction-laravel");
-    return data;
-  }
-
-  useEffect(() => {
-    getProduct().then((res) => {
-      setDataProducts(res.data.data);
-    });
-  }, []);
-
   const openNew = () => {
     setSubmitted(false);
     setProductDialog(true);
   };
 
   const hideDialog = () => {
+    if (product.id && (product.assets.length + product.savedAssets.length < 1)) {
+      toast.current.show({
+        severity: "error",
+        summary: "Notification",
+        detail: "Bài đấu giá cần có ít nhất 1 ảnh",
+        life: 5000,
+      });
+      return;
+    }
     setProduct(emptyProduct);
     setSubmitted(false);
     setProductDialog(false);
+    setTemporaryAssets(0);
   };
 
   const hideDeleteProductDialog = () => {
     setDeleteProductDialog(false);
   };
 
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
+  const editProduct = (_product) => {
+    setTemporaryAssets(0);
+    getProductById(_product.id).then((res) => {
+      const resData = res.data.data;
+      setProduct({
+        id: resData[0].id,
+        name: resData[0].name,
+        description: resData[0].description,
+        savedAssets: resData.assets,
+        assets: [],
+      });
+      setProductDialog(true);
+    });
   };
 
   const confirmDeleteProduct = (product) => {
@@ -110,6 +133,37 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
   const getData = () => {
     getProduct().then((res) => setDataProducts(res.data.data));
+  };
+
+  const deleteAssetAuc = () => {
+    deleteAsset(deleteAssetDialog.item.id).then((res) => {
+      if (res.data.status !== true) {
+        toast.current.show({
+          severity: "error",
+          summary: "Notification",
+          detail: res.data.message || "Error Delete",
+          life: 5000,
+        });
+      } else {
+        getProductById(product.id).then((res) => {
+          const resData = res.data.data;
+          setProduct({
+            id: resData[0].id,
+            name: resData[0].name,
+            description: resData[0].description,
+            savedAssets: resData.assets,
+            assets: [...product.assets],
+          });
+          setDeleteAssetDialog(emptyAssetDialog)
+        });
+        toast.current.show({
+          severity: "success",
+          summary: "Notification",
+          detail: res.data.message,
+          life: 5000,
+        });
+      }
+    });
   };
 
   const deleteProductAuc = () => {
@@ -122,7 +176,18 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           life: 5000,
         });
       } else {
-        getData();
+        getProductById(_product.id).then((res) => {
+          const resData = res.data.data;
+          setProduct({
+            id: resData[0].id,
+            name: resData[0].name,
+            description: resData[0].description,
+            savedAssets: resData.assets,
+            assets: [],
+          });
+        }).then(res => {
+          setDeleteAssetDialog(false);
+        });
         toast.current.show({
           severity: "success",
           summary: "Notification",
@@ -130,8 +195,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           life: 5000,
         });
       }
-      setDeleteProductDialog(false);
-      setProduct(emptyProduct);
     });
   };
 
@@ -238,8 +301,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       <Image
         preview={true}
         width="100"
-        src={`${rowData.asset !== null
-          ? rowData.asset.file_name
+        src={`${rowData.assets !== null && rowData.assets.length > 0
+          ? rowData.assets[0].file_name
           : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
           }`}
         className="product-image"
@@ -255,14 +318,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         className="p-button-text"
         onClick={hideDialog}
       />
-      {product.id && <Button
-        label="Lưu"
-        icon={"pi pi-check"}
-        className="p-button-text"
-        onClick={saveProduct}
-      >
-      </Button >}
-      {!product.id && <Button
+      <Button
         label="Lưu"
         icon={(product.assets.length === temporaryAssets) ? "pi pi-check" : null}
         className="p-button-text"
@@ -270,7 +326,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         disabled={temporaryAssets < 1 || (product.assets.length !== temporaryAssets)}
       >
         {(temporaryAssets > 0 && product.assets.length !== temporaryAssets) && <ProgressSpinner style={{ width: '20px', height: '20px' }} />}
-      </Button >}
+      </Button >
     </React.Fragment>
   );
 
@@ -280,13 +336,24 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         label="Không"
         icon="pi pi-times"
         className="p-button-text"
-        onClick={hideDeleteProductDialog}
+        onClick={() => {
+          product.id ?
+            setDeleteAssetDialog(emptyAssetDialog)
+            :
+            hideDeleteProductDialog()
+        }}
       />
       <Button
         label="Có"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteProductAuc}
+        onClick={
+          () => {
+            product.id ?
+              deleteAssetAuc()
+              :
+              deleteProductAuc()
+          }}
       />
     </React.Fragment>
   );
@@ -362,8 +429,49 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               )}
             </div>
 
+            {/* SavedAsset */}
+            {product.savedAssets && product.savedAssets.length > 0 &&
+              <div className="field">
+                <label htmlFor="savedAssets">Ảnh đã lưu</label>
+                <div className="upload">
+                  <div style={{
+                    display: "flex",
+                    maxWidth: '400px',
+                    width: '400px',
+                    overflow: 'auto'
+                  }}
+                  >
+                    {product.savedAssets.map((i, index) =>
+                      <div key={index}
+                        style={{
+                          // border: '1px solid #000',
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                          margin: "1rem",
+                        }}
+                      >
+                        <Image src={i.file_name} alt={i.file_name} width="100" preview />
+                        <Button icon="pi pi-times" className="p-button-rounded p-button-danger" aria-label="Cancel"
+                          style={{
+                            marginTop: '2px'
+                          }}
+                          onClick={(e) => {
+                            setDeleteAssetDialog({
+                              open: true,
+                              item: i,
+                            });
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>}
+
             {/* Asset */}
-            {!product.id && <div className="field">
+            <div className="field">
               <label htmlFor="assets">Ảnh</label>
               <div className="upload">
                 <div className="input-upload">
@@ -393,7 +501,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                   )}
                 </div>
               </div>
-            </div>}
+            </div>
 
             {/* description */}
             <div className="field">
@@ -411,6 +519,23 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 <small className="p-error">Mô tả không được để trống.</small>
               )}
             </div>
+
+            <Dialog visible={deleteAssetDialog.open}
+              onHide={() => setDeleteAssetDialog(emptyAssetDialog)}
+              footer={deleteProductDialogFooter}
+            >
+              {deleteAssetDialog.item && (
+                <span style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}>
+                  <b style={{ color: "red" }}>Bạn có chắc muốn xóa?</b>
+                  <br />
+                  <Image src={deleteAssetDialog.item.file_name} alt={deleteAssetDialog.item.file_name} width="100" preview />
+                </span>
+              )}
+            </Dialog>
           </Dialog>
 
           <Dialog

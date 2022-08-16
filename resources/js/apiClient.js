@@ -33,6 +33,10 @@ export function getProduct() {
   return window.axiosApiInstance.get(`/admin/product`);
 }
 
+export function getProductById(id) {
+  return window.axiosApiInstance.get(`/admin/product/${id}`);
+}
+
 export function createProduct(data) {
   return window.axiosApiInstance.post("/admin/product", data);
 }
@@ -46,6 +50,9 @@ export function updateProduct(id, data) {
 }
 export function getProductnotinss(id, data) {
   return window.axiosApiInstance.get(`/admin/product-not-in-ss`, data);
+}
+export function deleteAsset(id) {
+  return window.axiosApiInstance.delete(`/admin/asset/${id}`);
 }
 
 // Auctions Management: Autions
