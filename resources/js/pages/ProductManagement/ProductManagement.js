@@ -15,6 +15,7 @@ import {
   getProduct,
   getProductById,
   updateProduct,
+  getImageProduct,
 } from "../../apiClient";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
@@ -44,8 +45,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const toast = useRef(null);
   const dt = useRef(null);
   let idProduct = product.id;
-
-  // useEffect(() => { console.log(product.savedAssets) }, [product.savedAssets])
 
   useEffect(() => {
     getData();
@@ -171,7 +170,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Error Delete",
           life: 5000,
         });
@@ -190,7 +189,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         });
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
@@ -209,7 +208,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Update",
             life: 5000,
           });
@@ -217,19 +216,19 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     } else {
       createProduct(_product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Create",
             life: 5000,
           });
@@ -237,7 +236,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
@@ -369,8 +368,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             <DataTable
               ref={dt}
               value={dataProducts}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -476,10 +473,10 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               <div className="upload">
                 <div className="input-upload">
                   <FileUpload
+                    name="assets"
                     id="assets"
                     multiple={true}
                     accept="image/*"
-                    value={product.assets}
                     customUpload
                     uploadHandler={customUploadHandle}
                     onSelect={(e) => setTemporaryAssets(e.files.length)}
@@ -491,9 +488,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                       })
                     }}
                     emptyTemplate={
-                      <p className="m-0">
-                        Kéo và thả tệp vào đây để tải lên.
-                      </p>
+                      <p className="m-0">Kéo và thả tệp vào đây để tải lên.</p>
                     }
                   />
                   {submitted && product.assets.length < 1 && (
