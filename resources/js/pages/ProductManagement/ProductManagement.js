@@ -49,11 +49,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     getData();
   }, []);
 
-  useEffect(() => {
-    console.log(product.assets),
-      console.log(temporaryAssets)
-  }, [product.assets, temporaryAssets])
-
   // upload new assets
   const newFormData = (v) => {
     const data = new FormData();

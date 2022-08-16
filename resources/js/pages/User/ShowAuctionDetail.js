@@ -27,6 +27,7 @@ function convertMsToTime(ms) {
 const ShowAuctionDetail = ({ title = "Empty Page" }) => {
     const [data, setData] = useState(null);
     const [value2, setValue2] = useState(null);
+    const [timeLeftBoolean, setTimeLeftBoolean] = useState(null);
     const interval = useRef(null);
     const navigate = useNavigate();
     const outlet = useOutlet();
@@ -40,7 +41,7 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
                     alt={item.product.name + '-img'}
                     imageStyle={{ objectFit: 'cover' }} />
                 <div className="product-detail">
-                    <div className="product-name" style={{color:'tomato'}}>{item.product.name}</div>
+                    <div className="product-name" style={{ color: 'tomato' }}>{item.product.name}</div>
                     <div className="product-description">{item.product.description}</div>
                 </div>
                 <div className="product-action">
@@ -59,11 +60,27 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
             const resData = res.data.data;
             setData(resData);
 
-            let val = sqlToJsDate(resData.auction.end_time).getTime() - new Date().getTime();
+            var start = sqlToJsDate(resData.auction.start_time).getTime();
+            var end = sqlToJsDate(resData.auction.end_time).getTime();
+            var now = new Date().getTime();
+            var val = 0;
+            if (start < now) {
+                val = end - now;
+                setTimeLeftBoolean(true);
+            } // start time passed
+            else {
+                val = start - now;
+                setTimeLeftBoolean(false);
+            } // start time hasnt passed
             interval.current = setInterval(() => {
                 val = val - 1000;
-                if (val <= 0) {
+                if (val <= 0 && start <= new Date().getTime() && new Date().getTime() < end) {
+                    val = end - new Date().getTime();
+                    setTimeLeftBoolean(true);
+                }
+                if (val <= 0 && end <= new Date().getTime()) {
                     val = 0;
+                    setTimeLeftBoolean(null);
                     clearInterval(interval.current);
                 }
                 setValue2(convertMsToTime(val));
@@ -81,15 +98,20 @@ const ShowAuctionDetail = ({ title = "Empty Page" }) => {
     return (
         <AuctionDetailContext.Provider value={{
             data: data,
-            currentSession: currentSession
+            currentSession: currentSession,
+            disabled: timeLeftBoolean === null ? true : false,
         }}>
             <div>
                 <div className="datascroller-demo">
-                    {data && <Card  title={data.auction.title} className="card-cover">
+                    {data && <Card title={data.auction.title} className="card-cover">
                         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <p>Thời gian bắt đầu: {data.auction.start_time}</p>
                             <p>Thời gian kết thúc : {data.auction.end_time}</p>
-                            <p>Thời gian còn lại: {value2}</p>
+                            {timeLeftBoolean === null ?
+                                <p>Phiên đấu giá kết thúc gồi</p>
+                                :
+                                <p>Thời gian {timeLeftBoolean ? 'còn lại' : 'mở đấu giá'}: {value2}</p>
+                            }
                         </div>
                     </Card>}
                     <br />
