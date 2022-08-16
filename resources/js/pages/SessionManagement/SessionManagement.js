@@ -92,7 +92,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Error Delete",
           life: 5000,
         });
@@ -100,7 +100,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
         getData();
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
@@ -120,7 +120,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Update",
             life: 5000,
           });
@@ -128,19 +128,19 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     } else {
       createSession(_Section).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Create",
             life: 5000,
           });
@@ -148,7 +148,7 @@ const SessionManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });

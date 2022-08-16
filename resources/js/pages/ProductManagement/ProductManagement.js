@@ -12,6 +12,7 @@ import {
   deleteProduct,
   getProduct,
   updateProduct,
+  getImageProduct,
 } from "../../apiClient";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
@@ -28,21 +29,21 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
+  const [images, setImages] = useState([]);
   const [url, setUrl] = useState([]);
   const toast = useRef(null);
   const dt = useRef(null);
+
   let idProduct = product.id;
 
-
-
-  const handleUploadImage = (e) => {
+  const handleUploadImage = (file) => {
     const data = new FormData();
-    data.append("file", e.files[0]);
+    data.append("file", file.files[0]);
     data.append("upload_preset", "ghtk-auction-laravel");
     data.append("cloud_name", "ghtk-auction-laravel");
+
     fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
       method: "post",
       body: data,
@@ -50,14 +51,17 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       .then((resp) => resp.json())
       .then((data) => {
         product.assets.push(data.url);
-        setUrl(data.url);
+        setUrl([...url, { img: data.url }]);
         toast.current.show({
           severity: "info",
           summary: "Success",
           detail: "File Uploaded",
         });
       })
-      .catch((err) => { });
+      .catch((err) => {
+        console.log(err.message);
+      });
+    file.options.clear;
   };
 
   useEffect(() => {
@@ -82,8 +86,10 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   };
 
   const editProduct = (product) => {
+    getImageProduct(product.id).then((res) => setImages(res.data.data.assets));
     setProduct({ ...product });
     setProductDialog(true);
+    setUrl("");
   };
 
   const confirmDeleteProduct = (product) => {
@@ -100,7 +106,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Error Delete",
           life: 5000,
         });
@@ -108,7 +114,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         getData();
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
@@ -128,7 +134,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Update",
             life: 5000,
           });
@@ -136,19 +142,19 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     } else {
       createProduct(_product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Create",
             life: 5000,
           });
@@ -156,7 +162,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
@@ -275,8 +281,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             <DataTable
               ref={dt}
               value={dataProducts}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -341,17 +345,14 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               <div className="upload">
                 <div className="input-upload">
                   <FileUpload
+                    name="assets"
                     id="assets"
-                    multiple={true}
                     url="https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload"
                     accept="image/*"
-                    value={product.assets}
                     customUpload
                     uploadHandler={handleUploadImage}
                     emptyTemplate={
-                      <p className="m-0">
-                        Kéo và thả tệp vào đây để tải lên.
-                      </p>
+                      <p className="m-0">Kéo và thả tệp vào đây để tải lên.</p>
                     }
                   />
                   {submitted && !product.assets && (
@@ -359,6 +360,28 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                   )}
                 </div>
               </div>
+              {url.length > 0 && (
+                <ul className="list-image card">
+                  {url.map((item, index) => (
+                    <li key={index} className="item-image">
+                      <Image width="100" src={item.img} className="image" />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {product.id && (
+                <ul className="list-image card">
+                  {images.map((item) => (
+                    <li key={item.id} className="item-image">
+                      <Image
+                        width="100"
+                        src={item.file_name}
+                        className="image"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {/* description */}

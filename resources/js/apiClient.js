@@ -40,7 +40,9 @@ export function createProduct(data) {
 export function deleteProduct(id) {
   return window.axiosApiInstance.delete(`/admin/product/${id}`);
 }
-
+export function getImageProduct(id) {
+  return window.axiosApiInstance.get(`/admin/product/${id}`);
+}
 export function updateProduct(id, data) {
   return window.axiosApiInstance.put(`/admin/product/${id}`, data);
 }

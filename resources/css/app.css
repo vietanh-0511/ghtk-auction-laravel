@@ -1,3 +1,22 @@
 @import url('./TabViewDemo.css');
 @import url('./DataScrollerDemo.css');
 @import url('./SliderDemo.css');
+
+.list-image {
+    display: flex;
+    list-style: none;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.item-image {
+    max-height: 150px;
+    padding-top: 12px;
+}
+
+.item-image img {
+    height: 100%;
+}
+
