@@ -31,6 +31,10 @@ Generate App Key
 
 `php artisan key:generate`
 
+
+Listen Queue
+`php artisan queue:listen`
+
 ### Setting
 
 Install npm

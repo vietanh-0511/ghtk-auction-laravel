@@ -25,7 +25,12 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:App\Models\User',
+            'email' => [
+                'required',
+                'email',
+                'unique:App\Models\User',
+                'regex:/^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$/'
+            ],
             'password' => [
                 'required',
                 'string',
