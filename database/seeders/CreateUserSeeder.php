@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -19,6 +20,7 @@ class CreateUserSeeder extends Seeder
             'full_name' => 'user',
             'email' => 'user.auctions@gmail.com',
             'password' => 'User@123123',
+            'email_verified_at' => Carbon::now(),
             'address' => 'Hanoi',
             'phone' => '0857694721'
         ]);
@@ -27,6 +29,7 @@ class CreateUserSeeder extends Seeder
             'full_name' => 'user1',
             'email' => 'user1.auctions@gmail.com',
             'password' => 'User1@123123',
+            'email_verified_at' => Carbon::now(),
             'address' => 'Hanoi',
             'phone' => '0857694721'
         ]);
@@ -35,6 +38,7 @@ class CreateUserSeeder extends Seeder
             'full_name' => 'admin',
             'email' => 'admin.auctions@gmail.com',
             'password' => 'Admin@123123',
+            'email_verified_at' => Carbon::now(),
             'address' => 'Hanoi',
             'phone' => '0857694721'
         ]);

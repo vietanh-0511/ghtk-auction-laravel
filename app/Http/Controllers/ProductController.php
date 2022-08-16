@@ -40,7 +40,7 @@ class ProductController extends Controller
         $search = $request->query('search') ?? '';
         $products = Product::query()->where('name', 'like', "%$search%")->orderByDesc('id')->get();
         foreach ($products as $product) {
-            $product['asset'] = Asset::query()->where('assetable', '=', $product->id)->first();
+            $product['assets'] = Asset::query()->where('assetable', '=', $product->id)->get();
         }
         return Responder::success($products, 'get products success');
     }
