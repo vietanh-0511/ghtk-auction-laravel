@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Đăng nhập thất bại!",
           life: 5000,
         });
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         setToken(res.data.access_token);
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     window.axiosApiInstance.post("auth/logout").then((res) => {
       toast.current.show({
         severity: "success",
-        summary: "Notification",
+        summary: "Thông báo",
         detail: res.data.message || "Đăng xuất thành công!",
         life: 2000,
       })
@@ -56,14 +56,14 @@ export const AuthProvider = ({ children }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Đăng ký thất bại!",
           life: 5000,
         });
       } else {
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
