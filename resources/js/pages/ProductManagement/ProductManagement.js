@@ -23,7 +23,6 @@ import "../../../css/app.css";
 
 const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
 
-
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
     name: "",
@@ -50,6 +49,11 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     getData();
   }, []);
 
+  useEffect(() => {
+    console.log(product.assets),
+      console.log(temporaryAssets)
+  }, [product.assets, temporaryAssets])
+
   // upload new assets
   const newFormData = (v) => {
     const data = new FormData();
@@ -68,6 +72,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     )).then(responses =>
       Promise.all(responses.map(res => res.json()))
     ).then(texts => {
+      setTemporaryAssets(e.files.length);
       setProduct({
         ...product,
         assets: texts.map(i => i.url),
@@ -175,18 +180,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           life: 5000,
         });
       } else {
-        getProductById(_product.id).then((res) => {
-          const resData = res.data.data;
-          setProduct({
-            id: resData[0].id,
-            name: resData[0].name,
-            description: resData[0].description,
-            savedAssets: resData.assets,
-            assets: [],
-          });
-        }).then(res => {
-          setDeleteAssetDialog(false);
-        });
+        getData();
         toast.current.show({
           severity: "success",
           summary: "Thông báo",
@@ -194,6 +188,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           life: 5000,
         });
       }
+      setProduct(emptyProduct);
+      setDeleteProductDialog(false);
     });
   };
 
@@ -201,7 +197,16 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     setSubmitted(true);
     const _product = { ...product };
 
-    if (_product.assets.length < 1 || _product.description.trim() === '' || _product.name.trim() === '') return;
+    if (!_product.id && _product.assets.length < 1 || _product.description.trim() === '' || _product.name.trim() === '') return;
+    if (product.id && (product.assets.length + product.savedAssets.length < 1)) {
+      toast.current.show({
+        severity: "error",
+        summary: "Notification",
+        detail: "Bài đấu giá cần có ít nhất 1 ảnh",
+        life: 5000,
+      });
+      return;
+    }
 
     if (_product.id) {
       updateProduct(_product.id, _product).then((res) => {
@@ -322,7 +327,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         icon={(product.assets.length === temporaryAssets) ? "pi pi-check" : null}
         className="p-button-text"
         onClick={saveProduct}
-        disabled={temporaryAssets < 1 || (product.assets.length !== temporaryAssets)}
+        disabled={!product.id && (temporaryAssets < 1 || (product.assets.length !== temporaryAssets))}
       >
         {(temporaryAssets > 0 && product.assets.length !== temporaryAssets) && <ProgressSpinner style={{ width: '20px', height: '20px' }} />}
       </Button >
@@ -348,7 +353,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         className="p-button-text"
         onClick={
           () => {
-            product.id ?
+            deleteAssetDialog.item ?
               deleteAssetAuc()
               :
               deleteProductAuc()
@@ -491,7 +496,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                       <p className="m-0">Kéo và thả tệp vào đây để tải lên.</p>
                     }
                   />
-                  {submitted && product.assets.length < 1 && (
+                  {submitted && product.assets.length < 1 && !product.id && (
                     temporaryAssets < 1 ? <small className="p-error">Ảnh không được để trống.</small> : <small className="p-error">Bấm Upload ảnh trước khi Lưu.</small>
                   )}
                 </div>
