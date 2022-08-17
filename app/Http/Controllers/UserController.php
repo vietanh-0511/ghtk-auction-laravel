@@ -112,7 +112,7 @@ class UserController extends Controller
             return Responder::fail($id, 'Không thể xóa tài khoản admin');
         }
         User::query()->where('id', $id)->update([
-            'email' => $user->email . '_deleted'
+            'email' => $user->email . '_deleted'.rand(0,100000)
         ]);
         $deleteUser = User::where('id', $id)->delete();
         return Responder::success($deleteUser, 'Xóa thành công');
