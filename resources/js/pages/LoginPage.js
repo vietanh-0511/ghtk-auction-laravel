@@ -101,6 +101,7 @@ const LoginPage = ({ title }) => {
             <Password
               id="password"
               value={credential.password}
+              feedback={false}
               onChange={(e) =>
                 setCredential({ ...credential, password: e.target.value })
               }
