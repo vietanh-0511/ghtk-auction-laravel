@@ -39,8 +39,25 @@ const ShowAuction = ({
         <div className="grid" style={{ textAlign: "-webkit-center" }}>
           <div className="col-3" key={datas.id}>
             <Card style={{ width: "25em", display: "flex" }} footer={() => footer(datas.id)}>
-              <h4 style={{ color: "#3B82F6" }}>{datas.title}</h4>
-              <p>Trạng thái : {datas.status}</p>
+              <h4 style={{ color: "#3B82F6", fontWeight:"700" }}>{datas.title}</h4>
+              <p>
+                Trạng thái:{" "}
+                <span
+                  className="status"
+                  style={{
+                    color:
+                      datas.status === "Preview"
+                        ? "gold"
+                        : datas.status === "Publish"
+                        ? "green"
+                        : "red",
+                    fontSize: "15px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {datas.status}
+                </span>
+              </p>
               <p>Thời gian bắt đầu : {datas.start_time}</p>
               <p>Thời gian kết thúc : {datas.end_time}</p>
             </Card>

@@ -69,6 +69,16 @@ export const AuthProvider = ({ children }) => {
         });
       }
       if (res.data.status === true) navigate("/login", { replace: true });
+    }).catch((error) => {
+      if (error.response) {
+        toast.current.show({
+          severity: "error",
+          summary: "Thông báo!",
+          detail:
+            error.response.data.errors.email.join("\n") || "Error Login",
+          life: 5000,
+        });
+      }
     });
   };
 

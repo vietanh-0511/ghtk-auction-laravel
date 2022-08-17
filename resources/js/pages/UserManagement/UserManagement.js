@@ -64,24 +64,20 @@ const UserManagement = ({ title = "Empty Page" }) => {
           user.email &&
           user.address &&
           user.phone &&
-          !(
-            validate(user.email, "email") &&
-            validate(user.phone, "phone") &&
-            validate(user.full_name, "full_name")
-          )
+          !validate(user.email, "email") &&
+          !validate(user.phone, "phone") &&
+          !validate(user.full_name, "full_name")
       : user.full_name &&
           user.email &&
           user.password &&
           user.password_confirmation &&
           user.address &&
           user.phone &&
-          !(
-            validate(user.email, "email") &&
-            validate(user.password, "password") &&
-            validate(user.password_confirmation, "confirmation") &&
-            validate(user.full_name, "full_name") &&
-            validate(user.phone, "phone")
-          );
+          !validate(user.email, "email") &&
+          !validate(user.password, "password") &&
+          !validate(user.password_confirmation, "confirmation") &&
+          !validate(user.full_name, "full_name") &&
+          !validate(user.phone, "phone");
   };
 
   useEffect(() => {
@@ -146,45 +142,70 @@ const UserManagement = ({ title = "Empty Page" }) => {
     setSubmitted(true);
     if (validateAll()) {
       if (user.id) {
-        updateUser(user.id, user).then((res) => {
-          if (res.data.status !== true) {
-            toast.current.show({
-              severity: "error",
-              summary: "Thông báo!",
-              detail: res.data.message || "Error Update",
-              life: 5000,
-            });
-          } else {
-            getData();
-            toast.current.show({
-              severity: "success",
-              summary: "Thông báo!",
-              detail: res.data.message,
-              life: 5000,
-            });
-          }
-          hideDialog();
-        });
+        updateUser(user.id, user)
+          .then((res) => {
+            if (res.data.status !== true) {
+              toast.current.show({
+                severity: "error",
+                summary: "Thông báo!",
+                detail: res.data.message || "Error Update",
+                life: 5000,
+              });
+            } else {
+              getData();
+              toast.current.show({
+                severity: "success",
+                summary: "Thông báo!",
+                detail: res.data.message,
+                life: 5000,
+              });
+            }
+            hideDialog();
+          })
+          .catch((error) => {
+            if (error.response) {
+              toast.current.show({
+                severity: "error",
+                summary: "Thông báo!",
+                detail:
+                  error.response.data.errors.email.join("\n") || "Error Update",
+                life: 5000,
+              });
+            }
+          });
       } else {
-        createUser(user).then((res) => {
-          if (res.data.status !== true) {
-            toast.current.show({
-              severity: "error",
-              summary: "Thông báo!",
-              detail: res.data.message || "Error Create",
-              life: 5000,
-            });
-          } else {
-            getData();
-            toast.current.show({
-              severity: "success",
-              summary: "Thông báo!",
-              detail: res.data.message,
-              life: 5000,
-            });
-          }
-          hideDialog();
-        });
+        createUser(user)
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.status !== true) {
+              toast.current.show({
+                severity: "error",
+                summary: "Thông báo!",
+                detail: res.data.errors.email.join("\n") || "Error Create",
+                life: 5000,
+              });
+            } else {
+              getData();
+              toast.current.show({
+                severity: "success",
+                summary: "Thông báo!",
+                detail: res.data.message,
+                life: 5000,
+              });
+            }
+            hideDialog();
+          })
+          .catch((error) => {
+            if (error.response) {
+              toast.current.show({
+                severity: "error",
+                summary: "Thông báo!",
+                detail:
+                  error.response.data.errors.email.join("\n") || "Error Create",
+                life: 5000,
+              });
+            }
+          });
       }
     }
   };
