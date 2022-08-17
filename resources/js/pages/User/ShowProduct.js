@@ -17,35 +17,6 @@ const ShowProduct = ({ title = "Empty Page" }) => {
     const [renew, setRenew] = useState(false);
     const [value2, setValue2] = useState(50);
     const [range, setRange] = useState(null);
-    const [activeIndex, setActiveIndex] = useState(0);
-    const galleria3 = useRef(null);
-
-    const responsiveOptions = [
-        {
-            breakpoint: '1024px',
-            numVisible: 5
-        },
-        {
-            breakpoint: '768px',
-            numVisible: 3
-        },
-        {
-            breakpoint: '560px',
-            numVisible: 1
-        }
-    ];
-
-    const itemTemplate = (item) => {
-        return <img src={item.file_name}
-            onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
-            alt={item.id + '-asset'} style={{ width: '100%', display: 'block' }} />;
-    }
-
-    const thumbnailTemplate = (item) => {
-        return <img src={item.file_name}
-            onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
-            alt={item.id + '-asset-thumbnail'} style={{ display: 'block' }} />;
-    }
 
     useEffect(() => {
         setData(props.data.session.find(x => x.id === props.currentSession));
@@ -111,18 +82,18 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                 <div>
                     <div className="space-between">
                         <span>
-                            <div><span className="left-span">Tên Product:</span><span className="right-span">{data.product.name}</span></div>
-                            <div><span className="left-span">Mô tả:</span><span className="right-span">{data.product.description}</span></div>
+                            <div><span className="left-span"></span><span className="right-span" style={{fontSize:'20px',fontWeight:'800', color:'tomato'}}>{data.product.name}</span></div>
+                            <div><span className="left-span"></span><span className="right-span">{data.product.description}</span></div>
                         </span>
                         <span>
                             <div><span className="left-span">Giá khởi điểm:</span><span className="right-span">{data.start_price}$</span></div>
                             <div><span className="left-span">Bước giá:</span><span className="right-span">{data.price_step}$</span></div>
-                            <div><span className="left-span">Giá thầu cao nhất hiện tại:</span><span className="right-span">{data.highest_bid ? data.highest_bid + '$' : 'Missing'}</span></div>
-                            <div><span className="left-span">Người chiến thắng hiện tại:</span><span className="right-span">{data.user ? data.user.full_name : 'Missing'}</span></div>
+                            <div><span className="left-span">Giá thầu cao nhất hiện tại:</span><span className="right-span">{data.highest_bid ? data.highest_bid + '$' : 'Chưa có dữ liệu'}</span></div>
+                            <div><span className="left-span">Người chiến thắng hiện tại:</span><span className="right-span">{data.user ? data.user.full_name : 'Chưa có dữ liệu'}</span></div>
                         </span>
                     </div>
                     <div>
-                        <div className="space-between">Assets:</div>
+                        <div className="space-between">Ảnh:</div>
                         {
                             data.assets.length > 0 &&
                             <div className="assets-display">
@@ -135,21 +106,19 @@ const ShowProduct = ({ title = "Empty Page" }) => {
                             </div>
                         }
                         {
-                            data.assets.length <= 0 && <div>No assets</div>
+                            data.assets.length <= 0 && <div>Không có ảnh sản phẩm</div>
                         }
                     </div>
                     <div>
                         <div className="space-center">
-                            <h5>Amount: {value2}</h5>
+                            <h5>Trả giá: {value2}</h5>
                         </div>
                         <div className="space-center">
                             <span>
-                                <Slider min={range ? range[0] : 0} max={range ? range[1] : 100}
-                                    step={range ? data.price_step : 1} value={value2} onChange={(e) => setValue2(e.value)} />
                                 <InputText value={value2} onChange={(e) => setValue2(e.target.value)} />
                             </span>
                             <span>
-                                <Button label="Place bid" icon="pi pi-check" onClick={postBid} />
+                                <Button label="Đấu giá" icon="pi pi-check" onClick={postBid} disabled={props.disabled} />
                             </span>
                         </div>
                     </div>

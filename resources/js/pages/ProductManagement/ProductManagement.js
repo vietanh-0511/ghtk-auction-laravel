@@ -7,15 +7,21 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   createProduct,
+  deleteAsset,
   deleteProduct,
   getProduct,
+  getProductById,
   updateProduct,
+  getImageProduct,
 } from "../../apiClient";
 import { FileUpload } from "primereact/fileupload";
 import { Image } from "primereact/image";
 import "../../../css/app.css";
+
+const uploadOptions = { icon: 'pi pi-fw pi-cloud-upload', iconOnly: true, className: 'custom-upload-btn p-button-success p-button-rounded p-button-outlined' };
 
 const ProductManagement = ({ title = "Empty Page" }) => {
   let emptyProduct = {
@@ -24,47 +30,60 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     description: "",
   };
 
+  let emptyAssetDialog = { open: false, item: null };
+
   const [dataProducts, setDataProducts] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [product, setProduct] = useState(emptyProduct);
+  const [temporaryAssets, setTemporaryAssets] = useState(0); // length
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [url, setUrl] = useState([]);
+  const [deleteAssetDialog, setDeleteAssetDialog] = useState(emptyAssetDialog);
   const toast = useRef(null);
   const dt = useRef(null);
   let idProduct = product.id;
 
+  useEffect(() => {
+    getData();
+  }, []);
 
-
-  const handleUploadImage = (e) => {
+  // upload new assets
+  const newFormData = (v) => {
     const data = new FormData();
-    data.append("file", e.files[0]);
+    data.append("file", v);
     data.append("upload_preset", "ghtk-auction-laravel");
     data.append("cloud_name", "ghtk-auction-laravel");
-    fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
-      method: "post",
-      body: data,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        product.assets.push(data.url);
-        setUrl(data.url);
-        toast.current.show({
-          severity: "info",
-          summary: "Success",
-          detail: "File Uploaded",
-        });
+    return data;
+  }
+  const customUploadHandle = (e) => {
+    if (e.files.length < 1) return;
+    Promise.all(e.files.map(u =>
+      fetch("https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload", {
+        method: "post",
+        body: newFormData(u),
       })
-      .catch((err) => { });
-  };
-
-  useEffect(() => {
-    getProduct().then((res) => {
-      setDataProducts(res.data.data);
+    )).then(responses =>
+      Promise.all(responses.map(res => res.json()))
+    ).then(texts => {
+      setTemporaryAssets(e.files.length);
+      setProduct({
+        ...product,
+        assets: texts.map(i => i.url),
+      });
+      toast.current.show({
+        severity: "info",
+        summary: "Success",
+        detail: "File Uploaded",
+      })
+    }).catch((err) => {
+      toast.current.show({
+        severity: "info",
+        summary: "Failed",
+      })
     });
-  }, []);
+  }
 
   const openNew = () => {
     setSubmitted(false);
@@ -72,9 +91,19 @@ const ProductManagement = ({ title = "Empty Page" }) => {
   };
 
   const hideDialog = () => {
+    if (product.id && (product.assets.length + product.savedAssets.length < 1)) {
+      toast.current.show({
+        severity: "error",
+        summary: "Notification",
+        detail: "Bài đấu giá cần có ít nhất 1 ảnh",
+        life: 5000,
+      });
+      return;
+    }
     setProduct(emptyProduct);
     setSubmitted(false);
     setProductDialog(false);
+    setTemporaryAssets(0);
   };
 
   const hideDeleteProductDialog = () => {
@@ -83,7 +112,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
 
   const editProduct = (product) => {
     setProduct({ ...product });
-    // console.log(product)
     setProductDialog(true);
   };
 
@@ -96,8 +124,8 @@ const ProductManagement = ({ title = "Empty Page" }) => {
     getProduct().then((res) => setDataProducts(res.data.data));
   };
 
-  const deleteProductAuc = () => {
-    deleteProduct(idProduct).then((res) => {
+  const deleteAssetAuc = () => {
+    deleteAsset(deleteAssetDialog.item.id).then((res) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
@@ -106,7 +134,17 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           life: 5000,
         });
       } else {
-        getData();
+        getProductById(product.id).then((res) => {
+          const resData = res.data.data;
+          setProduct({
+            id: resData[0].id,
+            name: resData[0].name,
+            description: resData[0].description,
+            savedAssets: resData.assets,
+            assets: [...product.assets],
+          });
+          setDeleteAssetDialog(emptyAssetDialog)
+        });
         toast.current.show({
           severity: "success",
           summary: "Notification",
@@ -114,22 +152,53 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           life: 5000,
         });
       }
-      setDeleteProductDialog(false);
-      setProduct(emptyProduct);
     });
   };
 
-  const saveProduct = () => {
-    setSubmitted(true);
+  const deleteProductAuc = () => {
+    deleteProduct(idProduct).then((res) => {
+      if (res.data.status !== true) {
+        toast.current.show({
+          severity: "error",
+          summary: "Thông báo",
+          detail: res.data.message || "Error Delete",
+          life: 5000,
+        });
+      } else {
+        getData();
+        toast.current.show({
+          severity: "success",
+          summary: "Thông báo",
+          detail: res.data.message,
+          life: 5000,
+        });
+      }
+      setProduct(emptyProduct);
+      setDeleteProductDialog(false);
+    });
+  };
 
+  const saveProduct = async () => {
+    setSubmitted(true);
     const _product = { ...product };
+
+    if (!_product.id && _product.assets.length < 1 || _product.description.trim() === '' || _product.name.trim() === '') return;
+    if (product.id && (product.assets.length + product.savedAssets.length < 1)) {
+      toast.current.show({
+        severity: "error",
+        summary: "Notification",
+        detail: "Bài đấu giá cần có ít nhất 1 ảnh",
+        life: 5000,
+      });
+      return;
+    }
 
     if (_product.id) {
       updateProduct(_product.id, _product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Update",
             life: 5000,
           });
@@ -137,19 +206,19 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     } else {
       createProduct(_product).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Create",
             life: 5000,
           });
@@ -157,7 +226,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
@@ -181,8 +250,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           label="Thêm mới"
           icon="pi pi-plus"
           className="p-button-success mr-2"
-          onClick={openNew}
-        />
+          onClick={openNew} />
       </React.Fragment>
     );
   };
@@ -211,7 +279,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -222,9 +290,9 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       <Image
         preview={true}
         width="100"
-        src={`${rowData.asset !== null
-            ? rowData.asset.file_name
-            : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
+        src={`${rowData.assets !== null && rowData.assets.length > 0
+          ? rowData.assets[0].file_name
+          : "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"
           }`}
         className="product-image"
       />
@@ -241,10 +309,13 @@ const ProductManagement = ({ title = "Empty Page" }) => {
       />
       <Button
         label="Lưu"
-        icon="pi pi-check"
+        icon={(product.assets.length === temporaryAssets) ? "pi pi-check" : null}
         className="p-button-text"
         onClick={saveProduct}
-      />
+        disabled={!product.id && (temporaryAssets < 1 || (product.assets.length !== temporaryAssets))}
+      >
+        {(temporaryAssets > 0 && product.assets.length !== temporaryAssets) && <ProgressSpinner style={{ width: '20px', height: '20px' }} />}
+      </Button >
     </React.Fragment>
   );
 
@@ -254,13 +325,24 @@ const ProductManagement = ({ title = "Empty Page" }) => {
         label="Không"
         icon="pi pi-times"
         className="p-button-text"
-        onClick={hideDeleteProductDialog}
+        onClick={() => {
+          product.id ?
+            setDeleteAssetDialog(emptyAssetDialog)
+            :
+            hideDeleteProductDialog()
+        }}
       />
       <Button
         label="Có"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteProductAuc}
+        onClick={
+          () => {
+            deleteAssetDialog.item ?
+              deleteAssetAuc()
+              :
+              deleteProductAuc()
+          }}
       />
     </React.Fragment>
   );
@@ -276,8 +358,6 @@ const ProductManagement = ({ title = "Empty Page" }) => {
             <DataTable
               ref={dt}
               value={dataProducts}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -300,7 +380,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 header="Mô tả"
                 sortable
               ></Column>
-              <Column field="created_at" header="Created At" sortable></Column>
+              <Column field="created_at" header="Thời gian tạo" sortable></Column>
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
@@ -320,7 +400,7 @@ const ProductManagement = ({ title = "Empty Page" }) => {
           >
             {/* name */}
             <div className="field">
-              <label htmlFor="name">Tên sản pẩm</label>
+              <label htmlFor="name">Tên sản phẩm</label>
               <InputText
                 id="name"
                 value={product.name}
@@ -336,27 +416,73 @@ const ProductManagement = ({ title = "Empty Page" }) => {
               )}
             </div>
 
+            {/* SavedAsset */}
+            {product.savedAssets && product.savedAssets.length > 0 &&
+              <div className="field">
+                <label htmlFor="savedAssets">Ảnh đã lưu</label>
+                <div className="upload">
+                  <div style={{
+                    display: "flex",
+                    maxWidth: '400px',
+                    width: '400px',
+                    overflow: 'auto'
+                  }}
+                  >
+                    {product.savedAssets.map((i, index) =>
+                      <div key={index}
+                        style={{
+                          // border: '1px solid #000',
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                          margin: "1rem",
+                        }}
+                      >
+                        <Image src={i.file_name} alt={i.file_name} width="100" preview />
+                        <Button icon="pi pi-times" className="p-button-rounded p-button-danger" aria-label="Cancel"
+                          style={{
+                            marginTop: '2px'
+                          }}
+                          onClick={(e) => {
+                            setDeleteAssetDialog({
+                              open: true,
+                              item: i,
+                            });
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>}
+
             {/* Asset */}
             <div className="field">
               <label htmlFor="assets">Ảnh</label>
               <div className="upload">
                 <div className="input-upload">
                   <FileUpload
+                    name="assets"
                     id="assets"
                     multiple={true}
-                    url="https://api.cloudinary.com/v1_1/ghtk-auction-laravel/auto/upload"
                     accept="image/*"
-                    value={product.assets}
                     customUpload
-                    uploadHandler={handleUploadImage}
+                    uploadHandler={customUploadHandle}
+                    onSelect={(e) => setTemporaryAssets(e.files.length)}
+                    onClear={(e) => {
+                      setTemporaryAssets(0);
+                      setProduct({
+                        ...product,
+                        assets: []
+                      })
+                    }}
                     emptyTemplate={
-                      <p className="m-0">
-                        Kéo và thả tệp vào đây để tải lên.
-                      </p>
+                      <p className="m-0">Kéo và thả tệp vào đây để tải lên.</p>
                     }
                   />
-                  {submitted && !product.assets && (
-                    <small className="p-error">Ảnh không được để trống.</small>
+                  {submitted && product.assets.length < 1 && !product.id && (
+                    temporaryAssets < 1 ? <small className="p-error">Ảnh không được để trống.</small> : <small className="p-error">Bấm Upload ảnh trước khi Lưu.</small>
                   )}
                 </div>
               </div>
@@ -378,6 +504,23 @@ const ProductManagement = ({ title = "Empty Page" }) => {
                 <small className="p-error">Mô tả không được để trống.</small>
               )}
             </div>
+
+            <Dialog visible={deleteAssetDialog.open}
+              onHide={() => setDeleteAssetDialog(emptyAssetDialog)}
+              footer={deleteProductDialogFooter}
+            >
+              {deleteAssetDialog.item && (
+                <span style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}>
+                  <b style={{ color: "red" }}>Bạn có chắc muốn xóa?</b>
+                  <br />
+                  <Image src={deleteAssetDialog.item.file_name} alt={deleteAssetDialog.item.file_name} width="100" preview />
+                </span>
+              )}
+            </Dialog>
           </Dialog>
 
           <Dialog

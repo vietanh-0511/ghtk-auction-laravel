@@ -23,7 +23,7 @@ class BidController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -36,20 +36,10 @@ class BidController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreBidRequest $request)
     {
@@ -57,9 +47,9 @@ class BidController extends Controller
         $userId = $request->user('api')->id;
         $bid = '';
         try {
-            $bid = $this->createBidAction->handle($validated, $userId);
+            $this->createBidAction->handle($validated, $userId);
         } catch (Exception $e) {
-            return Responder::fail($bid, $e->getMessage());
+            return Responder::fail(null, $e->getMessage());
         }
 
         return Responder::success($bid, 'Đấu giá thành công');
@@ -69,7 +59,7 @@ class BidController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -82,17 +72,6 @@ class BidController extends Controller
         }
         $bid = Bid::where('id', $id)->first();
         return Responder::success($bid, 'Lấy thành công');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -111,7 +90,7 @@ class BidController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
@@ -122,15 +101,15 @@ class BidController extends Controller
             return Responder::fail($id, 'Bid không tồn tại');
         }
         $deleteBid = Bid::where('id', $id)->delete();
-        return Responder::success($deleteBid, 'xóa thành công');
+        return Responder::success($deleteBid, 'Xóa thành công');
     }
-    
+
     public function updateBidMessage()
     {
-        $price = request()->price;
-        $name = request()->name;
-        $auction = request()->auction;
-        $session = request()->session;
+        $price = request('price');
+        $name = request('name');
+        $auction = request('auction');
+        $session = request('session');
         $time = Carbon::now('Asia/Ho_Chi_Minh');
         event(new bidUpdate($price, $name, $auction, $session, $time));
     }

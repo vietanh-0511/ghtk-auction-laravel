@@ -33,6 +33,10 @@ export function getProduct() {
   return window.axiosApiInstance.get(`/admin/product`);
 }
 
+export function getProductById(id) {
+  return window.axiosApiInstance.get(`/admin/product/${id}`);
+}
+
 export function createProduct(data) {
   return window.axiosApiInstance.post("/admin/product", data);
 }
@@ -40,9 +44,17 @@ export function createProduct(data) {
 export function deleteProduct(id) {
   return window.axiosApiInstance.delete(`/admin/product/${id}`);
 }
-
+export function getImageProduct(id) {
+  return window.axiosApiInstance.get(`/admin/product/${id}`);
+}
 export function updateProduct(id, data) {
   return window.axiosApiInstance.put(`/admin/product/${id}`, data);
+}
+export function getProductnotinss(id, data) {
+  return window.axiosApiInstance.get(`/admin/product-not-in-ss`, data);
+}
+export function deleteAsset(id) {
+  return window.axiosApiInstance.delete(`/admin/asset/${id}`);
 }
 
 // Auctions Management: Autions

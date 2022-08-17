@@ -96,7 +96,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
       if (res.data.status !== true) {
         toast.current.show({
           severity: "error",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message || "Error Delete",
           life: 5000,
         });
@@ -104,7 +104,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
         getData();
         toast.current.show({
           severity: "success",
-          summary: "Notification",
+          summary: "Thông báo",
           detail: res.data.message,
           life: 5000,
         });
@@ -126,7 +126,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Update",
             life: 5000,
           });
@@ -134,19 +134,19 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
+          hideDialog();
         }
-        hideDialog();
       });
     } else {
       createAuction(_Auction).then((res) => {
         if (res.data.status !== true) {
           toast.current.show({
             severity: "error",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message || "Error Create",
             life: 5000,
           });
@@ -154,7 +154,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           getData();
           toast.current.show({
             severity: "success",
-            summary: "Notification",
+            summary: "Thông báo",
             detail: res.data.message,
             life: 5000,
           });
@@ -210,7 +210,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -274,7 +274,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
               responsiveLayout="scroll"
             >
               <Column field="id" header="ID" sortable></Column>
-              <Column field="title" header="Tên Auction" sortable></Column>
+              <Column field="title" header="Tên Đấu giá" sortable></Column>
               <Column field="status" header="Trạng thái" sortable></Column>
               <Column
                 field="start_time"
@@ -310,7 +310,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
           >
             {/* title */}
             <div className="field">
-              <label htmlFor="title">Tên Auction</label>
+              <label htmlFor="title">Tên Đấu giá</label>
               <InputText
                 id="title"
                 value={Auction.title}
@@ -322,7 +322,7 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
                 })}
               />
               {submitted && !Auction.title && (
-                <small className="p-error" errors>Tên Auction không được để trống.</small>
+                <small className="p-error" errors>Tên Đấu giá không được để trống.</small>
               )}
             </div>
 
@@ -332,7 +332,6 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
               <Calendar
                 id="start_time"
                 value={Auction.start_time}
-                autoFocus
                 showTime={true}
                 showButtonBar={true}
                 showIcon
@@ -343,7 +342,8 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
               />
               {submitted && !Auction.start_time && (
                 <small className="p-error">
-                Thời gian bắt đầu không được để trống.</small>
+                  Thời gian bắt đầu không được để trống.
+                </small>
               )}
             </div>
 
@@ -358,13 +358,11 @@ const AuctionManagement = ({ title = "Empty Page" }) => {
                 showButtonBar
                 showIcon
                 onChange={(e) => onInputChange(e, "end_time")}
-                className={classNames({
-                  "p-invalid": submitted && !Auction.end_time,
-                })}
               />
               {submitted && !Auction.end_time && (
                 <small className="p-error">
-                Thời gian kết thúc không được để trống.</small>
+                  Thời gian kết thúc không được để trống.
+                </small>
               )}
             </div>
           </Dialog>
