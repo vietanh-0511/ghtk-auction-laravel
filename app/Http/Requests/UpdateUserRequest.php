@@ -24,11 +24,11 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        // dd($this->id);
         return [
-            'full_name' => 'required|string|max:255',
+            'full_name' => 'required|string|min:6|max:255',
             'email' => [
                 'required',
+                'regex:/^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$/',
                 Rule::unique('users', 'email')->ignore($this->id)
             ],
             'password' => [

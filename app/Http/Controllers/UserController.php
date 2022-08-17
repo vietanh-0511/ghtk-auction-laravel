@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Supports\Responder;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $validated = $request->validated();
+        $validated['email_verified_at'] = Carbon::now();
         try {
             $user = User::create($validated);
         } catch (Exception $e) {
@@ -107,8 +109,11 @@ class UserController extends Controller
         }
         $user = User::find($id);
         if ($user->hasRole('admin')) {
-            return Responder::fail($id, 'you cannot delete admin account');
+            return Responder::fail($id, 'Không thể xóa tài khoản admin');
         }
+        User::query()->where('id', $id)->update([
+            'email' => $user->email . '_deleted'
+        ]);
         $deleteUser = User::where('id', $id)->delete();
         return Responder::success($deleteUser, 'Xóa thành công');
     }

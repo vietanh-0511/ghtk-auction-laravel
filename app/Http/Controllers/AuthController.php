@@ -30,7 +30,7 @@ class AuthController extends Controller
         'status' => false,
         'message' => 'Sai tài khoản hoặc mật khẩu!',
         'data' => null,
-      ], Response::HTTP_UNAUTHORIZED);
+      ], Response::HTTP_OK);
     }
     if (!User::where('email', $credentials['email'])->where('email_verified_at','!=', null)->exists()) {
       return response()->json([

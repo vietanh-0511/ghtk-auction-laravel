@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|email|regex:/^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$/',
             'password' => [
                 'required',
                 'string',
